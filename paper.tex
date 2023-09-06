@@ -1,0 +1,131 @@
+\documentclass{bmd2023p}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\softwarepackage}[1]{\textit{#1}}
+\newcommand{\sympy}{\softwarepackage{SymPy}}
+\newcommand{\package}{\softwarepackage{BRiM}}
+\newcommand{\pycollo}{\softwarepackage{Pycollo}}
+\newcommand{\whypackagename}{\textit{B}icycle-\textit{Ri}der \textit{M}odels}
+
+\newcommand{\thesisreference}[1]{\textit{#1}}
+
+\usepackage{todonotes}
+\usepackage{url}
+
+\begin{document}
+
+%% Titlepage variables
+
+% Title
+\title{BRiM: A Modular Bicycle-Rider Modeling Framework}
+
+% List authors for the title. Call \addauthor{name}{affiliationID} for every
+% author. Authors will appear in the order off calls to \addauthor. Please
+% manually specify the correct affiliation ID and an asterisk to the
+% corresponding author
+\addauthor{Timótheüs J. Stienstra}{1,*}
+\addauthor{Samuel G. Brockie}{1}
+\addauthor{Jason K. Moore}{1}
+
+% List authors with only initials for given names, displays only in footer.
+\authorfooter{Stienstra, T. J., Brockie, S. G., \& Moore, J. K.}
+
+% List affiliations. Call \addaffiliation{id}{name}{EmailOrcidString} once for
+% every distinct institution, where id specifies the affiliation ID (ensure
+% that this corresponds to the IDs used with \addauthor), name specifies the
+% affiliation name, and EmailOrcidString is a string listing emails and ORCIDs
+% (optional) affiliated with this affiliation separating mail and ORCID using a
+% comma and different author credentials using a semicolon.
+
+\addaffiliation{1}{Faculty of Mechanical, Maritime and Materials Engineering (3mE), Delft University of Technology, The Netherlands}{t.j.stienstra@student.tudelft.nl, ORCID 0000-0003-4600-515X}
+
+% The following variables will be updated by the publisher, do not edit.
+\doi{XX.XXXX/XX.XXXX}
+\year{2023}
+\editor{Firstname Lastname}
+\submitteddate{dd/mm/yyyy}
+\accepteddate{dd/mm/yyyy}
+\publisheddate{dd/mm/yyyy}
+\citation{}
+\issn{2667-2812}
+% End publisher variables.
+
+%% End titlepage variables
+
+\maketitle
+
+\section*{Abstract:}
+
+\todo[inline]{Write abstract once rest of paper is drafted}
+
+\newpage
+\pagestyle{headings}
+
+\section*{Introduction}
+
+\todo[inline]{Paragraph: Explanation of the gap}
+\thesisreference{introduction paragraph 2 and 3}
+
+\todo[inline]{Paragraph: Summarize requirements from Timo's thesis}
+\thesisreference{I phrased a summarized version implicitly in the introduction where I explain the goal}
+
+\todo[inline]{Emphasize the aim/objectives}
+\thesisreference{Introduction paragraph 3-4}
+
+\todo[inline]{Paragraph: Overview of the paper/how aim and objectives are going to be met}
+
+\section{BRiM Method}
+
+\todo[inline]{Paragraph: three levels of description when using BRiM, where the low equation level and intermediate bodies and joints level are within SymPy and BRiM wraps around it adding a high component level \thesisreference{introduction paragraph 3; opening CH3 paragraph 1-2}. Immediately also mention Kane's method \thesisreference{why see 2.2 paragraph 2 and appendix A paragraph 1}}
+
+\subsection{BRiM Core}
+
+\begin{itemize}
+    \item Usage of Kane's method
+    \item Understand the aggregation of models
+    \item The translation towards the core components of BRiM: \textit{The models are the main components, where each model describes a system or subsystem following the tree structure explained in section 3.3.1. The connections can be seen as a utility of parent models to describe a modular interaction between submodels resembling many characteristics with the connectors from the flat graph structure. The load groups are predefined sets of actuators and loads, which are commonly associated with a specific model or connection.} \thesisreference{CH 3.4; CH 3.6 summary; abstract paragraph 3}
+    \item chapter 4
+\end{itemize}
+
+\subsection{BRiM Models}
+
+\begin{itemize}
+    \item
+\end{itemize}
+
+
+\section{Results Method}
+
+\subsection{Demonstrations/Experiments}
+
+\begin{itemize}
+    \item Just the Whipple bicycle (base case) with steer actuator, three different frame geometries (which ones? \url{http://moorepants.github.io/dissertation/physicalparameters.html#bicycle-parameters})
+    \item front frame suspension for the mountain bike parametrization
+    \item Upper-body bicycle-rider with steer actuator
+    \item Upper-body bicycle-rider with elbow torques (no steer torque)
+\end{itemize}
+
+\subsection{Simulation/Optimization}
+
+\begin{itemize}
+    \item Generate model
+    \item Conduct forward simulation with P-controller to generate an initial guess
+    \item Solve OCP using opty
+\end{itemize}
+
+\section{Results}
+
+\section{Discussion}
+
+\section*{Conclusion}
+
+\todo[inline]{Summarize conclusions from Timo's thesis}
+
+\todo[inline]{Add acknowledgements etc., specifically mention CZI with reference to funding using specific wording}
+This project has been made possible in part by CZI grant CZIF2021-006198 and grant DOI https://doi.org/10.37921/240361looxoj from the Chan Zuckerberg Initiative Foundation (funder DOI 10.13039/100014989).
+
+
+\bibliographystyle{apalike}
+\bibliography{references.bib}
+
+\end{document}
