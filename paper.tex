@@ -5,7 +5,7 @@
 \newcommand{\sympy}{\softwarepackage{SymPy}}
 \newcommand{\package}{\softwarepackage{BRiM}}
 \newcommand{\pycollo}{\softwarepackage{Pycollo}}
-\newcommand{\whypackagename}{\textit{B}icycle-\textit{Ri}der \textit{M}odels}
+\newcommand{\whypackagename}{\textbf{B}icycle-\textbf{Ri}der \textbf{M}odels}
 
 \newcommand{\thesisreference}[1]{\textit{#1}}
 
@@ -23,9 +23,9 @@
 % author. Authors will appear in the order off calls to \addauthor. Please
 % manually specify the correct affiliation ID and an asterisk to the
 % corresponding author
-\addauthor{Timótheüs J. Stienstra}{1,*}
+\addauthor{Timótheüs J. Stienstra}{1}
 \addauthor{Samuel G. Brockie}{1}
-\addauthor{Jason K. Moore}{1}
+\addauthor{Jason K. Moore}{1,*}
 
 % List authors with only initials for given names, displays only in footer.
 \authorfooter{Stienstra, T. J., Brockie, S. G., \& Moore, J. K.}
@@ -51,6 +51,17 @@
 % End publisher variables.
 
 %% End titlepage variables
+\todo[inline]{Timo's todo list:}
+\begin{itemize}
+    % \item Merge attachments branch and open an issue on the regression of the number of operations after CSE
+    \item Change BRiM distribution name to \textit{bicycle-rider-models} to get it on PyPi (one problem is that PyPi does not accept dependencies on GitHub branches, e.g. SymPy master)
+    % \item Update the brim-examples repository to the new version of BRiM
+    % \item Enable switching between \textit{Browser} parametrization and \textit{Fisher} with suspension in whipple bicycle simulation
+    \item Set up a \textit{src} directory in the brim-bmd-2023-paper repo from which we can create all images
+    \item (optionally) have it auto-build the images on push
+    \item Add some thesis references to the \textit{BRiM Models} subsection (started)
+    \item Recreate the bicycle-rider optimization from the other paper using BRiM
+\end{itemize}
 
 \maketitle
 
@@ -63,20 +74,65 @@
 
 \section*{Introduction}
 
-\todo[inline]{Paragraph: Explanation of the gap}
-\thesisreference{introduction paragraph 2 and 3}
+Throughout the 200 year history of the bicycle, numerous researchers have developed mathematical models to investigate various aspects of bicycle dynamics and rider control~\citep{schwab_2013_review}.
+These models have contributed valuably to our understanding of self-stability~\citep{meijaard_2011_history}, active and passive rider control~\citep{moore_2012_human,schwab_2012_lateral,sharp_2008_stability}, and the identification of specific eigenmodes~\citep{sharp_1976_dynamics}.
+These insights have also informed the development of bicycles with improved stability, handling, and comfort~\citep{plochl_2012_wobble}.
 
-\todo[inline]{Paragraph: Summarize requirements from Timo's thesis}
-\thesisreference{I phrased a summarized version implicitly in the introduction where I explain the goal}
+Mathematical bicycle models have been created using many both numeric and symbolic approaches, and a combination of the two.
+Furthermore, these have been facilitated by many different languages and software packages.
+For example, \citet{meijaard_2007_linearized} used the dynamics modeling software \softwarepackage{SPACAR}~\citep{vansoest_1992_spacar} to numerically derive the equations of motion for the Whipple bicycle model.
+The same thing has been done symbolically by \citet{sharp_2008_stability}, who used Matlab's Symbolic Toolbox~\citep{matlab_2023_symbolic}, and by \citet{moore_2012_human} using both the symbolic dynamics package \softwarepackage{AUTOLEV}~\cite{levinson_1990_autolev} and Python's computer algebra package \sympy{}~\citep{meurer_2017_sympy}.
 
-\todo[inline]{Emphasize the aim/objectives}
-\thesisreference{Introduction paragraph 3-4}
+One commonality between these numeric and symbolic approaches is that they often hand-craft the equations of motion derivation.
+This approach has the advantage that the implementer controls the choice of coordinates that are used, often optimizing the simplicity of the resulting equations of motion at the end of the process.
+Indeed, hand crafted equations of motion have the highest reachable computational performance~\citep{rosenthal_1986_high}.
 
-\todo[inline]{Paragraph: Overview of the paper/how aim and objectives are going to be met}
+Many research grade software packages, like \softwarepackage{SPACAR}, \softwarepackage{Simbody}~\citep{sherman_2011_simbody}, and \softwarepackage{ADAMS}~\citep{ryan_1990_adams}, can efficiently form the equations of motion for a multibody system.
+One downside of these tools is that the resulting equations of motion exist solely in the form of numeric computer code and cannot be accessibly interrogated.
+Note that it is not advisable to use traditional and modern physics engines for high-accuracy dynamics as they often make simplifying assumptions (like ignoring the Coriolis forces~\citep{todorov_2012_mujoco}) to speed up the numeric evaluation of equations of motion~\citep{rosenthal_1986_high}, which leads to discrepancies in simulation results~\citep{erez_2015_simulation}.
+
+Symbolics offer transparency, allowing for a clear understanding of the underlying equations and enabling greater flexibility in manipulating and interpreting the resulting expressions.
+There is scope for a symbolic approach to result in more performant code through processes like term rewriting to minimize the number of CPU cycles required to call functions for the numeric evaluation of the equations of motion~\citep{gowda_2022_high}.
+One downside is that there is a higher cost associated with model derivation than numeric approaches.
+However, for bicycle models this cost is often still only of the order of seconds and can be amortized if the resulting model is cached and reused in multiple simulation or optimization studies.
+
+Forward simulations and optimizations often require gradient information to be solved efficiently, especially when a system's dynamics are governed by stiff nonlinear ordinary differential equations or differential algebraic equations.
+For bicycle model, this means differentiating the equations of motion with respect to the independent coordinates and velocities used to describe the system.
+Efficient algorithms for computing exact numeric derivatives based on automatic differentiation exist~\cite{griewank_2008_evaluating}.
+However, automatic differentiation of numeric code can introduce a significant compute and memory overhead at runtime~\citep{millard_2020_automatic}.
+Conversely, the algorithm for generating optimally efficient evaluatable derivatives exists in the realm of symbolic computing~\citep{guenter_2007_efficient}.
+
+Despite the extensive research, creating accurate and performant mathematical bicycle models remains a common challenge.
+As pointed out by \citet{schwab_2013_review}, numerous published models exhibit mistakes in their derivation.
+Nowadays, many researchers use the linearized Whipple model \citep{meijaard_2007_linearized} as starting point and extend it to incorporate additional features such as tire models \citep{limebeer_2006_bicycles,meijaard_2006_linearized,plochl_2012_wobble,schwab_2013_review} or rider attachments \citep{moore_2012_human}.
+This approach is error prone \citep{schwab_2013_review}, time consuming, and hinders the development of more complex models. It also reduces research dissemination and reproducibility as models may not be compatible with one another due to using different formulations or being writing in different programming languages, or might depend on closed-source software.
+
+To address these needs, in this paper we present \package{}, a new open-source modular and extensible framework for creating symbolic \whypackagename{}. \package{} is a Python package, the scripting language Python having been selected because of its prevalence in the scientific and engineering research community, extensive open-source ecosystem, and 
+
+\package{} targets two main user groups: researchers wanting to use accessible and validated bicycle-rider models, and researchers developing their own modifications of, or extensions to, bicycle-rider models.
+To address the needs of the former group, \package{} provides a library of pre-built bicycle and bicycle-rider models that users can apply to their own research questions directly out of the box.
+Users can trust the accuracy of these as they are pre-validated, in addition to the source code being open for review and critique.
+There is also a library of modular submodels (e.g. wheels, frame sections, riders), which themselves combine to form a complete bicycle or bicycle-rider model, that can be readily interchanged by users to adapt the model to meet the requirements of their research.
+For the second user group, \package{} provides a framework for researchers to develop their own modular submodels and seamlessly integrate these into their bicycle and bicycle-rider models.
+By doing this using \package{}, these extensions can more easily be shared between researchers due to the common tooling.
+
+To summarize, our contributions are as follows:
+\begin{itemize}
+    \item Development and release of the open-source package \package{} for bicycle-rider modeling, including its library of pre-built bicycle models (like the Whipple model based on \citeauthor{moore_2012_human}'s formulation), composable bicycle and rider submodels, and frameworks for users to implement their own extensions, as well as utilities for forward simulation, optimization, plotting, and animation.
+    \item Demonstration of \package{} by formulating and solving multiple novel trajectory tracking optimization problems of bicycle and bicycle-rider models, including a comparison of the minimized steer torques required for a lane change maneuver for three different bicycle geometries, plus a comparison between a rigid fork and front suspension bike, and a comparison between the steer torque and elbow torques, for the same trajectory tracking optimization problem.
+\end{itemize}
 
 \section{BRiM Method}
 
-\todo[inline]{Paragraph: three levels of description when using BRiM, where the low equation level and intermediate bodies and joints level are within SymPy and BRiM wraps around it adding a high component level \thesisreference{introduction paragraph 3; opening CH3 paragraph 1-2}. Immediately also mention Kane's method \thesisreference{why see 2.2 paragraph 2 and appendix A paragraph 1}}
+\todo[inline]{Paragraph: three levels of description when using BRiM}
+\begin{itemize}
+    \item high level: component level
+    \item intermediate level: joints and bodies level (within sympy)
+    \item low level: manipulation of equations
+    \item \thesisreference{introduction paragraph 3; opening CH3 paragraph 1-2}
+\end{itemize}
+
+Immediately also mention Kane's method \thesisreference{why see 2.2 paragraph 2 and appendix A paragraph 1}
 
 \subsection{BRiM Core}
 
@@ -89,9 +145,29 @@
 
 \subsection{BRiM Models}
 
+\subsubsection{Bicycle Model}
+\todo[inline]{Paragraph: The chosen base model, i.e. the Carvallo-Whipple bicycle following Moore's parametrization convention.}
+\thesisreference{CH 4.3.1}
 \begin{itemize}
-    \item
+    \item The Carvallo-Whipple bicycle model \citep{carvallo_1901_theorie,whipple_1899_stability} is widely recognized as the lowest order bicycle model with reasonable experimental validation \citep{kooijman_2008_experimental,moore_2012_human,schwab_2013_review,sharp_2008_stability}.
+    \item Because BRiM forms the nonlinear EOMs, it is better to choose a configuration-independent parametrization \citep{peterson_2013_bicycle}. The chosen parametrization is the one described by \citet{moore_2012_human}.
 \end{itemize}
+
+\todo[inline]{Paragraph: Explain the Whipple bicycle model shortly and name various of the common extensions}
+\thesisreference{CH 4.3.1 paragraph 2}
+
+\todo[inline]{Paragraph: Explain the division of the Whipple bicycle model in BRiM}
+\thesisreference{CH 4.3.1 last paragraph}
+
+\todo[inline]{Image: Visualization of the bicycle model split up}
+\thesisreference{Figure 4.2, I should add in the cranks submodel (though I quite like not having to explain that part)}
+
+\subsubsection{Rider Model}
+\begin{itemize}
+    \item 
+\end{itemize}
+
+\subsubsection{Bicycle-Rider Model}
 
 
 \section{Results Method}
@@ -99,10 +175,12 @@
 \subsection{Demonstrations/Experiments}
 
 \begin{itemize}
-    \item Just the Whipple bicycle (base case) with steer actuator, three different frame geometries (which ones? \url{http://moorepants.github.io/dissertation/physicalparameters.html#bicycle-parameters})
-    \item front frame suspension for the mountain bike parametrization
-    \item Upper-body bicycle-rider with steer actuator
-    \item Upper-body bicycle-rider with elbow torques (no steer torque)
+    \item Just the Whipple bicycle (base case) with steer actuator and pedal torque (Batavus Browser parameters)
+    \item Same as base case with Fisher parameters
+    \item (Same as base case with TBD)
+    \item Demonstrate modularity with front frame suspension with Fisher parameters
+    \item Upper-body bicycle-rider with steer actuator with Batavus Browser parameters
+    \item Upper-body bicycle-rider with elbow torques with Batavus Browser parameters
 \end{itemize}
 
 \subsection{Simulation/Optimization}
@@ -123,6 +201,7 @@
 
 \todo[inline]{Add acknowledgements etc., specifically mention CZI with reference to funding using specific wording}
 This project has been made possible in part by CZI grant CZIF2021-006198 and grant DOI https://doi.org/10.37921/240361looxoj from the Chan Zuckerberg Initiative Foundation (funder DOI 10.13039/100014989).
+
 
 
 \bibliographystyle{apalike}
