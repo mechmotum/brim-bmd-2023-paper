@@ -1,0 +1,4 @@
+data/*
+*.pkl
+*.gif
+__pycache__
