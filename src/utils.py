@@ -105,8 +105,8 @@ def create_plots(data: DataStorage) -> None:
     axs[0, 0].plot(get_q("x"), get_q("y"), label="trajectory")
     axs[0, 0].set_xlabel("Longitudinal displacement (m)")
     axs[0, 0].set_ylabel("Lateral displacement (m)")
-    for i, r in enumerate(data.input_vars):
-        axs[1, 0].plot(t_arr, r_arr[i, :], label=r.name)
+    for i, ri in enumerate(data.r):
+        axs[1, 0].plot(t_arr, r_arr[i, :], label=ri.name)
     axs[1, 0].set_xlabel("Time (s)")
     axs[1, 0].set_ylabel("Torque (Nm)")
     axs[1, 0].legend()
@@ -122,7 +122,7 @@ def create_plots(data: DataStorage) -> None:
     fig.tight_layout()
 
 
-def create_animation(data: DataStorage):
+def create_animation(data: DataStorage, output: str):
     x_eval = CubicSpline(data.time_array, data.solution_state.T)
     r_eval = CubicSpline(data.time_array, data.solution_input.T)
     p, p_vals = zip(*data.constants.items())
@@ -148,10 +148,10 @@ def create_animation(data: DataStorage):
     fps = 30
     n_frames = int(fps * data.time_array[-1])
     ani = FuncAnimation(fig, animate, frames=n_frames, blit=False)
-    ani.save("animation.gif", dpi=150, fps=fps)
+    ani.save(output, dpi=150, fps=fps)
 
 
-def create_time_lapse(data: DataStorage, n_frames: int = 6):
+def create_time_lapse(data: DataStorage, n_frames: int = 7):
     x_eval = CubicSpline(data.time_array, data.solution_state.T)
     r_eval = CubicSpline(data.time_array, data.solution_input.T)
     p, p_vals = zip(*data.constants.items())
