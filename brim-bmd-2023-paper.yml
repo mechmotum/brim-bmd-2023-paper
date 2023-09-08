@@ -1,0 +1,13 @@
+name: brim-bmd-2023-paper
+channels:
+  - conda-forge
+dependencies:
+  - python >=3.9,<3.12
+  - pip
+  - bicycleparameters
+  - cloudpickle
+  - cyipopt
+  - pip:
+      - git+https://github.com/TJStienstra/brim.git
+      - git+https://github.com/TJStienstra/symmeplot.git
+      - git+https://github.com/csu-hmc/opty.git@refs/pull/102/head
