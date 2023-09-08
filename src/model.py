@@ -61,8 +61,8 @@ def set_bicycle_model(data: DataStorage):
     system.u_ind = [bicycle.u[3], *bicycle.u[5:7]]
     system.u_dep = [*bicycle.u[:3], bicycle.u[4], bicycle.u[7]]
     if data.metadata.front_frame_suspension:
-        system.add_coordinates(bicycle.front_frame.q[0])
-        system.add_speeds(bicycle.front_frame.u[0])
+        system.add_coordinates(bicycle.front_frame.q[0], independent=True)
+        system.add_speeds(bicycle.front_frame.u[0], independent=True)
 
     # Simple check to see if the system is valid.
     system.validate_system()
@@ -90,7 +90,7 @@ def set_bicycle_model(data: DataStorage):
             constants[bicycle.front_frame.symbols["d3"]] / 2
         # Suspension spring and damper constants are the softest settings provided in:
         # http://dx.doi.org/10.13140/RG.2.2.26063.64162
-        constants[bicycle.front_frame.symbols["k"]] = 19.4E3
+        constants[bicycle.front_frame.symbols["k"]] = 19.4E3  # 42.6E3
         constants[bicycle.front_frame.symbols["c"]] = 9E3
 
     syms = get_all_symbols_from_model(bicycle_rider)
