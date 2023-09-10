@@ -118,15 +118,18 @@ def generate_initial_guess(data: DataStorage, initial_state_constraints,
                            final_state_constraints) -> npt.NDArray[np.float64]:
     system, bicycle, constants = data.system, data.bicycle, data.constants
 
+    d_long = data.metadata.longitudinal_displacement
+    d_lat = data.metadata.lateral_displacement
+    d_tot = np.sqrt(d_long ** 2 + d_lat ** 2)
     p, p_vals = zip(*constants.items())
-    vel_mean = data.metadata.longitudinal_displacement / data.metadata.duration
+    vel_mean = d_tot / data.metadata.duration
     rr = data.constants[data.bicycle.rear_wheel.radius]
 
     #####################
     # Solve initial state
     #####################
     x0 = np.array([initial_state_constraints.get(xi, 0.0) for xi in data.x])
-    x0[data.x[:].index(bicycle.q[1])] = data.metadata.lateral_displacement / 2
+    x0[data.x[:].index(bicycle.q[2])] = np.arctan2(d_lat, d_long)
     x0[data.x[:].index(bicycle.u[0])] = vel_mean
     x0[data.x[:].index(bicycle.u[5])] = -vel_mean / rr
 
@@ -147,8 +150,7 @@ def generate_initial_guess(data: DataStorage, initial_state_constraints,
     u0_dep_guess = x0[-len(system.u_dep):]
     q0_dep = fsolve(
         eval_configuration_constraints, q0_dep_guess, args=(q0_ind, p_vals))
-    print(len(system.u_dep), len(system.u_ind), len(system.q), len(p))
-    print(len(u0_dep_guess), len(u0_ind), len(q0), len(p_vals))
+
     eval_velocity_constraints(u0_dep_guess, u0_ind, q0, p_vals)
     u0_dep = fsolve(
         eval_velocity_constraints, u0_dep_guess, args=(u0_ind, q0, p_vals))
@@ -167,7 +169,8 @@ def generate_initial_guess(data: DataStorage, initial_state_constraints,
 
     # Extrapolate initial state guess.
     xf = np.concatenate((q0_ind, q0_dep, u0_ind, u0_dep))
-    xf[data.x[:].index(bicycle.q[0])] = data.metadata.longitudinal_displacement
+    xf[data.x[:].index(bicycle.q[0])] = d_long
+    xf[data.x[:].index(bicycle.q[1])] = d_lat
     x_arr = np.zeros([len(data.x), data.metadata.num_nodes])
     for i in range(x_arr.shape[0]):
         x_arr[i, :] = (np.linspace(x0[i], xf[i], data.metadata.num_nodes)
