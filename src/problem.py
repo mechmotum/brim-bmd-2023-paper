@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import numpy as np
+import sympy as sm
 import sympy.physics.mechanics as me
 from opty.direct_collocation import Problem
+from scipy.optimize import fsolve
 
-from container import DataStorage, SteerWith, ConstraintStorage
+from container import DataStorage, SteerWith, ConstraintStorage, ShoulderJointType
 from utils import create_objective_function, plot_constraint_violations
 
 # Corrected version from opty's ``Problem.plot_constraint_violations``.
@@ -16,6 +18,8 @@ def set_constraints(data: DataStorage) -> None:
     t = me.dynamicsymbols._t  # Time symbol.
     t0, tf = 0.0, data.metadata.duration  # Initial and final time.
     bicycle, rider = data.bicycle, data.rider
+    spherical_shoulders = (data.metadata.upper_body_bicycle_rider and
+                           data.metadata.shoulder_type is ShoulderJointType.SPHERICAL)
 
     initial_state_constraints = {
         bicycle.q[0]: 0.0,
@@ -30,11 +34,21 @@ def set_constraints(data: DataStorage) -> None:
         initial_state_constraints[bicycle.front_frame.q[0]] = 0.01  # Small compression.
         initial_state_constraints[bicycle.front_frame.u[0]] = 0.0
 
-    # Compute the initial pitch angle from the holonomic constraint.
-    q_ind = np.array([initial_state_constraints[qi] for qi in data.system.q_ind])
-    q_dep = data.simulator._solve_configuration_constraints(
-        q_ind, np.zeros(len(data.system.q_dep)))
-    initial_state_constraints.update(dict(zip(data.system.q_dep, q_dep)))
+    if not spherical_shoulders:
+        # Compute the initial pitch angle from the holonomic constraint.
+        q_ind = np.array([initial_state_constraints[qi] for qi in data.system.q_ind])
+        q_dep = data.simulator._solve_configuration_constraints(
+            q_ind, np.zeros(len(data.system.q_dep)))
+        initial_state_constraints.update(dict(zip(data.system.q_dep, q_dep)))
+    else:
+        p, p_vals = zip(*data.constants.items())
+        q_ind = [*bicycle.q[:4], *bicycle.q[5:]]
+        eval_hc = sm.lambdify(([bicycle.q[4]], q_ind, p),
+                              bicycle.front_tyre.system.holonomic_constraints, cse=True)
+        initial_state_constraints[bicycle.q[4]] = fsolve(
+            lambda *args: eval_hc(*args).ravel(), np.array([0.314]),
+            args=([initial_state_constraints[qi] for qi in q_ind], p_vals)
+        )[0]
 
     final_state_constraints = {
         bicycle.q[0]: data.metadata.longitudinal_displacement,
@@ -45,7 +59,7 @@ def set_constraints(data: DataStorage) -> None:
     }
     if not data.metadata.front_frame_suspension:
         final_state_constraints[bicycle.q[4]] = initial_state_constraints[bicycle.q[4]]
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.upper_body_bicycle_rider and not spherical_shoulders:
         for qi in (*rider.left_shoulder.q, *rider.right_shoulder.q,
                    *rider.left_arm.q, *rider.right_arm.q):
             final_state_constraints[qi] = initial_state_constraints[qi]
@@ -99,13 +113,20 @@ def set_constraints(data: DataStorage) -> None:
             rider.left_shoulder.q[0]: (-1.0, 1.0),
             rider.left_shoulder.q[1]: (-1.0, 1.0),
             rider.left_arm.q[0]: (0.0, 3.0),
-            rider.right_shoulder.u[0]: (-2.0, 2.0),
-            rider.right_shoulder.u[1]: (-2.0, 2.0),
-            rider.right_arm.u[0]: (-2.0, 2.0),
-            rider.left_shoulder.u[0]: (-2.0, 2.0),
-            rider.left_shoulder.u[1]: (-2.0, 2.0),
-            rider.left_arm.u[0]: (-2.0, 2.0),
+            rider.right_shoulder.u[0]: (-10.0, 10.0),
+            rider.right_shoulder.u[1]: (-10.0, 10.0),
+            rider.right_arm.u[0]: (-10.0, 10.0),
+            rider.left_shoulder.u[0]: (-10.0, 10.0),
+            rider.left_shoulder.u[1]: (-10.0, 10.0),
+            rider.left_arm.u[0]: (-10.0, 10.0),
         })
+        if spherical_shoulders:
+            bounds.update({
+                rider.right_shoulder.q[2]: (-1.0, 1.0),
+                rider.left_shoulder.q[2]: (-1.0, 1.0),
+                rider.right_shoulder.u[2]: (-10.0, 10.0),
+                rider.left_shoulder.u[2]: (-10.0, 10.0),
+            })
     if data.metadata.steer_with is SteerWith.PEDAL_STEER_TORQUE:
         bounds.update({
             data.input_vars[0]: (-10.0, 10.0),

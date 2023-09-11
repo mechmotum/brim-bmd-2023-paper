@@ -20,10 +20,19 @@ class SteerWith(Enum):
     HUMAN_TORQUE = auto()
 
 
+@unique
+class ShoulderJointType(Enum):
+    """Enumeration of options for the shoulder joint."""
+    FLEX_ROT = auto()
+    FLEX_ADD = auto()
+    SPHERICAL = auto()
+
+
 @dataclass(frozen=True)
 class Metadata:
     front_frame_suspension: bool
     upper_body_bicycle_rider: bool
+    shoulder_type: ShoulderJointType
     steer_with: SteerWith
     parameter_data_dir: str
     bicycle_parametrization: str

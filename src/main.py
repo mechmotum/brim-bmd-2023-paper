@@ -4,8 +4,9 @@ import os
 
 import cloudpickle as cp
 import matplotlib.pyplot as plt
+import numpy as np
 
-from container import DataStorage, Metadata, SteerWith
+from container import DataStorage, Metadata, SteerWith, ShoulderJointType
 from model import set_bicycle_model, set_simulator
 from problem import set_problem, set_constraints, set_initial_guess
 from utils import create_time_lapse, create_animation, create_plots
@@ -26,6 +27,7 @@ weight = path_weight / (control_weight + path_weight)
 METADATA = Metadata(
     front_frame_suspension=False,
     upper_body_bicycle_rider=True,
+    shoulder_type=ShoulderJointType.FLEX_ROT,
     steer_with=SteerWith.PEDAL_STEER_TORQUE,
     parameter_data_dir=data_dir,
     bicycle_parametrization="Browser",
@@ -44,7 +46,7 @@ with open(os.path.join(result_dir, "README.md"), "w") as f:
     {METADATA}
     """)
 data = DataStorage(METADATA)
-REUSE_LAST_MODEL = True
+REUSE_LAST_MODEL = False
 if REUSE_LAST_MODEL and os.path.exists("last_model.pkl"):
     print("Reloading last model...")
     with open("last_model.pkl", "rb") as f:
