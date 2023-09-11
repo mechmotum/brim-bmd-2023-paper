@@ -4,11 +4,11 @@ channels:
 dependencies:
   - python >=3.9,<3.12
   - pip
-  - bicycleparameters
   - cloudpickle
   - cyipopt
   - scikits.odes
   - pip:
+      - git+https://github.com/moorepants/BicycleParameters.git
       - git+https://github.com/TJStienstra/brim.git
       - git+https://github.com/TJStienstra/symmeplot.git
       - git+https://github.com/csu-hmc/opty.git@refs/pull/102/head
