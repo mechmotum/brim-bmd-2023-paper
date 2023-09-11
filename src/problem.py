@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import numpy as np
 import numpy.typing as npt
-import sympy as sm
 import sympy.physics.mechanics as me
 from opty.direct_collocation import Problem
-from scipy.optimize import fsolve
 
 from container import DataStorage, SteerWith
+from simulator import Simulator
 from utils import create_objective_function, plot_constraint_violations
 
 # Corrected version from opty's ``Problem.plot_constraint_violations``.
@@ -92,6 +91,9 @@ def set_problem(data: DataStorage) -> None:
                       (1 - data.metadata.weight) * sum(i ** 2 for i in data.input_vars))
     print("Objective function:", objective_expr)
 
+    data.initial_guess = generate_initial_guess(data, initial_state_constraints,
+                                                final_state_constraints)
+
     obj, obj_grad = create_objective_function(data, objective_expr)
 
     problem = Problem(
@@ -110,71 +112,44 @@ def set_problem(data: DataStorage) -> None:
     problem.add_option('nlp_scaling_method', 'gradient-based')
 
     data.problem = problem
-    data.initial_guess = generate_initial_guess(data, initial_state_constraints,
-                                                final_state_constraints)
 
 
 def generate_initial_guess(data: DataStorage, initial_state_constraints,
                            final_state_constraints) -> npt.NDArray[np.float64]:
-    system, bicycle, constants = data.system, data.bicycle, data.constants
-
     d_long = data.metadata.longitudinal_displacement
     d_lat = data.metadata.lateral_displacement
     d_tot = np.sqrt(d_long ** 2 + d_lat ** 2)
-    p, p_vals = zip(*constants.items())
-    vel_mean = d_tot / data.metadata.duration
+    diagonal = False
+    if diagonal:
+        vel_mean = d_tot / data.metadata.duration
+        angle = np.arctan2(d_lat, d_long)
+        q20 = 0.0
+    else:
+        vel_mean = d_long / data.metadata.duration
+        angle = 0.0
+        q20 = d_lat / 2
     rr = data.constants[data.bicycle.rear_wheel.radius]
 
-    #####################
-    # Solve initial state
-    #####################
-    x0 = np.array([initial_state_constraints.get(xi, 0.0) for xi in data.x])
-    x0[data.x[:].index(bicycle.q[2])] = np.arctan2(d_lat, d_long)
-    x0[data.x[:].index(bicycle.u[0])] = vel_mean
-    x0[data.x[:].index(bicycle.u[5])] = -vel_mean / rr
+    simulator = Simulator(data.system)
+    simulator.initial_conditions = {
+        **{xi: initial_state_constraints.get(xi, 0.0)
+           for xi in data.x},
+        data.bicycle.u[0]: vel_mean * np.cos(angle),
+        data.bicycle.u[1]: vel_mean * np.sin(angle),
+        data.bicycle.q[1]: q20,
+        data.bicycle.q[2]: angle,
+        data.bicycle.u[5]: -vel_mean / rr,
+        data.bicycle.u[7]: -vel_mean / rr,
+    }
+    simulator.initial_conditions.update(
+        {xi: np.random.rand() * 1E-8
+         for xi, x_val in simulator.initial_conditions.items() if x_val == 0.0})
+    simulator.constants = data.constants
+    simulator.inputs = {ri: lambda t, x: 0.0 for ri in data.input_vars}
+    simulator.initialize(False)
+    t_arr, x_arr = simulator.solve(
+        np.linspace(0, data.metadata.duration, data.metadata.num_nodes), "dae",
+        rtol=1e-3, atol=1e-6)
 
-    qdot_to_u = system.eom_method.kindiffdict()
-    velocity_constraints = me.msubs(
-        system.holonomic_constraints.diff(me.dynamicsymbols._t).col_join(
-            system.nonholonomic_constraints), qdot_to_u)
-    eval_configuration_constraints = sm.lambdify(
-        (system.q_dep, system.q_ind, p), system.holonomic_constraints[:], cse=True)
-    eval_velocity_constraints = sm.lambdify(
-        (system.u_dep, system.u_ind, system.q, p),
-        velocity_constraints[:], cse=True)
-
-    q0 = x0[:len(system.q)]
-    q0_ind = q0[:len(system.q_ind)]
-    q0_dep_guess = q0[len(system.q_ind):]
-    u0_ind = x0[len(system.q):-len(system.u_dep)]
-    u0_dep_guess = x0[-len(system.u_dep):]
-    q0_dep = fsolve(
-        eval_configuration_constraints, q0_dep_guess, args=(q0_ind, p_vals))
-
-    eval_velocity_constraints(u0_dep_guess, u0_ind, q0, p_vals)
-    u0_dep = fsolve(
-        eval_velocity_constraints, u0_dep_guess, args=(u0_ind, q0, p_vals))
-    x0 = np.concatenate((q0_ind, q0_dep, u0_ind, u0_dep))
-
-    # TODO Perform simulation
-    # eval_eoms = sm.lambdify((data.x.diff(), data.x, p), data.eoms[:], cse=True)
-    # def eqsres(t, x, xd, residual):
-    #     residual[:] = eval_eoms(xd, x, p_vals)
-    # xd0 = fsolve(eval_eoms, x0, args=(x0, p_vals))
-    # dae_solver = dae('ida', eqsres,
-    #                  algebraic_vars_idx=range(len(q0_ind) + len(u0_ind), len(x0)),
-    #                  old_api=False)
-    # sol = dae_solver.solve(
-    #     np.linspace(0, data.metadata.duration, data.metadata.num_nodes), x0, xd0)
-
-    # Extrapolate initial state guess.
-    xf = np.concatenate((q0_ind, q0_dep, u0_ind, u0_dep))
-    xf[data.x[:].index(bicycle.q[0])] = d_long
-    xf[data.x[:].index(bicycle.q[1])] = d_lat
-    x_arr = np.zeros([len(data.x), data.metadata.num_nodes])
-    for i in range(x_arr.shape[0]):
-        x_arr[i, :] = (np.linspace(x0[i], xf[i], data.metadata.num_nodes)
-                       )  # + np.random.normal(0.0, 0.01, data.metadata.num_nodes))
     return np.concatenate(
-        (x_arr.flatten(),
-         0.0 * np.ones(len(data.input_vars) * data.metadata.num_nodes)))
+        (x_arr.ravel(), np.zeros(len(data.input_vars) * data.metadata.num_nodes)))
