@@ -44,20 +44,20 @@ with open(os.path.join(result_dir, "README.md"), "w") as f:
     {METADATA}
     """)
 data = DataStorage(METADATA)
-USE_PICKLED_DATA = False
-if USE_PICKLED_DATA and os.path.exists("data.pkl"):
-    print("Reloading data...")
-    with open("data.pkl", "rb") as f:
+REUSE_LAST_MODEL = True
+if REUSE_LAST_MODEL and os.path.exists("last_model.pkl"):
+    print("Reloading last model...")
+    with open("last_model.pkl", "rb") as f:
         data = cp.load(f)
 else:
     print("Computing the equations of motion...")
     set_bicycle_model(data)
     print("Initializing the simulator...")
     set_simulator(data)
-    print("Defining the constraints and objective...")
-    set_constraints(data)
-    with open("data.pkl", "wb") as f:
+    with open("last_model.pkl", "wb") as f:
         cp.dump(data, f)
+print("Defining the constraints and objective...")
+set_constraints(data)
 print("Making an initial guess...")
 set_initial_guess(data)
 print("Initializing the Problem object...")
