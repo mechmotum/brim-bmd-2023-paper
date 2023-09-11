@@ -33,14 +33,10 @@ def set_constraints(data: DataStorage) -> None:
         initial_state_constraints[bicycle.front_frame.u[0]] = 0.0
 
     # Compute the initial pitch angle from the holonomic constraint.
-    p, p_vals = zip(*data.constants.items())
-    q_ind = [*bicycle.q[:4], *bicycle.q[5:]]
-    eval_hc = sm.lambdify(([bicycle.q[4]], q_ind, p),
-                          bicycle.front_tyre.system.holonomic_constraints, cse=True)
-    initial_state_constraints[bicycle.q[4]] = fsolve(
-        lambda *args: eval_hc(*args).ravel(), np.array([0.314]),
-        args=([initial_state_constraints[qi] for qi in q_ind], p_vals)
-    )[0]
+    q_ind = np.array([initial_state_constraints[qi] for qi in data.system.q_ind])
+    q_dep = data.simulator._solve_configuration_constraints(
+        q_ind, np.zeros(len(data.system.q_dep)))
+    initial_state_constraints.update(dict(zip(data.system.q_dep, q_dep)))
 
     final_state_constraints = {
         bicycle.q[0]: data.metadata.longitudinal_displacement,
@@ -49,9 +45,14 @@ def set_constraints(data: DataStorage) -> None:
         bicycle.q[3]: 0.0,
         bicycle.q[6]: 0.0,
     }
+    if not data.metadata.front_frame_suspension:
+        final_state_constraints[bicycle.q[4]] = initial_state_constraints[bicycle.q[4]]
+    if data.metadata.upper_body_bicycle_rider:
+        for qi in (*rider.left_shoulder.q, *rider.right_shoulder.q,
+                   *rider.left_arm.q, *rider.right_arm.q):
+            final_state_constraints[qi] = initial_state_constraints[qi]
 
     instance_constraints = (
-        bicycle.q[4].replace(t, t0) - bicycle.q[4].replace(t, tf),  # Periodic pitch.
         # Periodic velocities.
         bicycle.u[0].replace(t, t0) - bicycle.u[0].replace(t, tf),
         bicycle.u[1].replace(t, t0) + bicycle.u[1].replace(t, tf),
@@ -150,11 +151,11 @@ def set_initial_guess(data: DataStorage) -> None:
     if diagonal:
         vel_mean = d_tot / data.metadata.duration
         angle = np.arctan2(d_lat, d_long)
-        q20 = 0.0
+        q2_0 = 0.0
     else:
         vel_mean = d_long / data.metadata.duration
         angle = 0.0
-        q20 = d_lat / 2
+        q2_0 = d_lat / 2
     rr = data.constants[data.bicycle.rear_wheel.radius]
 
     data.simulator.initial_conditions = {
@@ -162,29 +163,24 @@ def set_initial_guess(data: DataStorage) -> None:
            for xi in data.x},
         data.bicycle.u[0]: vel_mean * np.cos(angle),
         data.bicycle.u[1]: vel_mean * np.sin(angle),
-        data.bicycle.q[1]: q20,
+        data.bicycle.q[1]: q2_0,
         data.bicycle.q[2]: angle,
         data.bicycle.u[5]: -vel_mean / rr,
         data.bicycle.u[7]: -vel_mean / rr,
         # Some initial guesses for the arm angles.
-        data.rider.left_arm.q[0]: 0.5,
-        data.rider.right_arm.q[0]: 0.5,
-        data.rider.left_shoulder.q[0]: 0.6,
-        data.rider.left_shoulder.q[1]: -0.2,
-        data.rider.left_shoulder.q[2]: -0.3,
-        data.rider.right_shoulder.q[0]: 0.6,
-        data.rider.right_shoulder.q[1]: -0.2,
-        data.rider.right_shoulder.q[2]: -0.3,
+        data.rider.left_arm.q[0]: 0.7,
+        data.rider.right_arm.q[0]: 0.7,
+        data.rider.left_shoulder.q[0]: 0.5,
+        data.rider.left_shoulder.q[1]: -0.6,
+        data.rider.right_shoulder.q[0]: 0.5,
+        data.rider.right_shoulder.q[1]: -0.6,
     }
-    data.simulator.initial_conditions.update(
-        {xi: np.random.rand() * 1E-8
-         for xi, x_val in data.simulator.initial_conditions.items() if x_val == 0.0})
-    # t_arr, x_arr = data.simulator.solve(
-    #     np.linspace(0, data.metadata.duration, data.metadata.num_nodes), "dae",
-    #     rtol=1e-3, atol=1e-6)
     t_arr, x_arr = data.simulator.solve(
-        (0, data.metadata.duration), "solve_ivp",
-        t_eval=np.linspace(0, data.metadata.duration, data.metadata.num_nodes))
+        np.linspace(0, data.metadata.duration, data.metadata.num_nodes), "dae",
+        rtol=1e-3, atol=1e-6)
+    # t_arr, x_arr = data.simulator.solve(
+    #     (0, data.metadata.duration), "solve_ivp",
+    #     t_eval=np.linspace(0, data.metadata.duration, data.metadata.num_nodes))
 
     data.initial_guess = np.concatenate(
         (x_arr.ravel(), np.zeros(len(data.input_vars) * data.metadata.num_nodes)))
