@@ -6,8 +6,8 @@ import cloudpickle as cp
 import matplotlib.pyplot as plt
 
 from container import DataStorage, Metadata, SteerWith
-from model import set_bicycle_model
-from problem import set_problem
+from model import set_bicycle_model, set_simulator
+from problem import set_problem, set_constraints, set_initial_guess
 from utils import create_time_lapse, create_animation, create_plots
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -25,10 +25,11 @@ path_weight = 3 * 0.5 ** 2
 weight = path_weight / (control_weight + path_weight)
 METADATA = Metadata(
     front_frame_suspension=False,
-    upper_body_bicycle_rider=False,
+    upper_body_bicycle_rider=True,
     steer_with=SteerWith.PEDAL_STEER_TORQUE,
     parameter_data_dir=data_dir,
-    bicycle_parametrization="Fisher",
+    bicycle_parametrization="Browser",
+    rider_parametrization="Jason",
     duration=2.0,
     longitudinal_displacement=10.0,
     lateral_displacement=1.0,
@@ -42,24 +43,28 @@ with open(os.path.join(result_dir, "README.md"), "w") as f:
     ## Metadata
     {METADATA}
     """)
-REUSE_SOLUTION_AS_GUESS = False
 data = DataStorage(METADATA)
-set_bicycle_model(data)
-set_problem(data)
-if REUSE_SOLUTION_AS_GUESS:
+USE_PICKLED_DATA = False
+if USE_PICKLED_DATA and os.path.exists("data.pkl"):
+    print("Reloading data...")
     with open("data.pkl", "rb") as f:
-        data_old = cp.load(f)
-        N = METADATA.num_nodes
-        get_x = lambda d, xi: d.solution_state[d.x[:].index(xi), :]
-        get_r = lambda d, ri: d.solution_input[d.r[:].index(ri), :]
-        for i, xi in enumerate(data.x):
-            if xi in data_old.x:
-                data.initial_guess[i * N:(i + 1) * N] = get_x(data_old, xi)
-        for i, ri in enumerate(data.input_vars):
-            if ri in data_old.input_vars:
-                data.initial_guess[(len(data.x) + i) * N:(len(data.x) + i + 1) * N] = \
-                    get_r(data_old, ri)
+        data = cp.load(f)
+else:
+    print("Computing the equations of motion...")
+    set_bicycle_model(data)
+    print("Initializing the simulator...")
+    set_simulator(data)
+    print("Defining the constraints and objective...")
+    set_constraints(data)
+    with open("data.pkl", "wb") as f:
+        cp.dump(data, f)
+print("Making an initial guess...")
+set_initial_guess(data)
+print("Initializing the Problem object...")
+set_problem(data)
+print("Solving the problem...")
 data.solution, info = data.problem.solve(data.initial_guess)
+print("Plotting the results...")
 data.problem.plot_objective_value()
 data.problem.plot_trajectories(data.initial_guess)
 data.problem.plot_constraint_violations(data.solution)

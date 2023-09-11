@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sm
 import sympy.physics.mechanics as me
+from brim.core.base_classes import BrimBase
 from brim.utilities.plotting import Plotter
 from matplotlib.animation import FuncAnimation
 from scipy.interpolate import CubicSpline
 from symmeplot import PlotBody
-from brim.core.base_classes import BrimBase
 
 from container import DataStorage
 

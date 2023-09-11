@@ -4,6 +4,7 @@ import sympy as sm
 import sympy.physics.mechanics as me
 
 from container import SteerWith, DataStorage
+from simulator import Simulator
 from utils import get_all_symbols_from_model
 
 
@@ -26,14 +27,22 @@ def set_bicycle_model(data: DataStorage):
     bicycle_rider = bm.BicycleRider("bicycle_rider")
     bicycle_rider.bicycle = bicycle
 
+    if data.metadata.upper_body_bicycle_rider:
+        rider = bm.Rider("rider")
+        rider.pelvis = bm.PlanarPelvis("pelvis")
+        rider.torso = bm.PlanarTorso("torso")
+        rider.sacrum = bm.FixedSacrum("sacrum")
+        rider.left_arm = bm.PinElbowStickLeftArm("left_arm")
+        rider.right_arm = bm.PinElbowStickRightArm("right_arm")
+        rider.left_shoulder = bm.SphericalLeftShoulder("left_shoulder")
+        rider.right_shoulder = bm.SphericalRightShoulder("right_shoulder")
+        bicycle_rider.rider = rider
+        bicycle_rider.seat = bm.FixedSeat("seat")
+        bicycle_rider.hand_grips = bm.HolonomicHandGrips("hand_grips")
+
     # Define the model.
     bicycle_rider.define_connections()
     bicycle_rider.define_objects()
-    # bicycle.q[:, 0] = me.dynamicsymbols("q1:9")
-    # bicycle.u[:, 0] = me.dynamicsymbols("u1:9")
-    # if data.metadata.front_frame_suspension:
-    #     bicycle.front_frame.q[0, 0] = me.dynamicsymbols("q9")
-    #     bicycle.front_frame.u[0, 0] = me.dynamicsymbols("u9")
     bicycle_rider.define_kinematics()
     bicycle_rider.define_loads()
     bicycle_rider.define_constraints()
@@ -63,6 +72,19 @@ def set_bicycle_model(data: DataStorage):
     if data.metadata.front_frame_suspension:
         system.add_coordinates(bicycle.front_frame.q[0], independent=True)
         system.add_speeds(bicycle.front_frame.u[0], independent=True)
+    if data.metadata.upper_body_bicycle_rider:
+        system.add_coordinates(rider.left_shoulder.q[1], rider.right_shoulder.q[1],
+                               independent=True)
+        system.add_speeds(rider.left_shoulder.u[1], rider.right_shoulder.u[1],
+                          independent=True)
+        system.add_coordinates(rider.left_shoulder.q[0], rider.left_shoulder.q[2],
+                               rider.right_shoulder.q[0], rider.right_shoulder.q[2],
+                               rider.left_arm.q[0], rider.right_arm.q[0],
+                               independent=False)
+        system.add_speeds(rider.left_shoulder.u[0], rider.left_shoulder.u[2],
+                          rider.right_shoulder.u[0], rider.right_shoulder.u[2],
+                          rider.left_arm.u[0], rider.right_arm.u[0],
+                          independent=False)
 
     # Simple check to see if the system is valid.
     system.validate_system()
@@ -72,9 +94,11 @@ def set_bicycle_model(data: DataStorage):
         system.holonomic_constraints).col_join(system.nonholonomic_constraints)
 
     # Obtain constant parameters.
-    constants = bicycle.get_param_values(bp.Bicycle(
+    bicycle_params = bp.Bicycle(
         data.metadata.bicycle_parametrization,
-        pathToData=data.metadata.parameter_data_dir))
+        pathToData=data.metadata.parameter_data_dir)
+    bicycle_params.add_rider(data.metadata.rider_parametrization, reCalc=True)
+    constants = bicycle_rider.get_param_values(bicycle_params)
     constants[g] = 9.81
     if data.metadata.bicycle_parametrization == "Fisher":
         # Rough estimation of missing parameters, most are only used for visualization.
@@ -92,10 +116,14 @@ def set_bicycle_model(data: DataStorage):
         # http://dx.doi.org/10.13140/RG.2.2.26063.64162
         constants[bicycle.front_frame.symbols["k"]] = 19.4E3  # 42.6E3
         constants[bicycle.front_frame.symbols["c"]] = 9E3
+    if data.metadata.upper_body_bicycle_rider:
+        constants[bicycle_rider.seat.symbols["yaw"]] = 0
+        constants[bicycle_rider.seat.symbols["pitch"]] = -0.7
+        constants[bicycle_rider.seat.symbols["roll"]] = 0
 
     syms = get_all_symbols_from_model(bicycle_rider)
     missing_constants = syms.difference(constants.keys()).difference({
-        bicycle.symbols["gear_ratio"]})
+        bicycle.symbols["gear_ratio"], 0})
     if missing_constants:
         rear_constants_estimates = {
             bicycle.rear_frame.symbols["d4"]: 0.42,
@@ -125,7 +153,19 @@ def set_bicycle_model(data: DataStorage):
 
     data.bicycle_rider = bicycle_rider
     data.bicycle = bicycle
+    if data.metadata.upper_body_bicycle_rider:
+        data.rider = rider
     data.system = system
     data.eoms = eoms
     data.constants = constants
     data.input_vars = input_vars
+
+
+def set_simulator(data: DataStorage) -> None:
+    simulator = Simulator(data.system)
+    simulator.constants = data.constants
+    simulator.inputs = {ri: lambda t, x: 0.0 for ri in data.input_vars}
+    simulator.initial_conditions = {xi: 0.0 for xi in data.x}
+    simulator.initial_conditions[data.bicycle.q[4]] = 0.314
+    simulator.initialize(False)
+    data.simulator = simulator

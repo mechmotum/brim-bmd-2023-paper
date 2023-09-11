@@ -130,7 +130,7 @@ class Simulator:
             t, x, self._p_vals,
             np.array([cf(t, x) for cf in self._r_funcs], dtype=np.float64))
         return (mass_matrix.reshape((self._n_x, self._n_x)),
-                forcing.reshape((self._n_x, )))
+                forcing.reshape((self._n_x,)))
 
     def _solve_configuration_constraints(
             self, q_ind: npt.NDArray[np.float64], q_dep_guess: npt.NDArray[np.float64]

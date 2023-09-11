@@ -10,6 +10,8 @@ import sympy as sm
 from opty.direct_collocation import Problem
 from sympy.physics.mechanics._system import System
 
+from simulator import Simulator
+
 
 @unique
 class SteerWith(Enum):
@@ -25,6 +27,7 @@ class Metadata:
     steer_with: SteerWith
     parameter_data_dir: str
     bicycle_parametrization: str
+    rider_parametrization: str
     duration: float
     longitudinal_displacement: float
     lateral_displacement: float
@@ -35,6 +38,15 @@ class Metadata:
     @property
     def interval_value(self):
         return self.duration / (self.num_nodes - 1)
+
+
+@dataclass(frozen=True)
+class ConstraintStorage:
+    """Constraint storage object."""
+    initial_state_constraints: dict[sm.Basic, float]
+    final_state_constraints: dict[sm.Basic, float]
+    instance_constraints: tuple[sm.Expr, ...]
+    bounds: dict[sm.Basic, tuple[float, float]]
 
 
 @dataclass
@@ -48,24 +60,16 @@ class DataStorage:
     eoms: sm.ImmutableMatrix | None = None
     input_vars: sm.ImmutableMatrix | None = None
     constants: dict[sm.Basic, float] | None = None
-    problem: Problem | None = None
+    simulator: Simulator | None = None
+    objective_expr: sm.Expr | None = None
+    constraints: ConstraintStorage | None = None
     initial_guess: npt.NDArray[np.float_] | None = None
+    problem: Problem | None = None
     solution: npt.NDArray[np.float_] | None = None
 
     def __getstate__(self):
         # Problem cannot be pickled.
-        return dict(
-            metadata=self.metadata,
-            bicycle_rider=self.bicycle_rider,
-            bicycle=self.bicycle,
-            rider=self.rider,
-            system=self.system,
-            eoms=self.eoms,
-            input_vars=self.input_vars,
-            constants=self.constants,
-            initial_guess=self.initial_guess,
-            solution=self.solution,
-        )
+        return {k: v for k, v in self.__dict__.items() if k != 'problem'}
 
     def __setstate__(self, state):
         for key, value in state.items():
