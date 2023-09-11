@@ -170,14 +170,14 @@ class Simulator:
         for ui, u0i in zip(self.system.u, u0):
             self.initial_conditions[ui] = u0i
 
-    def initialize(self, check_parameters: bool = True) -> None:
+    def initialize(self, check_parameters: bool = False) -> None:
         """Initialize the simulator.
 
         Parameters
         ----------
         check_parameters : bool, optional
             Whether the constants and initial conditions should be checked for
-            consistency with the system, by default True.
+            consistency with the system, by default False.
         """
         if self._initialized:
             raise RuntimeError("Simulator has already been initialized.")
