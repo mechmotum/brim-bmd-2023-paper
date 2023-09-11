@@ -45,6 +45,12 @@ def set_bicycle_model(data: DataStorage):
     # Define the model.
     bicycle_rider.define_connections()
     bicycle_rider.define_objects()
+    if data.metadata.upper_body_bicycle_rider:
+        alpha = sm.Symbol("alpha")
+        int_frame = me.ReferenceFrame("int_frame")
+        int_frame.orient_axis(bicycle.rear_frame.saddle.frame, alpha,
+                              bicycle.rear_frame.wheel_hub.axis)
+        bicycle_rider.seat.rear_interframe = int_frame
     bicycle_rider.define_kinematics()
     bicycle_rider.define_loads()
     bicycle_rider.define_constraints()
@@ -113,13 +119,11 @@ def set_bicycle_model(data: DataStorage):
         constants[bicycle.front_frame.symbols["k"]] = 19.4E3  # 42.6E3
         constants[bicycle.front_frame.symbols["c"]] = 9E3
     if data.metadata.upper_body_bicycle_rider:
-        constants[bicycle_rider.seat.symbols["yaw"]] = 0
-        constants[bicycle_rider.seat.symbols["pitch"]] = -0.7
-        constants[bicycle_rider.seat.symbols["roll"]] = 0
+        constants[alpha] = -0.7
 
     syms = get_all_symbols_from_model(bicycle_rider)
     missing_constants = syms.difference(constants.keys()).difference({
-        bicycle.symbols["gear_ratio"], 0})
+        bicycle.symbols["gear_ratio"], 0, *bicycle_rider.seat.symbols.values()})
     if missing_constants:
         rear_constants_estimates = {
             bicycle.rear_frame.symbols["d4"]: 0.42,
