@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import numpy as np
-import sympy as sm
 import sympy.physics.mechanics as me
 from opty.direct_collocation import Problem
-from scipy.optimize import fsolve
 
 from container import DataStorage, SteerWith, ConstraintStorage
 from utils import create_objective_function, plot_constraint_violations
@@ -178,9 +176,11 @@ def set_initial_guess(data: DataStorage) -> None:
     t_arr, x_arr = data.simulator.solve(
         np.linspace(0, data.metadata.duration, data.metadata.num_nodes), "dae",
         rtol=1e-3, atol=1e-6)
-    # t_arr, x_arr = data.simulator.solve(
-    #     (0, data.metadata.duration), "solve_ivp",
-    #     t_eval=np.linspace(0, data.metadata.duration, data.metadata.num_nodes))
+    if t_arr[-1] != data.metadata.duration:
+        print("DAE integration failed, integrating with solve_ivp.")
+        t_arr, x_arr = data.simulator.solve(
+            (0, data.metadata.duration), "solve_ivp",
+            t_eval=np.linspace(0, data.metadata.duration, data.metadata.num_nodes))
 
     data.initial_guess = np.concatenate(
         (x_arr.ravel(), np.zeros(len(data.input_vars) * data.metadata.num_nodes)))
