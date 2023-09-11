@@ -1,5 +1,6 @@
 import bicycleparameters as bp
 import brim as bm
+import brim.rider as bmr
 import sympy as sm
 import sympy.physics.mechanics as me
 from scipy.optimize import fsolve
@@ -49,6 +50,11 @@ def set_bicycle_model(data: DataStorage):
         bicycle_rider.rider = rider
         bicycle_rider.seat = bm.FixedSeat("seat")
         bicycle_rider.hand_grips = bm.HolonomicHandGrips("hand_grips")
+        if data.metadata.steer_with == SteerWith.HUMAN_TORQUE:
+            let = bmr.PinElbowTorque("left_elbow_torque")
+            ret = bmr.PinElbowTorque("right_elbow_torque")
+            rider.left_arm.add_load_groups(let)
+            rider.right_arm.add_load_groups(ret)
 
     # Define the model.
     bicycle_rider.define_connections()
@@ -69,16 +75,21 @@ def set_bicycle_model(data: DataStorage):
     # Apply additional forces and torques to the system.
     g = sm.Symbol("g")
     system.apply_gravity(-g * bicycle.ground.get_normal(bicycle.ground.origin))
+    pedal_torque = me.dynamicsymbols("pedal_torque")
+    system.add_loads(
+        me.Torque(bicycle.rear_wheel.body,
+                  pedal_torque * bicycle.rear_wheel.rotation_axis)
+    )
+    input_vars = input_vars.col_join(sm.Matrix([pedal_torque]))
     if data.metadata.steer_with == SteerWith.PEDAL_STEER_TORQUE:
-        steer_torque, pedal_torque = me.dynamicsymbols("steer_torque pedal_torque")
+        steer_torque = me.dynamicsymbols("steer_torque")
         system.add_actuators(me.TorqueActuator(
             steer_torque, bicycle.rear_frame.steer_hub.axis,
             bicycle.front_frame.steer_hub.frame, bicycle.rear_frame.steer_hub.frame))
-        system.add_loads(
-            me.Torque(bicycle.rear_wheel.body,
-                      pedal_torque * bicycle.rear_wheel.rotation_axis)
-        )
-        input_vars = input_vars.col_join(sm.Matrix([steer_torque, pedal_torque]))
+        input_vars = input_vars.col_join(sm.Matrix([steer_torque]))
+    elif data.metadata.steer_with == SteerWith.HUMAN_TORQUE:
+        input_vars = input_vars.col_join(
+            sm.Matrix([let.symbols["T"], ret.symbols["T"]]))
 
     # Specify the independent and dependent generalized coordinates and speeds.
     system.q_ind = [*bicycle.q[:4], *bicycle.q[5:]]
@@ -121,7 +132,8 @@ def set_bicycle_model(data: DataStorage):
     bicycle_params = bp.Bicycle(
         data.metadata.bicycle_parametrization,
         pathToData=data.metadata.parameter_data_dir)
-    bicycle_params.add_rider(data.metadata.rider_parametrization, reCalc=True)
+    if data.metadata.upper_body_bicycle_rider:
+        bicycle_params.add_rider(data.metadata.rider_parametrization, reCalc=True)
     constants = bicycle_rider.get_param_values(bicycle_params)
     constants[g] = 9.81
     if data.metadata.bicycle_parametrization == "Fisher":
@@ -145,7 +157,10 @@ def set_bicycle_model(data: DataStorage):
 
     syms = get_all_symbols_from_model(bicycle_rider)
     missing_constants = syms.difference(constants.keys()).difference({
-        bicycle.symbols["gear_ratio"], 0, *bicycle_rider.seat.symbols.values()})
+        bicycle.symbols["gear_ratio"], 0})
+    if data.metadata.upper_body_bicycle_rider:
+        missing_constants = missing_constants.difference(
+            bicycle_rider.seat.symbols.values())
     if missing_constants:
         rear_constants_estimates = {
             bicycle.rear_frame.symbols["d4"]: 0.42,
@@ -173,36 +188,37 @@ def set_bicycle_model(data: DataStorage):
               f"{estimated_constants}.")
         constants.update(estimated_constants)
 
-    # Add the inertia of the legs to the rear frame
-    rear_body = bicycle.rear_frame.body
-    leg = bm.TwoPinStickLeftLeg("left_leg")
-    q_hip = me.dynamicsymbols("q_hip")
-    leg.define_all()
-    leg.hip_interframe.orient_axis(bicycle.rear_frame.saddle.frame, q_hip,
-                                   bicycle.rear_frame.wheel_hub.axis)
-    offset = rider.pelvis.symbols["hip_width"] * bicycle.rear_frame.saddle.frame.y
-    leg.hip_interpoint.set_pos(
-        rider.pelvis.left_hip_point,
-        rider.pelvis.right_hip_point.pos_from(rider.pelvis.left_hip_point) / 2)
-    val_dict = {leg.q[1]: 0, **leg.get_param_values(bicycle_params), **constants}
-    v = leg.foot_interpoint.pos_from(bicycle.rear_frame.bottom_bracket).to_matrix(
-        bicycle.rear_frame.wheel_hub.frame).xreplace(val_dict).simplify()
-    val_dict[q_hip], val_dict[leg.q[0]] = fsolve(
-        sm.lambdify([(q_hip, leg.q[0])], [v[0], v[2]]), (0.6, 1.5))
-    additional_inertia = me.Dyadic(0)
-    additional_mass = sm.S.Zero
-    for body in leg.system.bodies:
-        additional_inertia += 2 * body.parallel_axis(rear_body.masscenter)
-        additional_inertia += 2 * body.mass * (me.inertia(
-            rear_body.frame, 1, 1, 1) * offset.dot(offset) - offset.outer(offset))
-        additional_mass += 2 * body.mass
-    extra_i_vals = sm.lambdify(
-        val_dict.keys(), additional_inertia.to_matrix(rear_body.frame),
-        cse=True)(*val_dict.values())
-    i_rear = rear_body.central_inertia.to_matrix(rear_body.frame)
-    constants[rear_body.mass] += float(additional_mass.xreplace(val_dict))
-    for idx in [(0, 0), (1, 1), (2, 2), (2, 0)]:
-        constants[i_rear[idx]] += float(extra_i_vals[idx])
+    if data.metadata.upper_body_bicycle_rider:
+        # Add the inertia of the legs to the rear frame
+        rear_body = bicycle.rear_frame.body
+        leg = bm.TwoPinStickLeftLeg("left_leg")
+        q_hip = me.dynamicsymbols("q_hip")
+        leg.define_all()
+        leg.hip_interframe.orient_axis(bicycle.rear_frame.saddle.frame, q_hip,
+                                       bicycle.rear_frame.wheel_hub.axis)
+        offset = rider.pelvis.symbols["hip_width"] * bicycle.rear_frame.saddle.frame.y
+        leg.hip_interpoint.set_pos(
+            rider.pelvis.left_hip_point,
+            rider.pelvis.right_hip_point.pos_from(rider.pelvis.left_hip_point) / 2)
+        val_dict = {leg.q[1]: 0, **leg.get_param_values(bicycle_params), **constants}
+        v = leg.foot_interpoint.pos_from(bicycle.rear_frame.bottom_bracket).to_matrix(
+            bicycle.rear_frame.wheel_hub.frame).xreplace(val_dict).simplify()
+        val_dict[q_hip], val_dict[leg.q[0]] = fsolve(
+            sm.lambdify([(q_hip, leg.q[0])], [v[0], v[2]]), (0.6, 1.5))
+        additional_inertia = me.Dyadic(0)
+        additional_mass = sm.S.Zero
+        for body in leg.system.bodies:
+            additional_inertia += 2 * body.parallel_axis(rear_body.masscenter)
+            additional_inertia += 2 * body.mass * (me.inertia(
+                rear_body.frame, 1, 1, 1) * offset.dot(offset) - offset.outer(offset))
+            additional_mass += 2 * body.mass
+        extra_i_vals = sm.lambdify(
+            val_dict.keys(), additional_inertia.to_matrix(rear_body.frame),
+            cse=True)(*val_dict.values())
+        i_rear = rear_body.central_inertia.to_matrix(rear_body.frame)
+        constants[rear_body.mass] += float(additional_mass.xreplace(val_dict))
+        for idx in [(0, 0), (1, 1), (2, 2), (2, 0)]:
+            constants[i_rear[idx]] += float(extra_i_vals[idx])
 
     data.bicycle_rider = bicycle_rider
     data.bicycle = bicycle

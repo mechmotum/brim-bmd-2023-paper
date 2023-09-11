@@ -84,26 +84,26 @@ def set_constraints(data: DataStorage) -> None:
     bounds = {
         bicycle.q[0]: (-0.1, data.metadata.longitudinal_displacement + 0.1),
         bicycle.q[1]: (-0.1, data.metadata.lateral_displacement + 0.1),
-        bicycle.q[2]: (-1.0, 1.0),
-        bicycle.q[3]: (-1.0, 1.0),
-        bicycle.q[4]: (-1.0, 1.0),
+        bicycle.q[2]: (-1.5, 1.5),
+        bicycle.q[3]: (-1.5, 1.5),
+        bicycle.q[4]: (-1.5, 1.5),
         bicycle.q[5]: (-100.0, 100.0),
-        bicycle.q[6]: (-1.0, 1.0),
+        bicycle.q[6]: (-1.5, 1.5),
         bicycle.q[7]: (-100.0, 100.0),
         bicycle.u[0]: (0.0, 10.0),
         bicycle.u[1]: (-5.0, 5.0),
-        bicycle.u[2]: (-2.0, 2.0),
-        bicycle.u[3]: (-2.0, 2.0),
-        bicycle.u[4]: (-2.0, 2.0),
+        bicycle.u[2]: (-5.0, 5.0),
+        bicycle.u[3]: (-5.0, 5.0),
+        bicycle.u[4]: (-5.0, 5.0),
         bicycle.u[5]: (-20.0, 0.0),
-        bicycle.u[6]: (-2.0, 2.0),
+        bicycle.u[6]: (-5.0, 5.0),
         bicycle.u[7]: (-20.0, 0.0),
     }
 
     if data.metadata.front_frame_suspension:
         bounds.update({
-            bicycle.front_frame.q[0]: (-0.1, 0.1),
-            bicycle.front_frame.u[0]: (-5.0, 5.0),
+            bicycle.front_frame.q[0]: (-0.2, 0.2),
+            bicycle.front_frame.u[0]: (-10.0, 10.0),
         })
     if data.metadata.upper_body_bicycle_rider:
         bounds.update({
@@ -129,8 +129,8 @@ def set_constraints(data: DataStorage) -> None:
             })
     if data.metadata.steer_with is SteerWith.PEDAL_STEER_TORQUE:
         bounds.update({
-            data.input_vars[0]: (-10.0, 10.0),
-            data.input_vars[1]: (-1.0, 1.0),  # Limit pedal torque for persistence.
+            data.input_vars[0]: (-1.0, 1.0),
+            data.input_vars[1]: (-10.0, 10.0),  # Limit pedal torque for persistence.
         })
 
     data.objective_expr = (
@@ -186,14 +186,18 @@ def set_initial_guess(data: DataStorage) -> None:
         data.bicycle.q[2]: angle,
         data.bicycle.u[5]: -vel_mean / rr,
         data.bicycle.u[7]: -vel_mean / rr,
-        # Some initial guesses for the arm angles.
-        data.rider.left_arm.q[0]: 0.7,
-        data.rider.right_arm.q[0]: 0.7,
-        data.rider.left_shoulder.q[0]: 0.5,
-        data.rider.left_shoulder.q[1]: -0.6,
-        data.rider.right_shoulder.q[0]: 0.5,
-        data.rider.right_shoulder.q[1]: -0.6,
     }
+    if data.metadata.upper_body_bicycle_rider:
+        data.simulator.initial_conditions = {
+            **data.simulator.initial_conditions,
+            # Some initial guesses for the arm angles.
+            data.rider.left_arm.q[0]: 0.7,
+            data.rider.right_arm.q[0]: 0.7,
+            data.rider.left_shoulder.q[0]: 0.5,
+            data.rider.left_shoulder.q[1]: -0.6,
+            data.rider.right_shoulder.q[0]: 0.5,
+            data.rider.right_shoulder.q[1]: -0.6,
+        }
     t_arr, x_arr = data.simulator.solve(
         np.linspace(0, data.metadata.duration, data.metadata.num_nodes), "dae",
         rtol=1e-3, atol=1e-6)
