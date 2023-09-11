@@ -132,7 +132,7 @@ def set_problem(data: DataStorage) -> None:
         known_parameter_map=data.constants,
         instance_constraints=data.constraints.instance_constraints,
         bounds=data.constraints.bounds,
-        integration_method='midpoint',
+        integration_method='backward euler',
     )
 
     problem.add_option('nlp_scaling_method', 'gradient-based')

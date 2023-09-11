@@ -25,12 +25,12 @@ control_weight = 3 * mean_tracking_error ** 2
 path_weight = 3 * 0.5 ** 2
 weight = path_weight / (control_weight + path_weight)
 METADATA = Metadata(
-    front_frame_suspension=True,
-    upper_body_bicycle_rider=False,
-    shoulder_type=ShoulderJointType.SPHERICAL,
+    front_frame_suspension=False,
+    upper_body_bicycle_rider=True,
+    shoulder_type=ShoulderJointType.FLEX_ROT,
     steer_with=SteerWith.PEDAL_STEER_TORQUE,
     parameter_data_dir=data_dir,
-    bicycle_parametrization="Fisher",
+    bicycle_parametrization="Browser",
     rider_parametrization="Jason",
     duration=2.0,
     longitudinal_displacement=10.0,
@@ -68,7 +68,7 @@ print("Solving the problem...")
 data.solution, info = data.problem.solve(data.initial_guess)
 print("Plotting the results...")
 data.problem.plot_objective_value()
-data.problem.plot_trajectories(data.initial_guess)
+data.problem.plot_trajectories(data.solution)
 data.problem.plot_constraint_violations(data.solution)
 with open(os.path.join(result_dir, "data.pkl"), "wb") as f:
     cp.dump(data, f)
