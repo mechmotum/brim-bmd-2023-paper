@@ -107,8 +107,14 @@ def set_constraints(data: DataStorage) -> None:
             })
     if data.metadata.steer_with is SteerWith.PEDAL_STEER_TORQUE:
         bounds.update({
-            data.input_vars[0]: (-1.0, 1.0),
-            data.input_vars[1]: (-10.0, 10.0),  # Limit pedal torque for persistence.
+            data.input_vars[0]: (-10.0, 10.0),
+            data.input_vars[1]: (-10.0, 10.0),
+        })
+    elif data.metadata.steer_with is SteerWith.HUMAN_TORQUE:
+        bounds.update({
+            data.input_vars[0]: (-10.0, 10.0),
+            data.input_vars[1]: (-10.0, 10.0),
+            data.input_vars[2]: (-10.0, 10.0),
         })
 
     data.objective_expr = (

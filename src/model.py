@@ -157,7 +157,7 @@ def set_bicycle_model(data: DataStorage):
 
     syms = get_all_symbols_from_model(bicycle_rider)
     missing_constants = syms.difference(constants.keys()).difference({
-        bicycle.symbols["gear_ratio"], 0})
+        bicycle.symbols["gear_ratio"], 0, *input_vars})
     if data.metadata.upper_body_bicycle_rider:
         missing_constants = missing_constants.difference(
             bicycle_rider.seat.symbols.values())
@@ -188,9 +188,10 @@ def set_bicycle_model(data: DataStorage):
               f"{estimated_constants}.")
         constants.update(estimated_constants)
 
+    # Include missing rider mass into the rear frame
+    rear_body = bicycle.rear_frame.body
     if data.metadata.upper_body_bicycle_rider:
         # Add the inertia of the legs to the rear frame
-        rear_body = bicycle.rear_frame.body
         leg = bm.TwoPinStickLeftLeg("left_leg")
         q_hip = me.dynamicsymbols("q_hip")
         leg.define_all()
