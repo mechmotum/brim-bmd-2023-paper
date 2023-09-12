@@ -7,11 +7,11 @@ from brim.utilities.parametrize import get_inertia_vals
 from dtk.bicycle import benchmark_to_moore
 from scipy.optimize import fsolve
 
-from brim_extra import (FlexRotLeftShoulder, FlexRotRightShoulder,
-                        FlexAddLeftShoulder, FlexAddRightShoulder)
-from container import SteerWith, DataStorage, ShoulderJointType
-from simulator import Simulator
-from utils import get_all_symbols_from_model
+from .brim_extra import (FlexRotLeftShoulder, FlexRotRightShoulder,
+                         FlexAddLeftShoulder, FlexAddRightShoulder)
+from .container import SteerWith, DataStorage, ShoulderJointType
+from .simulator import Simulator
+from .utils import get_all_symbols_from_model
 
 
 def set_bicycle_model(data: DataStorage):

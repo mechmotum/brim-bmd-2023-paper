@@ -15,7 +15,7 @@ from matplotlib.animation import FuncAnimation
 from scipy.interpolate import CubicSpline
 from symmeplot import PlotBody
 
-from container import DataStorage
+from .container import DataStorage
 
 
 class EnumAction(argparse.Action):

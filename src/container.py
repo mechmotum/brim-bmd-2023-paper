@@ -10,7 +10,7 @@ import sympy as sm
 from opty.direct_collocation import Problem
 from sympy.physics.mechanics._system import System
 
-from simulator import Simulator
+from .simulator import Simulator
 
 
 @unique
