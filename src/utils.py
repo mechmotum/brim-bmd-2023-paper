@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from copy import copy
 
 import matplotlib.pyplot as plt
@@ -13,6 +14,25 @@ from scipy.interpolate import CubicSpline
 from symmeplot import PlotBody
 
 from container import DataStorage
+
+
+class NumpyEncoder(json.JSONEncoder):
+    """Special json encoder for numpy types.
+
+    Source: https://stackoverflow.com/a/49677241/20185124
+    """
+
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        try:
+            return json.JSONEncoder.default(self, obj)
+        except TypeError:
+            return str(obj)
 
 
 def get_all_symbols_from_model(brim_obj: BrimBase) -> set[sm.Symbol]:
