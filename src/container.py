@@ -59,6 +59,8 @@ class Metadata:
             elif self.steer_with is SteerWith.HUMAN_TORQUE:
                 raise ValueError(
                     "Cannot have no model_upper_body and a human torque input.")
+        if self.weight < 0 or self.weight > 1:
+            raise ValueError("Weight must be between 0 and 1.")
 
     @property
     def interval_value(self):
