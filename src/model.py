@@ -3,13 +3,15 @@ import brim as bm
 import brim.rider as bmr
 import sympy as sm
 import sympy.physics.mechanics as me
+from brim.utilities.parametrize import get_inertia_vals
+from dtk.bicycle import benchmark_to_moore
 from scipy.optimize import fsolve
 
+from brim_extra import (FlexRotLeftShoulder, FlexRotRightShoulder,
+                        FlexAddLeftShoulder, FlexAddRightShoulder)
 from container import SteerWith, DataStorage, ShoulderJointType
 from simulator import Simulator
 from utils import get_all_symbols_from_model
-from brim_extra import (FlexRotLeftShoulder, FlexRotRightShoulder,
-                        FlexAddLeftShoulder, FlexAddRightShoulder)
 
 
 def set_bicycle_model(data: DataStorage):
@@ -31,7 +33,7 @@ def set_bicycle_model(data: DataStorage):
     bicycle_rider = bm.BicycleRider("bicycle_rider")
     bicycle_rider.bicycle = bicycle
 
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.model_upper_body:
         rider = bm.Rider("rider")
         rider.pelvis = bm.PlanarPelvis("pelvis")
         rider.torso = bm.PlanarTorso("torso")
@@ -59,7 +61,7 @@ def set_bicycle_model(data: DataStorage):
     # Define the model.
     bicycle_rider.define_connections()
     bicycle_rider.define_objects()
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.model_upper_body:
         alpha = sm.Symbol("alpha")
         int_frame = me.ReferenceFrame("int_frame")
         int_frame.orient_axis(bicycle.rear_frame.saddle.frame, alpha,
@@ -99,7 +101,7 @@ def set_bicycle_model(data: DataStorage):
     if data.metadata.front_frame_suspension:
         system.add_coordinates(bicycle.front_frame.q[0], independent=True)
         system.add_speeds(bicycle.front_frame.u[0], independent=True)
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.model_upper_body:
         if data.metadata.shoulder_type == ShoulderJointType.SPHERICAL:
             system.add_coordinates(rider.left_shoulder.q[1], rider.right_shoulder.q[1],
                                    independent=True)
@@ -132,19 +134,19 @@ def set_bicycle_model(data: DataStorage):
     bicycle_params = bp.Bicycle(
         data.metadata.bicycle_parametrization,
         pathToData=data.metadata.parameter_data_dir)
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.bicycle_parametrization == "Fisher":
+        bicycle_params.parameters["Measured"]["hbb"] = 0.3
+        bicycle_params.parameters["Measured"]["lcs"] = 0.44
+        bicycle_params.parameters["Measured"]["lsp"] = 0.22
+        bicycle_params.parameters["Measured"]["lst"] = 0.53
+        bicycle_params.parameters["Measured"]["lamst"] = 1.29
+        bicycle_params.parameters["Measured"]["whb"] = 0.6
+        bicycle_params.parameters["Measured"]["LhbR"] = 1.11
+        bicycle_params.parameters["Measured"]["LhbF"] = 0.65
+    if not data.metadata.bicycle_only:
         bicycle_params.add_rider(data.metadata.rider_parametrization, reCalc=True)
     constants = bicycle_rider.get_param_values(bicycle_params)
     constants[g] = 9.81
-    if data.metadata.bicycle_parametrization == "Fisher":
-        # Rough estimation of missing parameters, most are only used for visualization.
-        constants[bicycle.rear_frame.symbols["d4"]] = 0.41
-        constants[bicycle.rear_frame.symbols["d5"]] = -0.57
-        constants[bicycle.rear_frame.symbols["l_bbx"]] = 0.4
-        constants[bicycle.rear_frame.symbols["l_bbz"]] = 0.18
-        constants[bicycle.front_frame.symbols["d6"]] = 0.1
-        constants[bicycle.front_frame.symbols["d7"]] = 0.3
-        constants[bicycle.front_frame.symbols["d8"]] = -0.3
     if data.metadata.front_frame_suspension:
         constants[bicycle.front_frame.symbols["d9"]] = \
             constants[bicycle.front_frame.symbols["d3"]] / 2
@@ -152,13 +154,21 @@ def set_bicycle_model(data: DataStorage):
         # http://dx.doi.org/10.13140/RG.2.2.26063.64162
         constants[bicycle.front_frame.symbols["k"]] = 19.4E3  # 42.6E3
         constants[bicycle.front_frame.symbols["c"]] = 9E3
-    if data.metadata.upper_body_bicycle_rider:
-        constants[alpha] = -0.7
+    if data.metadata.model_upper_body:
+        approximate_alpha = -(bicycle_params.parameters["Benchmark"]["lam"] +
+                              bicycle_params.human.CFG["somersault"]).nominal_value
+        # The somersault angle is generally based on straight arms, therefore the value
+        # should be a bit higher to account for the bent arms and steering.
+        if data.metadata.bicycle_parametrization == "Browser":
+            offset = 0.125
+        else:
+            offset = 0.1
+        constants[alpha] = approximate_alpha - offset
 
     syms = get_all_symbols_from_model(bicycle_rider)
     missing_constants = syms.difference(constants.keys()).difference({
         bicycle.symbols["gear_ratio"], 0, *input_vars})
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.model_upper_body:
         missing_constants = missing_constants.difference(
             bicycle_rider.seat.symbols.values())
     if missing_constants:
@@ -174,7 +184,7 @@ def set_bicycle_model(data: DataStorage):
             bicycle.front_frame.symbols["d8"]: -0.37,
         }
 
-        if (data.metadata.upper_body_bicycle_rider and
+        if (data.metadata.model_upper_body and
                 missing_constants.difference(rear_constants_estimates.keys())):
             raise ValueError(f"Missing constants: {missing_constants}")
         elif missing_constants.difference(rear_constants_estimates.keys()).difference(
@@ -190,7 +200,7 @@ def set_bicycle_model(data: DataStorage):
 
     # Include missing rider mass into the rear frame
     rear_body = bicycle.rear_frame.body
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.model_upper_body:
         # Add the inertia of the legs to the rear frame
         leg = bm.TwoPinStickLeftLeg("left_leg")
         q_hip = me.dynamicsymbols("q_hip")
@@ -220,10 +230,19 @@ def set_bicycle_model(data: DataStorage):
         constants[rear_body.mass] += float(additional_mass.xreplace(val_dict))
         for idx in [(0, 0), (1, 1), (2, 2), (2, 0)]:
             constants[i_rear[idx]] += float(extra_i_vals[idx])
+    elif not data.metadata.bicycle_only:
+        params = bp.io.remove_uncertainties(bicycle_params.parameters["Benchmark"])
+        mop = benchmark_to_moore(params)
+        constants[rear_body.mass] = mop["mc"]
+        constants.update(get_inertia_vals(
+            rear_body, mop["ic11"], mop["ic22"], mop["ic33"], mop["ic12"],
+            mop["ic23"], mop["ic31"]))
+        constants[bicycle.rear_frame.symbols["l1"]] = mop["l1"]
+        constants[bicycle.rear_frame.symbols["l2"]] = mop["l2"]
 
     data.bicycle_rider = bicycle_rider
     data.bicycle = bicycle
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.model_upper_body:
         data.rider = rider
     data.system = system
     data.eoms = eoms

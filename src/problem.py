@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import numpy as np
-import sympy as sm
 import sympy.physics.mechanics as me
 from opty.direct_collocation import Problem
-from scipy.optimize import fsolve
 
 from container import DataStorage, SteerWith, ConstraintStorage, ShoulderJointType
 from utils import create_objective_function, plot_constraint_violations
@@ -18,8 +16,6 @@ def set_constraints(data: DataStorage) -> None:
     t = me.dynamicsymbols._t  # Time symbol.
     t0, tf = 0.0, data.metadata.duration  # Initial and final time.
     bicycle, rider = data.bicycle, data.rider
-    spherical_shoulders = (data.metadata.upper_body_bicycle_rider and
-                           data.metadata.shoulder_type is ShoulderJointType.SPHERICAL)
 
     initial_state_constraints = {
         bicycle.q[0]: 0.0,
@@ -83,7 +79,7 @@ def set_constraints(data: DataStorage) -> None:
             bicycle.front_frame.q[0]: (-0.2, 0.2),
             bicycle.front_frame.u[0]: (-10.0, 10.0),
         })
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.model_upper_body:
         bounds.update({
             rider.right_shoulder.q[0]: (-1.5, 1.5),
             rider.right_shoulder.q[1]: (-1.5, 1.5),
@@ -98,7 +94,7 @@ def set_constraints(data: DataStorage) -> None:
             rider.left_shoulder.u[1]: (-10.0, 10.0),
             rider.left_arm.u[0]: (-10.0, 10.0),
         })
-        if spherical_shoulders:
+        if data.metadata.shoulder_type is ShoulderJointType.SPHERICAL:
             bounds.update({
                 rider.right_shoulder.q[2]: (-1.5, 1.5),
                 rider.left_shoulder.q[2]: (-1.5, 1.5),
@@ -171,7 +167,7 @@ def set_initial_guess(data: DataStorage) -> None:
         data.bicycle.u[5]: -vel_mean / rr,
         data.bicycle.u[7]: -vel_mean / rr,
     }
-    if data.metadata.upper_body_bicycle_rider:
+    if data.metadata.model_upper_body:
         data.simulator.initial_conditions = {
             **data.simulator.initial_conditions,
             # Some initial guesses for the arm angles.

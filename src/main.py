@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import os
+import argparse
 
 import cloudpickle as cp
 import matplotlib.pyplot as plt
@@ -9,7 +11,7 @@ import numpy as np
 from container import DataStorage, Metadata, SteerWith, ShoulderJointType
 from model import set_bicycle_model, set_simulator
 from problem import set_problem, set_constraints, set_initial_guess
-from utils import create_time_lapse, create_animation, create_plots
+from utils import NumpyEncoder, create_time_lapse, create_animation, create_plots
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(current_dir, "data")
@@ -18,35 +20,35 @@ i = 0
 while os.path.exists(os.path.join(output_dir, f"result{i}")):
     i += 1
 result_dir = os.path.join(output_dir, f"result{i}")
-os.mkdir(result_dir)
 
+DURATION = 2.0
 mean_tracking_error = 0.01
-control_weight = 3 * mean_tracking_error ** 2
-path_weight = 3 * 0.5 ** 2
+mean_torque = 1
+control_weight = DURATION * mean_tracking_error ** 2
+path_weight = DURATION * mean_torque ** 2
 weight = path_weight / (control_weight + path_weight)
 METADATA = Metadata(
+    bicycle_only=False,
+    model_upper_body=True,
     front_frame_suspension=False,
-    upper_body_bicycle_rider=True,
     shoulder_type=ShoulderJointType.FLEX_ROT,
     steer_with=SteerWith.HUMAN_TORQUE,
     parameter_data_dir=data_dir,
     bicycle_parametrization="Browser",
     rider_parametrization="Jason",
-    duration=2.0,
+    duration=DURATION,
     longitudinal_displacement=10.0,
     lateral_displacement=1.0,
     straight_lengths=2.5,
     num_nodes=100,
     weight=weight,
 )
+if not os.path.exists(result_dir):
+    os.mkdir(result_dir)
 with open(os.path.join(result_dir, "README.md"), "w") as f:
-    f.write(f"""\
-    # Result {i}
-    ## Metadata
-    {METADATA}
-    """)
+    f.write(f"# Result {i}\n## Metadata\n{METADATA}\n")
 data = DataStorage(METADATA)
-REUSE_LAST_MODEL = False
+REUSE_LAST_MODEL = True
 if REUSE_LAST_MODEL and os.path.exists("last_model.pkl"):
     print("Reloading last model...")
     with open("last_model.pkl", "rb") as f:
@@ -66,10 +68,13 @@ print("Initializing the Problem object...")
 set_problem(data)
 print("Solving the problem...")
 data.solution, info = data.problem.solve(data.initial_guess)
+print("Mean torque:", np.abs(data.solution_input).mean())
 print("Plotting the results...")
 data.problem.plot_objective_value()
 data.problem.plot_trajectories(data.solution)
 data.problem.plot_constraint_violations(data.solution)
+with open(os.path.join(result_dir, "solution_info.txt"), "w", encoding="utf-8") as f:
+    json.dump(info, f, cls=NumpyEncoder)
 with open(os.path.join(result_dir, "data.pkl"), "wb") as f:
     cp.dump(data, f)
 create_plots(data)

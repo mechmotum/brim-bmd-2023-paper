@@ -23,6 +23,7 @@ class SteerWith(Enum):
 @unique
 class ShoulderJointType(Enum):
     """Enumeration of options for the shoulder joint."""
+    NONE = auto()
     FLEX_ROT = auto()
     FLEX_ADD = auto()
     SPHERICAL = auto()
@@ -30,8 +31,9 @@ class ShoulderJointType(Enum):
 
 @dataclass(frozen=True)
 class Metadata:
+    bicycle_only: bool
+    model_upper_body: bool
     front_frame_suspension: bool
-    upper_body_bicycle_rider: bool
     shoulder_type: ShoulderJointType
     steer_with: SteerWith
     parameter_data_dir: str
@@ -43,6 +45,20 @@ class Metadata:
     straight_lengths: float
     num_nodes: int
     weight: float
+
+    def __post_init__(self):
+        if self.model_upper_body:
+            if self.bicycle_only:
+                raise ValueError("Cannot have both model_upper_body and bicycle_only.")
+            elif self.shoulder_type is ShoulderJointType.NONE:
+                raise ValueError("Cannot have model_upper_body and no shoulder joint.")
+        else:
+            if self.shoulder_type is not ShoulderJointType.NONE:
+                raise ValueError(
+                    "Cannot have no model_upper_body and a shoulder joint.")
+            elif self.steer_with is SteerWith.HUMAN_TORQUE:
+                raise ValueError(
+                    "Cannot have no model_upper_body and a human torque input.")
 
     @property
     def interval_value(self):
