@@ -2,16 +2,15 @@ from __future__ import annotations
 
 import json
 import os
-import argparse
 
 import cloudpickle as cp
 import matplotlib.pyplot as plt
 import numpy as np
 
-from container import DataStorage, Metadata, SteerWith, ShoulderJointType
-from model import set_bicycle_model, set_simulator
-from problem import set_problem, set_constraints, set_initial_guess
-from utils import NumpyEncoder, create_time_lapse, create_animation, create_plots
+from .container import DataStorage, Metadata, SteerWith, ShoulderJointType
+from .model import set_bicycle_model, set_simulator
+from .problem import set_problem, set_constraints, set_initial_guess
+from .utils import NumpyEncoder, create_time_lapse, create_animation, create_plots
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(current_dir, "data")
@@ -21,12 +20,17 @@ while os.path.exists(os.path.join(output_dir, f"result{i}")):
     i += 1
 result_dir = os.path.join(output_dir, f"result{i}")
 
+LONGITUDINAL_DISPLACEMENT = 10.0
+LATERAL_DISPLACEMENT = 1.0
+STRAIGHT_LENGTHS = 2.5
+NUM_NODES = 100
 DURATION = 2.0
 mean_tracking_error = 0.01
 mean_torque = 1
 control_weight = DURATION * mean_tracking_error ** 2
 path_weight = DURATION * mean_torque ** 2
-weight = path_weight / (control_weight + path_weight)
+WEIGHT = path_weight / (control_weight + path_weight)
+
 METADATA = Metadata(
     bicycle_only=False,
     model_upper_body=True,
@@ -37,18 +41,18 @@ METADATA = Metadata(
     bicycle_parametrization="Browser",
     rider_parametrization="Jason",
     duration=DURATION,
-    longitudinal_displacement=10.0,
-    lateral_displacement=1.0,
-    straight_lengths=2.5,
-    num_nodes=100,
-    weight=weight,
+    longitudinal_displacement=LONGITUDINAL_DISPLACEMENT,
+    lateral_displacement=LATERAL_DISPLACEMENT,
+    straight_lengths=STRAIGHT_LENGTHS,
+    num_nodes=NUM_NODES,
+    weight=WEIGHT,
 )
 if not os.path.exists(result_dir):
     os.mkdir(result_dir)
 with open(os.path.join(result_dir, "README.md"), "w") as f:
     f.write(f"# Result {i}\n## Metadata\n{METADATA}\n")
 data = DataStorage(METADATA)
-REUSE_LAST_MODEL = True
+REUSE_LAST_MODEL = False
 if REUSE_LAST_MODEL and os.path.exists("last_model.pkl"):
     print("Reloading last model...")
     with open("last_model.pkl", "rb") as f:
