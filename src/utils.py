@@ -180,10 +180,14 @@ def create_time_lapse(data: DataStorage, n_frames: int = 7):
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(10, 10))
     plotter = Plotter.from_model(ax, data.bicycle_rider)
     plotter.lambdify_system((data.x[:], data.input_vars[:], p))
-    for plot_object in plotter.plot_objects:
-        if isinstance(plot_object, PlotBody):
-            plot_object.plot_frame.visible = False
-            plot_object.plot_masscenter.visible = False
+    queue = [plotter]
+    while queue:
+        parent = queue.pop()
+        if isinstance(parent, PlotBody):
+            parent.plot_frame.visible = False
+            parent.plot_masscenter.visible = False
+        else:
+            queue.extend(parent.children)
     plotter.evaluate_system(x_eval(0), r_eval(0), p_vals)
     for i in range(n_frames):
         for artist in plotter.artists:
