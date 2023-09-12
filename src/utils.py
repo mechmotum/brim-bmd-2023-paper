@@ -119,6 +119,7 @@ def create_plots(data: DataStorage) -> None:
         axs[1, 1].plot(t_arr, get_u(name), label=name)
     axs[1, 1].set_xlabel("Time (s)")
     axs[1, 1].set_ylabel("Angular velocity (rad/s)")
+    axs[1, 1].legend()
     fig.tight_layout()
 
 
