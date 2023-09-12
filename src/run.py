@@ -8,16 +8,15 @@ import cloudpickle as cp
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .container import DataStorage, Metadata, ShoulderJointType, SteerWith
-from .model import set_bicycle_model, set_simulator
-from .problem import set_constraints, set_initial_guess, set_problem
-from .utils import (
-    EnumAction, NumpyEncoder, create_animation, create_plots, create_time_lapse)
-from .main import (
+from container import DataStorage, Metadata, ShoulderJointType, SteerWith
+from main import (
     LONGITUDINAL_DISPLACEMENT, LATERAL_DISPLACEMENT, STRAIGHT_LENGTHS,
     NUM_NODES, DURATION, WEIGHT, DATA_DIR, DEFAULT_RESULT_DIR
 )
-
+from model import set_bicycle_model, set_simulator
+from problem import set_constraints, set_initial_guess, set_problem
+from utils import (
+    EnumAction, NumpyEncoder, create_animation, create_plots, create_time_lapse)
 
 parser = argparse.ArgumentParser(description="Run an trajectory tracking problem.")
 parser.add_argument("--bicycle-only", action="store_true",

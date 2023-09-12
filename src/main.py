@@ -7,10 +7,10 @@ import cloudpickle as cp
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .container import DataStorage, Metadata, SteerWith, ShoulderJointType
-from .model import set_bicycle_model, set_simulator
-from .problem import set_problem, set_constraints, set_initial_guess
-from .utils import NumpyEncoder, create_time_lapse, create_animation, create_plots
+from container import DataStorage, Metadata, SteerWith, ShoulderJointType
+from model import set_bicycle_model, set_simulator
+from problem import set_problem, set_constraints, set_initial_guess
+from utils import NumpyEncoder, create_time_lapse, create_animation, create_plots
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(SRC_DIR, "data")
@@ -79,7 +79,8 @@ if __name__ == "__main__":
     data.problem.plot_objective_value()
     data.problem.plot_trajectories(data.solution)
     data.problem.plot_constraint_violations(data.solution)
-    with open(os.path.join(DEFAULT_RESULT_DIR, "solution_info.txt"), "w", encoding="utf-8") as f:
+    with open(os.path.join(DEFAULT_RESULT_DIR, "solution_info.txt"), "w",
+              encoding="utf-8") as f:
         json.dump(info, f, cls=NumpyEncoder)
     with open(os.path.join(DEFAULT_RESULT_DIR, "data.pkl"), "wb") as f:
         cp.dump(data, f)

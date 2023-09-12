@@ -4,8 +4,8 @@ import numpy as np
 import sympy.physics.mechanics as me
 from opty.direct_collocation import Problem
 
-from .container import DataStorage, SteerWith, ConstraintStorage, ShoulderJointType
-from .utils import create_objective_function, plot_constraint_violations
+from container import DataStorage, SteerWith, ConstraintStorage, ShoulderJointType
+from utils import create_objective_function, plot_constraint_violations
 
 # Corrected version from opty's ``Problem.plot_constraint_violations``.
 plot_constraint_violations.__doc__ = Problem.plot_constraint_violations.__doc__
