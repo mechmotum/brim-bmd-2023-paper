@@ -137,7 +137,7 @@ def plot_constraint_violations(self, vector):
     return axes
 
 
-def create_plots(data: DataStorage) -> None:
+def create_plots(data: DataStorage) -> tuple[plt.Figure, plt.Axes]:
     t_arr = data.time_array
     x_arr = data.solution_state
     r_arr = data.solution_input
@@ -151,30 +151,40 @@ def create_plots(data: DataStorage) -> None:
     get_q = lambda q_name: x_arr[data.system.q[:].index(qs[q_name]), :]  # noqa: E731
     get_u = lambda u_name: x_arr[len(data.system.q) +  # noqa: E731
                                  data.system.u[:].index(us[u_name]), :]
-    fig, axs = plt.subplots(2, 2, figsize=(10, 7))
+    fig, axs = plt.subplots(2, 2, figsize=(8, 4))
+    axs[0, 1].get_shared_x_axes().join(axs[0, 1], axs[1, 1])
     axs[0, 0].plot(q1_path, q2_path, label="target")
     axs[0, 0].plot(get_q("x"), get_q("y"), label="trajectory")
     axs[0, 0].set_xlabel("Longitudinal displacement (m)")
     axs[0, 0].set_ylabel("Lateral displacement (m)")
+    axs[0, 0].legend()
+    # axs[0, 0].axis('equal')
+    name_mapping = {
+        "pedal_torque": "pedal",
+        "steer_torque": "steer",
+        "left_elbow_torque_T": "left elbow",
+        "right_elbow_torque_T": "right elbow",
+    }
     for i, ri in enumerate(data.r):
-        axs[1, 0].plot(t_arr, r_arr[i, :], label=ri.name)
+        axs[1, 0].plot(t_arr, r_arr[i, :], label=name_mapping.get(ri.name, ri.name))
     axs[1, 0].set_xlabel("Time (s)")
     axs[1, 0].set_ylabel("Torque (Nm)")
     axs[1, 0].legend()
     for name in ("yaw", "roll", "steer"):
         axs[0, 1].plot(t_arr, get_q(name), label=name)
-    axs[0, 1].set_xlabel("Time (s)")
     axs[0, 1].set_ylabel("Angle (rad)")
     axs[0, 1].legend()
     for name in ("yaw", "roll", "steer"):
         axs[1, 1].plot(t_arr, get_u(name), label=name)
     axs[1, 1].set_xlabel("Time (s)")
     axs[1, 1].set_ylabel("Angular velocity (rad/s)")
-    axs[1, 1].legend()
+    fig.align_labels()
     fig.tight_layout()
+    return fig, axs
 
 
-def create_animation(data: DataStorage, output: str):
+def create_animation(data: DataStorage, output: str
+                     ) -> tuple[plt.Figure, plt.Axes, FuncAnimation]:
     x_eval = CubicSpline(data.time_array, data.solution_state.T)
     r_eval = CubicSpline(data.time_array, data.solution_input.T)
     p, p_vals = zip(*data.constants.items())
@@ -201,9 +211,11 @@ def create_animation(data: DataStorage, output: str):
     n_frames = int(fps * data.time_array[-1])
     ani = FuncAnimation(fig, animate, frames=n_frames, blit=False)
     ani.save(output, dpi=150, fps=fps)
+    return fig, ax, ani
 
 
-def create_time_lapse(data: DataStorage, n_frames: int = 7):
+def create_time_lapse(data: DataStorage, n_frames: int = 7
+                      ) -> tuple[plt.Figure, plt.Axes]:
     x_eval = CubicSpline(data.time_array, data.solution_state.T)
     r_eval = CubicSpline(data.time_array, data.solution_input.T)
     p, p_vals = zip(*data.constants.items())
@@ -236,6 +248,7 @@ def create_time_lapse(data: DataStorage, n_frames: int = 7):
     ax.view_init(30, 30)
     ax.set_aspect("equal")
     ax.axis("off")
+    return fig, ax
 
 
 def _plot_ground(data: DataStorage, plotter: Plotter):
