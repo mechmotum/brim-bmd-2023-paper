@@ -19,6 +19,15 @@ plt.rcParams['svg.fonttype'] = 'none'
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 PAGE_WIDTH = 7.275454  # LaTeX \textwidth in inches
+markevery = 6
+OPTIMIZATION_STYLES = [
+    {"color": "C0", "linestyle": "-"},  # "marker": "o", "markevery": (0, markevery)},
+    {"color": "C1", "linestyle": "--"},  # "marker": "v", "markevery": (5, markevery)},
+    {"color": "C3", "linestyle": ":"},  # "marker": "^", "markevery": (2, markevery)},
+    {"color": "C2", "linestyle": "-"},  # "marker": "<", "markevery": (4, markevery)},
+    {"color": "C6", "linestyle": "--"},  # "marker": ">", "markevery": (1, markevery)},
+    {"color": "C5", "linestyle": ":"},  # "marker": "s", "markevery": (3, markevery)},
+]
 
 
 def get_x(data, xi) -> npt.NDArray[np.float64]:
@@ -71,9 +80,10 @@ fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 6)
 savefig(fig_time_lapse, f"time_lapse_{optimization}")
 
 fig_trajectory, ax = plt.subplots(1, 1, figsize=(10, 3))
-ax.plot(q1_path, q2_path, label="Target")
+ax.plot(q1_path, q2_path, label="Target", color="C4", linestyle="-.")
 for i, data in enumerate(data_lst, 1):
-    ax.plot(get_x(data, "q_x"), get_x(data, "q_y"), label=fr"\#{i}")
+    ax.plot(get_x(data, "q_x"), get_x(data, "q_y"), label=fr"\#{i}",
+            **OPTIMIZATION_STYLES[i - 1])
 ax.set_xlabel("Longitudinal displacement (m)")
 ax.set_ylabel("Lateral displacement (m)")
 ax.legend(ncol=2)
@@ -83,20 +93,21 @@ savefig(fig_trajectory, "trajectory_all")
 
 fig, axs = plt.subplots(2, 2, figsize=(10, 3.5), sharex=True)
 for i, data in enumerate(data_lst[:-1], 1):
-    axs[0, 1].plot(data.time_array, get_r(data, "steer_torque"), label=fr"\#{i}",
-                   color=f"C{i}")
-    axs[1, 1].plot(data.time_array, get_r(data, "pedal_torque"), label=fr"\#{i}",
-                   color=f"C{i}")
+    axs[0, 1].plot(data.time_array, get_r(data, "steer_torque"),
+                   **OPTIMIZATION_STYLES[i - 1])
+    axs[1, 1].plot(data.time_array, get_r(data, "pedal_torque"),
+                   **OPTIMIZATION_STYLES[i - 1])
 axs[0, 1].set_ylabel("Steer torque (Nm)")
 axs[1, 1].set_ylabel("Pedal torque (Nm)")
 for i, data in enumerate(data_lst, 1):
     for j, xi_name in enumerate(["steer", "roll"]):
-        axs[j, 0].plot(data.time_array, get_x(data, f"q_{xi_name}"), color=f"C{i}")
+        axs[j, 0].plot(data.time_array, get_x(data, f"q_{xi_name}"),
+                       **OPTIMIZATION_STYLES[i - 1])
         if i == 1:  # Only done once
             axs[j, 0].set_ylabel(f"{xi_name.capitalize()} angle (rad)")
 for i in range(2):
     axs[-1, i].set_xlabel("Time (s)")
-fig.legend([plt.Line2D([0], [0], color=f"C{i}") for i in range(1, 7)],
+fig.legend([plt.Line2D([0], [0], **OPTIMIZATION_STYLES[i - 1]) for i in range(1, 7)],
            [fr"\#{i}" for i in range(1, 7)],
            loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
 fig.align_labels()
