@@ -93,9 +93,22 @@ fig_torques.align_labels()
 fig_torques.tight_layout()
 savefig(fig_torques, "torques_all")
 
+fig_state, axs = plt.subplots(3, 1, figsize=(5, 5), sharex=True)
+for i, data in enumerate(data_lst, 1):
+    for j, xi_name in enumerate(["steer", "roll", "yaw"]):
+        axs[j].plot(data.time_array, get_x(data, f"q_{xi_name}"), color=f"C{i}")
+        axs[j].set_ylabel(f"{xi_name.capitalize()} angle (rad)")
+axs[-1].set_xlabel("Time (s)")
+axs[1].legend([plt.Line2D([0], [0], color=f"C{i}") for i in range(1, 7)],
+              [fr"\#{i}" for i in range(1, 7)],
+              loc='center left', bbox_to_anchor=(1, 0.5))
+fig_state.align_labels()
+fig_state.tight_layout()
+savefig(fig_state, f"angles_all")
+
 fig_state, axs = plt.subplots(2, 1, figsize=(5, 3.5), sharex=True)
 data = data_lst[optimization - 1]
-for xi_name in ("yaw", "roll", "steer"):
+for xi_name in ("steer", "roll", "yaw"):
     axs[0].plot(data.time_array, get_x(data, f"q_{xi_name}"), label=xi_name)
     axs[1].plot(data.time_array, get_x(data, f"u_{xi_name}"), label=xi_name)
 axs[-1].set_xlabel("Time (s)")
