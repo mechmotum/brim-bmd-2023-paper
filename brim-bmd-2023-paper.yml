@@ -6,6 +6,7 @@ dependencies:
   - pip
   - cloudpickle
   - cyipopt
+  - SciencePlots
   - scikits.odes
   - pip:
       - git+https://github.com/moorepants/BicycleParameters.git
