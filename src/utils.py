@@ -13,7 +13,7 @@ from brim.core.base_classes import BrimBase
 from brim.utilities.plotting import Plotter
 from matplotlib.animation import FuncAnimation
 from scipy.interpolate import CubicSpline
-from symmeplot import PlotBody
+from symmeplot import PlotBody, PlotVector
 
 from container import DataStorage
 
@@ -229,6 +229,8 @@ def create_time_lapse(data: DataStorage, n_frames: int = 7
         if isinstance(parent, PlotBody):
             parent.plot_frame.visible = False
             parent.plot_masscenter.visible = False
+        elif isinstance(parent, PlotVector):
+            parent.visible = False
         else:
             queue.extend(parent.children)
     plotter.evaluate_system(x_eval(0), r_eval(0), p_vals)
