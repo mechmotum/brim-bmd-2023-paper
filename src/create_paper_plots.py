@@ -70,14 +70,14 @@ optimization = 1
 fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 6)
 savefig(fig_time_lapse, f"time_lapse_{optimization}")
 
-fig_trajectory, ax = plt.subplots(1, 1, figsize=(10, 2))
+fig_trajectory, ax = plt.subplots(1, 1, figsize=(10, 3))
 ax.plot(q1_path, q2_path, label="Target")
 for i, data in enumerate(data_lst, 1):
     ax.plot(get_x(data, "q_x"), get_x(data, "q_y"), label=fr"\#{i}")
 ax.set_xlabel("Longitudinal displacement (m)")
 ax.set_ylabel("Lateral displacement (m)")
 ax.legend(ncol=2)
-ax.set_aspect("equal")
+# ax.set_aspect("equal")
 fig_trajectory.tight_layout()
 savefig(fig_trajectory, "trajectory_all")
 
