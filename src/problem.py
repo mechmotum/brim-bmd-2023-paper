@@ -27,7 +27,7 @@ def set_constraints(data: DataStorage) -> None:
         bicycle.q[7]: 0.0,
     }
     if data.metadata.front_frame_suspension:
-        initial_state_constraints[bicycle.front_frame.q[0]] = 0.01  # Small compression.
+        initial_state_constraints[bicycle.front_frame.q[0]] = 0.0018
         initial_state_constraints[bicycle.front_frame.u[0]] = 0.0
 
     final_state_constraints = {
