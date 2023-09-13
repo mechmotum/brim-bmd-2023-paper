@@ -23,7 +23,8 @@ OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 def get_x(data, xi) -> npt.NDArray[np.float64]:
     if isinstance(xi, str):
         x_names = [x.name for x in data.x]
-        idx_mapping = [(0, "x"), (1, "y"), (2, "yaw"), (3, "roll"), (6, "steer")]
+        idx_mapping = [(0, "x"), (1, "y"), (2, "yaw"), (3, "roll"), (6, "steer"),
+                       (7, "drive")]
         qs = {name: data.bicycle.q[i] for i, name in idx_mapping}
         us = {name: data.bicycle.u[i] for i, name in idx_mapping}
         if xi in x_names:
@@ -68,14 +69,14 @@ optimization = 1
 fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 6)
 savefig(fig_time_lapse, f"time_lapse_{optimization}")
 
-fig_trajectory, ax = plt.subplots(1, 1, figsize=(5, 3.5))
+fig_trajectory, ax = plt.subplots(1, 1, figsize=(10, 2))
 ax.plot(q1_path, q2_path, label="Target")
 for i, data in enumerate(data_lst, 1):
     ax.plot(get_x(data, "q_x"), get_x(data, "q_y"), label=fr"\#{i}")
 ax.set_xlabel("Longitudinal displacement (m)")
 ax.set_ylabel("Lateral displacement (m)")
-ax.legend()
-# ax.set_aspect("equal")
+ax.legend(ncol=2)
+ax.set_aspect("equal")
 fig_trajectory.tight_layout()
 savefig(fig_trajectory, "trajectory_all")
 
@@ -93,13 +94,13 @@ fig_torques.align_labels()
 fig_torques.tight_layout()
 savefig(fig_torques, "torques_all")
 
-fig_state, axs = plt.subplots(3, 1, figsize=(5, 5), sharex=True)
+fig_state, axs = plt.subplots(2, 1, figsize=(5, 3.5), sharex=True)
 for i, data in enumerate(data_lst, 1):
-    for j, xi_name in enumerate(["steer", "roll", "yaw"]):
+    for j, xi_name in enumerate(["steer", "roll"]):
         axs[j].plot(data.time_array, get_x(data, f"q_{xi_name}"), color=f"C{i}")
         axs[j].set_ylabel(f"{xi_name.capitalize()} angle (rad)")
 axs[-1].set_xlabel("Time (s)")
-axs[1].legend([plt.Line2D([0], [0], color=f"C{i}") for i in range(1, 7)],
+axs[0].legend([plt.Line2D([0], [0], color=f"C{i}") for i in range(1, 7)],
               [fr"\#{i}" for i in range(1, 7)],
               loc='center left', bbox_to_anchor=(1, 0.5))
 fig_state.align_labels()
