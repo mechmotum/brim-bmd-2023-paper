@@ -186,10 +186,10 @@ def create_plots(data: DataStorage) -> tuple[plt.Figure, plt.Axes]:
     axs[0, 0].legend()
     # axs[0, 0].axis('equal')
     name_mapping = {
-        "pedal_torque": "pedal",
-        "steer_torque": "steer",
-        "left_elbow_torque_T": "left elbow",
-        "right_elbow_torque_T": "right elbow",
+        "T_p": "pedal",
+        "T_s": "steer",
+        "T_l": "left elbow",
+        "T_r": "right elbow",
     }
     for i, ri in enumerate(data.r):
         axs[1, 0].plot(t_arr, r_arr[i, :], label=name_mapping.get(ri.name, ri.name))

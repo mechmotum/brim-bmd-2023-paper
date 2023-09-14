@@ -61,12 +61,21 @@ def set_bicycle_model(data: DataStorage):
     # Define the model.
     bicycle_rider.define_connections()
     bicycle_rider.define_objects()
+    # Overwrite the symbols to match the paper.
+    bicycle.q[:, 0] = me.dynamicsymbols("q1:9")
+    bicycle.u[:, 0] = me.dynamicsymbols("u1:9")
+    if data.metadata.front_frame_suspension:
+        bicycle.front_frame.q[0, 0] = me.dynamicsymbols("q_s")
+        bicycle.front_frame.u[0, 0] = me.dynamicsymbols("u_s")
     if data.metadata.model_upper_body:
         alpha = sm.Symbol("alpha")
         int_frame = me.ReferenceFrame("int_frame")
         int_frame.orient_axis(bicycle.rear_frame.saddle.frame, alpha,
                               bicycle.rear_frame.wheel_hub.axis)
         bicycle_rider.seat.rear_interframe = int_frame
+        if data.metadata.steer_with is SteerWith.HUMAN_TORQUE:
+            let.symbols["T"] = me.dynamicsymbols("T_l")
+            ret.symbols["T"] = me.dynamicsymbols("T_r")
     bicycle_rider.define_kinematics()
     bicycle_rider.define_loads()
     bicycle_rider.define_constraints()
@@ -77,14 +86,14 @@ def set_bicycle_model(data: DataStorage):
     # Apply additional forces and torques to the system.
     g = sm.Symbol("g")
     system.apply_gravity(-g * bicycle.ground.get_normal(bicycle.ground.origin))
-    pedal_torque = me.dynamicsymbols("pedal_torque")
+    pedal_torque = me.dynamicsymbols("T_p")
     system.add_loads(
         me.Torque(bicycle.rear_wheel.body,
                   pedal_torque * bicycle.rear_wheel.rotation_axis)
     )
     input_vars = input_vars.col_join(sm.Matrix([pedal_torque]))
     if data.metadata.steer_with == SteerWith.PEDAL_STEER_TORQUE:
-        steer_torque = me.dynamicsymbols("steer_torque")
+        steer_torque = me.dynamicsymbols("T_s")
         system.add_actuators(me.TorqueActuator(
             steer_torque, bicycle.rear_frame.steer_hub.axis,
             bicycle.front_frame.steer_hub.frame, bicycle.rear_frame.steer_hub.frame))
