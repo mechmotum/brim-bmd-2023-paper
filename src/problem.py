@@ -146,7 +146,7 @@ def set_initial_guess(data: DataStorage) -> None:
     d_long = data.metadata.longitudinal_displacement
     d_lat = data.metadata.lateral_displacement
     d_tot = np.sqrt(d_long ** 2 + d_lat ** 2)
-    diagonal = False
+    diagonal = True
     if diagonal:
         vel_mean = d_tot / data.metadata.duration
         angle = np.arctan2(d_lat, d_long)
