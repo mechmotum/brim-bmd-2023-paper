@@ -8,8 +8,9 @@ import numpy.typing as npt
 import scienceplots  # noqa: F401
 import sympy as sm
 from cycler import cycler
+import contextlib
 
-from utils import create_time_lapse
+from utils import create_time_lapse, get_solution_statistics
 
 plt.style.use(["science", "no-latex"])
 plt.rcParams["font.family"] = "Times New Roman"
@@ -72,15 +73,27 @@ def savefig(fig: plt.Figure, name: str) -> None:
 
 
 data_lst = []
+statistics = {"optimization": list(range(1, 7))}
 print("Loading data...")
-for i in range(1, 7):
+for i in statistics["optimization"]:
     result_dir = os.path.join(OUTPUT_DIR, f"optimization{i}")
     with open(os.path.join(result_dir, "data.pkl"), "rb") as f:
         data_lst.append(cp.load(f))
+    for key, value in get_solution_statistics(result_dir, data_lst[-1]).items():
+        if key not in statistics:
+            statistics[key] = []
+        statistics[key].append(value)
 q1_path = np.linspace(0, data_lst[0].metadata.longitudinal_displacement, 100)
 q2_path = sm.lambdify(
     (data_lst[0].bicycle.q[0],),
     sm.solve(data_lst[0].target, data_lst[0].bicycle.q[1])[0], cse=True)(q1_path)
+
+with contextlib.suppress(ImportError):
+    import pandas as pd
+
+    pd.set_option('display.max_columns', None)
+    statistics = pd.DataFrame(data=statistics, index=statistics["optimization"])
+print(statistics)
 
 print("Plotting...")
 optimization = 1

@@ -77,7 +77,7 @@ with timer("Making an initial guess"):
     set_initial_guess(data)
 with timer("Initializing the Problem object"):
     set_problem(data)
-data.problem.add_option("output_file", os.path.join(result_dir, "output.txt"))
+data.problem.add_option("output_file", os.path.join(result_dir, "ipopt.txt"))
 with timer("Solving the problem"):
     data.solution, info = data.problem.solve(data.initial_guess)
 timer.to_file(os.path.join(result_dir, "timings.txt"))

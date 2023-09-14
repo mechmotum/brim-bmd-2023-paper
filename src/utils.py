@@ -3,9 +3,12 @@ from __future__ import annotations
 import argparse
 import enum
 import json
+import os
+import re
 from copy import copy
 from time import perf_counter
 
+import cloudpickle as cp
 import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sm
@@ -105,6 +108,37 @@ def get_all_symbols_from_model(brim_obj: BrimBase) -> set[sm.Symbol]:
         for load_group in brim_obj.load_groups:
             syms.update(get_all_symbols_from_model(load_group))
     return syms
+
+
+def get_solution_statistics(result_dir, data: DataStorage = None):
+    if data is None:
+        with open(os.path.join(result_dir, "data.pkl"), "rb") as f:
+            data = cp.load(f)
+    tracking_cost = data.target ** 2
+    input_cost = sum(i ** 2 for i in data.input_vars)
+    tracking_cost_val = create_objective_function(data, tracking_cost)[0](data.solution)
+    input_cost_val = create_objective_function(data, input_cost)[0](data.solution)
+    mean_tracking_error = np.sqrt(tracking_cost_val / data.metadata.duration)
+    estimated_torque = np.sqrt(input_cost_val / data.metadata.duration)
+    with open(os.path.join(result_dir, "ipopt.txt"), "r", encoding="utf-8") as f:
+        ipopt_output = f.read()
+    objective = re.search(
+        re.compile(r"Objective.*?:\s+(.*?)\s+(.*)"), ipopt_output).group(2)
+    nlp_iterations = re.search(
+        re.compile(r"Number of Iterations\.\.\.\.: (\d+)"), ipopt_output).group(1)
+    ipopt_time = re.search(
+        re.compile(r"Total seconds in IPOPT[ ]+= (\d+\.\d+)"), ipopt_output).group(1)
+    ipopt_exit = re.search(re.compile(f"EXIT: (.*)"), ipopt_output).group(1)
+    return {
+        "Objective": objective,
+        "Tracking cost": tracking_cost_val,
+        "Input cost": input_cost_val,
+        "Mean tracking error": mean_tracking_error,
+        "Estimated torque": estimated_torque,
+        "#NLP iterations": nlp_iterations,
+        "Time in Ipopt": ipopt_time,
+        "Ipopt exit status": ipopt_exit,
+    }
 
 
 def create_objective_function(data: DataStorage, objective: sm.Expr):

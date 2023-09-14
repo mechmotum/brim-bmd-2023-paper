@@ -33,10 +33,10 @@ WEIGHT = path_weight / (control_weight + path_weight)
 WEIGHT = 1 - 1E-4  # Overwrite the above to match the paper.
 
 METADATA = Metadata(
-    bicycle_only=True,
-    model_upper_body=False,
+    bicycle_only=False,
+    model_upper_body=True,
     front_frame_suspension=False,
-    shoulder_type=ShoulderJointType.NONE,
+    shoulder_type=ShoulderJointType.FLEX_ROT,
     steer_with=SteerWith.PEDAL_STEER_TORQUE,
     parameter_data_dir=DATA_DIR,
     bicycle_parametrization="Browser",
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     with open(os.path.join(DEFAULT_RESULT_DIR, "README.md"), "w") as f:
         f.write(f"# Result {i}\n## Metadata\n{METADATA}\n")
     data = DataStorage(METADATA)
-    REUSE_LAST_MODEL = False
+    REUSE_LAST_MODEL = True
     if REUSE_LAST_MODEL and os.path.exists("last_model.pkl"):
         with timer("Reloading last model"):
             with open("last_model.pkl", "rb") as f:
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     with timer("Initializing the Problem object"):
         set_problem(data)
     data.problem.add_option("output_file",
-                            os.path.join(DEFAULT_RESULT_DIR, "output.txt"))
+                            os.path.join(DEFAULT_RESULT_DIR, "ipopt.txt"))
     with timer("Solving the problem"):
         data.solution, info = data.problem.solve(data.initial_guess)
     timer.to_file(os.path.join(DEFAULT_RESULT_DIR, "timings.txt"))
