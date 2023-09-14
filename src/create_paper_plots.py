@@ -2,6 +2,7 @@ import os
 
 import cloudpickle as cp
 import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
 import numpy as np
 import numpy.typing as npt
 import scienceplots  # noqa: F401
@@ -28,6 +29,10 @@ OPTIMIZATION_STYLES = [
     {"color": "C6", "linestyle": "--"},  # "marker": ">", "markevery": (1, markevery)},
     {"color": "C5", "linestyle": ":"},  # "marker": "s", "markevery": (3, markevery)},
 ]
+legend_optimization = (
+    [plt.Line2D([0], [0], **OPTIMIZATION_STYLES[i - 1]) for i in range(1, 7)],
+    [fr"\#{i}" for i in range(1, 7)],
+)
 
 
 def get_x(data, xi) -> npt.NDArray[np.float64]:
@@ -79,42 +84,47 @@ optimization = 1
 fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 6)
 savefig(fig_time_lapse, f"time_lapse_{optimization}")
 
-fig_trajectory, ax = plt.subplots(1, 1, figsize=(10, 3))
-ax.plot(q1_path, q2_path, label="Target", color="C4", linestyle="-.")
+fig = plt.figure(figsize=(10, 5))
+gs = GridSpec(2, 2, figure=fig)
+axs = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 1])]
+axs[1].sharex(axs[2])
+axs[0].plot(q1_path, q2_path, label="Target", color="C4", linestyle="-.")
 for i, data in enumerate(data_lst, 1):
-    ax.plot(get_x(data, "q_x"), get_x(data, "q_y"), label=fr"\#{i}",
-            **OPTIMIZATION_STYLES[i - 1])
-ax.set_xlabel("Longitudinal displacement (m)")
-ax.set_ylabel("Lateral displacement (m)")
-ax.legend(ncol=2)
-# ax.set_aspect("equal")
-fig_trajectory.tight_layout()
-savefig(fig_trajectory, "trajectory_all")
+    axs[0].plot(get_x(data, "q_x"), get_x(data, "q_y"), **OPTIMIZATION_STYLES[i - 1])
+axs[0].set_xlabel("Longitudinal displacement (m)")
+axs[0].set_ylabel("Lateral displacement (m)")
+axs[0].legend()
+for j, xi_name in enumerate(["steer", "roll"], 1):
+    for i, data in enumerate(data_lst, 1):
+        axs[j].plot(data.time_array, get_x(data, f"q_{xi_name}"),
+                    **OPTIMIZATION_STYLES[i - 1])
+    axs[j].set_ylabel(f"{xi_name.capitalize()} angle (rad)")
+axs[-1].set_xlabel("Time (s)")
+fig.legend(*legend_optimization, loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
+fig.tight_layout()
+savefig(fig, "states_all")
 
-fig, axs = plt.subplots(2, 2, figsize=(10, 3.5), sharex=True)
+fig, axs = plt.subplots(2, 2, figsize=(10, 5), sharex=True)
 for i, data in enumerate(data_lst[:-1], 1):
-    axs[0, 1].plot(data.time_array, get_r(data, "steer_torque"),
+    axs[0, 0].plot(data.time_array, get_r(data, "T_s"),
                    **OPTIMIZATION_STYLES[i - 1])
-    axs[1, 1].plot(data.time_array, get_r(data, "pedal_torque"),
+    axs[1, 0].plot(data.time_array, get_r(data, "T_p"),
                    **OPTIMIZATION_STYLES[i - 1])
-axs[0, 1].set_ylabel("Steer torque (Nm)")
+axs[0, 0].set_ylabel("Steer torque (Nm)")
+axs[1, 0].set_ylabel("Pedal torque (Nm)")
+
+axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_l"), label="left")
+axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_r"), label="right")
+axs[1, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_p"))
+axs[0, 1].set_ylabel("Elbow torque (Nm)")
 axs[1, 1].set_ylabel("Pedal torque (Nm)")
-for i, data in enumerate(data_lst, 1):
-    for j, xi_name in enumerate(["steer", "roll"]):
-        axs[j, 0].plot(data.time_array, get_x(data, f"q_{xi_name}"),
-                       **OPTIMIZATION_STYLES[i - 1])
-        if i == 1:  # Only done once
-            axs[j, 0].set_ylabel(f"{xi_name.capitalize()} angle (rad)")
-for i in range(2):
-    axs[-1, i].set_xlabel("Time (s)")
-fig.legend([plt.Line2D([0], [0], **OPTIMIZATION_STYLES[i - 1]) for i in range(1, 7)],
-           [fr"\#{i}" for i in range(1, 7)],
-           loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
+axs[0, 1].legend()
+axs[0, 0].legend(legend_optimization[0][:-1], legend_optimization[1][:-1], ncol=2)
 fig.align_labels()
 fig.tight_layout()
-savefig(fig, f"angles_torques_all")
+savefig(fig, f"torques_all")
 
-fig_state, axs = plt.subplots(2, 1, figsize=(5, 3.5), sharex=True)
+fig_state, axs = plt.subplots(2, 1, figsize=(5, 3.7), sharex=True)
 data = data_lst[optimization - 1]
 for xi_name in ("steer", "roll", "yaw"):
     axs[0].plot(data.time_array, get_x(data, f"q_{xi_name}"), label=xi_name)
