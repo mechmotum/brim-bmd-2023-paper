@@ -4,6 +4,7 @@ import argparse
 import enum
 import json
 from copy import copy
+from time import perf_counter
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,6 +17,31 @@ from scipy.interpolate import CubicSpline
 from symmeplot import PlotBody, PlotVector
 
 from container import DataStorage
+
+
+class Timer:
+    def __init__(self):
+        self.current_description = None
+        self.readout = []
+
+    def __call__(self, current_description: str) -> "Timer":
+        self.current_description = current_description
+        return self
+
+    def __enter__(self):
+        print(f"{self.current_description}...")
+        self.start = perf_counter()
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.time = perf_counter() - self.start
+        self.readout.append((self.current_description, self.time))
+        print(f'{self.current_description} ran in {self.time:.3f} seconds')
+
+    def to_file(self, file) -> None:
+        with open(file, "w") as f:
+            for description, time in self.readout:
+                f.write(f"{description}: {time} seconds\n")
 
 
 class EnumAction(argparse.Action):
