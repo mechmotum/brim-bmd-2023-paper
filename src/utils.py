@@ -122,12 +122,12 @@ def get_solution_statistics(result_dir, data: DataStorage = None):
     estimated_torque = np.sqrt(input_cost_val / data.metadata.duration)
     with open(os.path.join(result_dir, "ipopt.txt"), "r", encoding="utf-8") as f:
         ipopt_output = f.read()
-    objective = re.search(
-        re.compile(r"Objective.*?:\s+(.*?)\s+(.*)"), ipopt_output).group(2)
-    nlp_iterations = re.search(
-        re.compile(r"Number of Iterations\.\.\.\.: (\d+)"), ipopt_output).group(1)
-    ipopt_time = re.search(
-        re.compile(r"Total seconds in IPOPT[ ]+= (\d+\.\d+)"), ipopt_output).group(1)
+    objective = float(re.search(
+        re.compile(r"Objective.*?:\s+(.*?)\s+(.*)"), ipopt_output).group(2))
+    nlp_iterations = int(re.search(
+        re.compile(r"Number of Iterations\.\.\.\.: (\d+)"), ipopt_output).group(1))
+    ipopt_time = float(re.search(
+        re.compile(r"Total seconds in IPOPT[ ]+= (\d+\.\d+)"), ipopt_output).group(1))
     ipopt_exit = re.search(re.compile(f"EXIT: (.*)"), ipopt_output).group(1)
     return {
         "Objective": objective,
