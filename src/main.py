@@ -10,7 +10,7 @@ import numpy as np
 from container import DataStorage, Metadata, SteerWith, ShoulderJointType
 from model import set_bicycle_model, set_simulator
 from problem import set_problem, set_constraints, set_initial_guess
-from utils import NumpyEncoder, create_time_lapse, create_animation, create_plots
+from utils import NumpyEncoder, Timer, create_time_lapse, create_animation, create_plots
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(SRC_DIR, "data")
@@ -50,6 +50,7 @@ METADATA = Metadata(
 )
 
 if __name__ == "__main__":
+    timer = Timer()
     if not os.path.exists(DEFAULT_RESULT_DIR):
         os.mkdir(DEFAULT_RESULT_DIR)
     with open(os.path.join(DEFAULT_RESULT_DIR, "README.md"), "w") as f:
@@ -57,26 +58,27 @@ if __name__ == "__main__":
     data = DataStorage(METADATA)
     REUSE_LAST_MODEL = False
     if REUSE_LAST_MODEL and os.path.exists("last_model.pkl"):
-        print("Reloading last model...")
-        with open("last_model.pkl", "rb") as f:
-            data = cp.load(f)
+        with timer("Reloading last model"):
+            with open("last_model.pkl", "rb") as f:
+                data = cp.load(f)
     else:
-        print("Computing the equations of motion...")
-        set_bicycle_model(data)
-        print("Initializing the simulator...")
-        set_simulator(data)
+        with timer("Computing the equations of motion"):
+            set_bicycle_model(data)
+        with timer("Initializing the simulator"):
+            set_simulator(data)
         with open("last_model.pkl", "wb") as f:
             cp.dump(data, f)
-    print("Defining the constraints and objective...")
-    set_constraints(data)
-    print("Making an initial guess...")
-    set_initial_guess(data)
-    print("Initializing the Problem object...")
-    set_problem(data)
+    with timer("Defining the constraints and objective"):
+        set_constraints(data)
+    with timer("Making an initial guess"):
+        set_initial_guess(data)
+    with timer("Initializing the Problem object"):
+        set_problem(data)
     data.problem.add_option("output_file",
                             os.path.join(DEFAULT_RESULT_DIR, "output.txt"))
-    print("Solving the problem...")
-    data.solution, info = data.problem.solve(data.initial_guess)
+    with timer("Solving the problem"):
+        data.solution, info = data.problem.solve(data.initial_guess)
+    timer.to_file(os.path.join(DEFAULT_RESULT_DIR, "timings.txt"))
     print("Estimated torque:",
           np.sqrt(data.metadata.interval_value * (data.solution_input ** 2).sum() /
                   data.metadata.duration))

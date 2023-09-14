@@ -16,7 +16,7 @@ from main import (
 from model import set_bicycle_model, set_simulator
 from problem import set_constraints, set_initial_guess, set_problem
 from utils import (
-    EnumAction, NumpyEncoder, create_animation, create_plots, create_time_lapse)
+    EnumAction, NumpyEncoder, Timer, create_animation, create_plots, create_time_lapse)
 
 parser = argparse.ArgumentParser(description="Run an trajectory tracking problem.")
 parser.add_argument("--bicycle-only", action="store_true",
@@ -53,6 +53,7 @@ parser.add_argument("--parameter-data-dir", type=str, default=DATA_DIR,
 parser.add_argument('-o', '--output', type=str, default=DEFAULT_RESULT_DIR,
                     help="The directory to save the results in.")
 
+timer = Timer()
 result_dir = parser.parse_args().output
 METADATA = Metadata(**{
     k: v for k, v in vars(parser.parse_args()).items()
@@ -66,19 +67,20 @@ with open(os.path.join(result_dir, "README.md"), "w") as f:
     f.write(f"# Result\n## Metadata\n{METADATA}\n")
 data = DataStorage(METADATA)
 
-print("Computing the equations of motion...")
-set_bicycle_model(data)
-print("Initializing the simulator...")
-set_simulator(data)
-print("Defining the constraints and objective...")
-set_constraints(data)
-print("Making an initial guess...")
-set_initial_guess(data)
-print("Initializing the Problem object...")
-set_problem(data)
+with timer("Computing the equations of motion"):
+    set_bicycle_model(data)
+with timer("Initializing the simulator"):
+    set_simulator(data)
+with timer("Defining the constraints and objective"):
+    set_constraints(data)
+with timer("Making an initial guess"):
+    set_initial_guess(data)
+with timer("Initializing the Problem object"):
+    set_problem(data)
 data.problem.add_option("output_file", os.path.join(result_dir, "output.txt"))
-print("Solving the problem...")
-data.solution, info = data.problem.solve(data.initial_guess)
+with timer("Solving the problem"):
+    data.solution, info = data.problem.solve(data.initial_guess)
+timer.to_file(os.path.join(result_dir, "timings.txt"))
 print("Mean torque:",
       np.sqrt(data.metadata.interval_value * (data.solution_input ** 2).sum() /
               data.metadata.duration))
