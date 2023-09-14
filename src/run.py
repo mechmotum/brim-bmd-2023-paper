@@ -76,9 +76,13 @@ print("Making an initial guess...")
 set_initial_guess(data)
 print("Initializing the Problem object...")
 set_problem(data)
+data.problem.add_option("output_file", os.path.join(result_dir, "output.txt"))
 print("Solving the problem...")
 data.solution, info = data.problem.solve(data.initial_guess)
-print("Mean torque:", np.abs(data.solution_input).mean())
+print("Mean torque:",
+      np.sqrt(data.metadata.interval_value * (data.solution_input ** 2).sum() /
+              data.metadata.duration))
+
 print("Plotting the results...")
 data.problem.plot_objective_value()
 data.problem.plot_trajectories(data.solution)

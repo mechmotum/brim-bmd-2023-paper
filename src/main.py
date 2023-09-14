@@ -73,6 +73,8 @@ if __name__ == "__main__":
     set_initial_guess(data)
     print("Initializing the Problem object...")
     set_problem(data)
+    data.problem.add_option("output_file",
+                            os.path.join(DEFAULT_RESULT_DIR, "output.txt"))
     print("Solving the problem...")
     data.solution, info = data.problem.solve(data.initial_guess)
     print("Estimated torque:",
