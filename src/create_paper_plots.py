@@ -7,6 +7,7 @@ import numpy as np
 import numpy.typing as npt
 import scienceplots  # noqa: F401
 import sympy as sm
+from cycler import cycler
 
 from utils import create_time_lapse
 
@@ -17,6 +18,9 @@ plt.rcParams["xtick.minor.pad"] += 2.0
 plt.rcParams["ytick.major.pad"] += 2.0
 plt.rcParams["ytick.minor.pad"] += 2.0
 plt.rcParams['svg.fonttype'] = 'none'
+plt.rcParams['axes.prop_cycle'] = cycler(
+    'color', ['#0C5DA5', '#00B945', '#FF2C00', '#FF9500', '#845B97', '#474747',
+              '#9e9e9e', '#008080'])
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 PAGE_WIDTH = 7.275454  # LaTeX \textwidth in inches
@@ -24,9 +28,9 @@ markevery = 6
 OPTIMIZATION_STYLES = [
     {"color": "C0", "linestyle": "-"},  # "marker": "o", "markevery": (0, markevery)},
     {"color": "C1", "linestyle": "--"},  # "marker": "v", "markevery": (5, markevery)},
-    {"color": "C3", "linestyle": ":"},  # "marker": "^", "markevery": (2, markevery)},
-    {"color": "C2", "linestyle": "-"},  # "marker": "<", "markevery": (4, markevery)},
-    {"color": "C6", "linestyle": "--"},  # "marker": ">", "markevery": (1, markevery)},
+    {"color": "C2", "linestyle": ":"},  # "marker": "^", "markevery": (2, markevery)},
+    {"color": "C3", "linestyle": "-"},  # "marker": "<", "markevery": (4, markevery)},
+    {"color": "C4", "linestyle": "--"},  # "marker": ">", "markevery": (1, markevery)},
     {"color": "C5", "linestyle": ":"},  # "marker": "s", "markevery": (3, markevery)},
 ]
 legend_optimization = (
@@ -73,7 +77,6 @@ for i in range(1, 7):
     result_dir = os.path.join(OUTPUT_DIR, f"optimization{i}")
     with open(os.path.join(result_dir, "data.pkl"), "rb") as f:
         data_lst.append(cp.load(f))
-
 q1_path = np.linspace(0, data_lst[0].metadata.longitudinal_displacement, 100)
 q2_path = sm.lambdify(
     (data_lst[0].bicycle.q[0],),
@@ -88,7 +91,7 @@ fig = plt.figure(figsize=(10, 5))
 gs = GridSpec(2, 2, figure=fig)
 axs = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 1])]
 axs[1].sharex(axs[2])
-axs[0].plot(q1_path, q2_path, label="Target", color="C4", linestyle="-.")
+axs[0].plot(q1_path, q2_path, label="Target", color="C6", linestyle="-.")
 for i, data in enumerate(data_lst, 1):
     axs[0].plot(get_x(data, "q_x"), get_x(data, "q_y"), **OPTIMIZATION_STYLES[i - 1])
 axs[0].set_xlabel("Longitudinal displacement (m)")
@@ -110,16 +113,18 @@ for i, data in enumerate(data_lst[:-1], 1):
                    **OPTIMIZATION_STYLES[i - 1])
     axs[1, 0].plot(data.time_array, get_r(data, "T_p"),
                    **OPTIMIZATION_STYLES[i - 1])
+axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_l"), color="C6",
+               label="left")
+axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_r"), color="C7",
+               label="right")
+axs[1, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_p"),
+               **OPTIMIZATION_STYLES[-1], label=f"\#6")
 axs[0, 0].set_ylabel("Steer torque (Nm)")
 axs[1, 0].set_ylabel("Pedal torque (Nm)")
-
-axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_l"), label="left")
-axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_r"), label="right")
-axs[1, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_p"))
 axs[0, 1].set_ylabel("Elbow torque (Nm)")
 axs[1, 1].set_ylabel("Pedal torque (Nm)")
 axs[0, 1].legend()
-axs[0, 0].legend(legend_optimization[0][:-1], legend_optimization[1][:-1], ncol=2)
+fig.legend(*legend_optimization, loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
 fig.align_labels()
 fig.tight_layout()
 savefig(fig, f"torques_all")
