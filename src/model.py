@@ -89,7 +89,7 @@ def set_bicycle_model(data: DataStorage):
     pedal_torque = me.dynamicsymbols("T_p")
     system.add_loads(
         me.Torque(bicycle.rear_wheel.body,
-                  pedal_torque * bicycle.rear_wheel.rotation_axis)
+                  -pedal_torque * bicycle.rear_wheel.rotation_axis)
     )
     input_vars = input_vars.col_join(sm.Matrix([pedal_torque]))
     if data.metadata.steer_with == SteerWith.PEDAL_STEER_TORQUE:
@@ -256,7 +256,7 @@ def set_bicycle_model(data: DataStorage):
     data.system = system
     data.eoms = eoms
     data.constants = constants
-    data.input_vars = input_vars
+    data.input_vars = sm.ImmutableMatrix(sorted(input_vars, key=lambda ri: ri.name))
 
 
 def set_simulator(data: DataStorage) -> None:

@@ -103,14 +103,14 @@ def set_constraints(data: DataStorage) -> None:
             })
     if data.metadata.steer_with is SteerWith.PEDAL_STEER_TORQUE:
         bounds.update({
-            data.input_vars[0]: (-10.0, 10.0),
-            data.input_vars[1]: (-10.0, 10.0),
+            data.input_vars[0]: (-20.0, 20.0),
+            data.input_vars[1]: (-20.0, 20.0),
         })
     elif data.metadata.steer_with is SteerWith.HUMAN_TORQUE:
         bounds.update({
-            data.input_vars[0]: (-10.0, 10.0),
-            data.input_vars[1]: (-10.0, 10.0),
-            data.input_vars[2]: (-10.0, 10.0),
+            data.input_vars[0]: (-20.0, 20.0),
+            data.input_vars[1]: (-20.0, 20.0),
+            data.input_vars[2]: (-20.0, 20.0),
         })
 
     data.objective_expr = (
@@ -136,7 +136,9 @@ def set_problem(data: DataStorage) -> None:
         bounds=data.constraints.bounds,
         integration_method='backward euler',
     )
-
+    if tuple(data.input_vars) != tuple(problem.collocator.unknown_input_trajectories):
+        raise AssertionError(f"Input variables do not match: {tuple(data.input_vars)}!="
+                             f"{tuple(problem.collocator.unknown_input_trajectories)}.")
     problem.add_option('nlp_scaling_method', 'gradient-based')
 
     data.problem = problem
