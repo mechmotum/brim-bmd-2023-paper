@@ -25,18 +25,19 @@ LATERAL_DISPLACEMENT = 1.0
 STRAIGHT_LENGTHS = 2.5
 NUM_NODES = 100
 DURATION = 2.0
-mean_tracking_error = 0.01
-mean_torque = 1
-control_weight = DURATION * mean_tracking_error ** 2
-path_weight = DURATION * mean_torque ** 2
+mean_tracking_error = 0.025
+estimated_torque = 2.5
+control_weight = DURATION * mean_tracking_error ** 2  # Aimed path cost
+path_weight = DURATION * estimated_torque ** 2  # Estimated input cost
 WEIGHT = path_weight / (control_weight + path_weight)
+WEIGHT = 1 - 1E-4  # Overwrite the above to match the paper.
 
 METADATA = Metadata(
-    bicycle_only=False,
-    model_upper_body=True,
+    bicycle_only=True,
+    model_upper_body=False,
     front_frame_suspension=False,
-    shoulder_type=ShoulderJointType.FLEX_ROT,
-    steer_with=SteerWith.HUMAN_TORQUE,
+    shoulder_type=ShoulderJointType.NONE,
+    steer_with=SteerWith.PEDAL_STEER_TORQUE,
     parameter_data_dir=DATA_DIR,
     bicycle_parametrization="Browser",
     rider_parametrization="Jason",
@@ -74,7 +75,9 @@ if __name__ == "__main__":
     set_problem(data)
     print("Solving the problem...")
     data.solution, info = data.problem.solve(data.initial_guess)
-    print("Mean torque:", np.abs(data.solution_input).mean())
+    print("Estimated torque:",
+          np.sqrt(data.metadata.interval_value * (data.solution_input ** 2).sum() /
+                  data.metadata.duration))
     print("Plotting the results...")
     data.problem.plot_objective_value()
     data.problem.plot_trajectories(data.solution)
