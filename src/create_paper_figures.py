@@ -143,7 +143,7 @@ for i, data in enumerate(data_lst, 1):
 for i in range(2):
     axs[-1, i].set_xlabel("Time (s)")
 axs[0, 0].set_ylabel("Steering torque (Nm)")
-axs[1, 0].set_ylabel("Pedaling torque (Nm)")
+axs[1, 0].set_ylabel("Propulsion/braking torque (Nm)")
 axs[0, 1].set_ylabel("Elbow torque (Nm)")
 axs[1, 1].set_ylabel("Tracking error (mm)")
 axs[0, 1].legend()
