@@ -117,9 +117,9 @@ axs[0].set_ylabel("Lateral displacement (m)")
 axs[0].legend()
 for j, xi_name in enumerate(["steer", "roll"], 1):
     for i, data in enumerate(data_lst, 1):
-        axs[j].plot(data.time_array, get_x(data, f"q_{xi_name}"),
+        axs[j].plot(data.time_array, np.rad2deg(get_x(data, f"q_{xi_name}")),
                     **OPTIMIZATION_STYLES[i - 1])
-    axs[j].set_ylabel(f"{xi_name.capitalize()} angle (rad)")
+    axs[j].set_ylabel(f"{xi_name.capitalize()} angle (deg)")
 axs[-1].set_xlabel("Time (s)")
 fig.legend(*legend_optimization, loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
 fig.tight_layout()
@@ -139,13 +139,13 @@ axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_r"), color="C7",
                label="right")
 for i, data in enumerate(data_lst, 1):
     tracking_error = np.abs(sm.lambdify((data.x,), data.target)(data.solution_state))
-    axs[1, 1].plot(data.time_array, tracking_error, **OPTIMIZATION_STYLES[i - 1])
+    axs[1, 1].plot(data.time_array, tracking_error * 1E3, **OPTIMIZATION_STYLES[i - 1])
 for i in range(2):
     axs[-1, i].set_xlabel("Time (s)")
 axs[0, 0].set_ylabel("Steering torque (Nm)")
 axs[1, 0].set_ylabel("Pedaling torque (Nm)")
 axs[0, 1].set_ylabel("Elbow torque (Nm)")
-axs[1, 1].set_ylabel("Tracking error (m)")
+axs[1, 1].set_ylabel("Tracking error (mm)")
 axs[0, 1].legend()
 fig.legend(*legend_optimization, loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
 fig.align_labels()
@@ -155,11 +155,11 @@ savefig(fig, "torques_all")
 fig_state, axs = plt.subplots(2, 1, figsize=(5, 3.7), sharex=True)
 data = data_lst[optimization - 1]
 for xi_name in ("steer", "roll", "yaw"):
-    axs[0].plot(data.time_array, get_x(data, f"q_{xi_name}"), label=xi_name)
-    axs[1].plot(data.time_array, get_x(data, f"u_{xi_name}"), label=xi_name)
+    axs[0].plot(data.time_array, np.rad2deg(get_x(data, f"q_{xi_name}")), label=xi_name)
+    axs[1].plot(data.time_array, np.rad2deg(get_x(data, f"u_{xi_name}")), label=xi_name)
 axs[-1].set_xlabel("Time (s)")
-axs[0].set_ylabel("Angle (rad)")
-axs[1].set_ylabel("Angular velocity (rad/s)")
+axs[0].set_ylabel("Angle (deg)")
+axs[1].set_ylabel("Angular velocity (deg/s)")
 axs[0].legend()
 fig_state.align_labels()
 fig_state.tight_layout()
