@@ -1,16 +1,20 @@
 \documentclass{bmd2023p}
+\graphicspath{{figures/}}
+\DeclareUnicodeCharacter{2212}{-}
 
+\DeclareMathOperator{\atantwo}{atan2}
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\softwarepackage}[1]{\textit{#1}}
 \newcommand{\sympy}{\softwarepackage{SymPy}}
-\newcommand{\package}{\softwarepackage{BRiM}}
-\newcommand{\pycollo}{\softwarepackage{Pycollo}}
-\newcommand{\whypackagename}{\textbf{B}icycle-\textbf{Ri}der \textbf{M}odels}
-
+\newcommand{\brim}{\softwarepackage{BRiM}}
+\newcommand{\opty}{\softwarepackage{opty}}
+\newcommand{\ipopt}{\softwarepackage{Ipopt}}
+\newcommand{\symmeplot}{\softwarepackage{SymMePlot}}
+\newcommand{\whypackagename}{\softwarepackage{B}icycle-\softwarepackage{Ri}der \softwarepackage{M}odels}
+\newcommand{\url}[1]{\texttt{#1}}
+\newcommand{\githubrepo}{\url{github.com/mechmotum/brim-bmd-2023-paper}}
 \newcommand{\thesisreference}[1]{\textit{#1}}
-
-\usepackage{todonotes}
-\usepackage{url}
+\newcommand{\term}[1]{``\textit{#1}''}
 
 \begin{document}
 
@@ -37,7 +41,7 @@
 % (optional) affiliated with this affiliation separating mail and ORCID using a
 % comma and different author credentials using a semicolon.
 
-\addaffiliation{1}{Faculty of Mechanical, Maritime and Materials Engineering (3mE), Delft University of Technology, The Netherlands}{t.j.stienstra@student.tudelft.nl, ORCID 0000-0003-4600-515X}
+\addaffiliation{1}{Faculty of Mechanical, Maritime and Materials Engineering (3mE), Delft University of Technology, The Netherlands}{j.k.moore@tudelft.nl, ORCID 0000-0002-8698-6143}
 
 % The following variables will be updated by the publisher, do not edit.
 \doi{XX.XXXX/XX.XXXX}
@@ -51,23 +55,12 @@
 % End publisher variables.
 
 %% End titlepage variables
-\todo[inline]{Timo's todo list:}
-\begin{itemize}
-    % \item Merge attachments branch and open an issue on the regression of the number of operations after CSE
-    \item Change BRiM distribution name to \textit{bicycle-rider-models} to get it on PyPi (one problem is that PyPi does not accept dependencies on GitHub branches, e.g. SymPy master)
-    % \item Update the brim-examples repository to the new version of BRiM
-    % \item Enable switching between \textit{Browser} parametrization and \textit{Fisher} with suspension in whipple bicycle simulation
-    \item Set up a \textit{src} directory in the brim-bmd-2023-paper repo from which we can create all images
-    \item (optionally) have it auto-build the images on push
-    \item Add some thesis references to the \textit{BRiM Models} subsection (started)
-    \item Recreate the bicycle-rider optimization from the other paper using BRiM
-\end{itemize}
 
 \maketitle
 
 \section*{Abstract:}
 
-\todo[inline]{Write abstract once rest of paper is drafted}
+The development of computationally efficient and validated single-track vehicle-rider models has traditionally required handcrafted one-off models. Here we introduce \brim{}, a software package that facilitates building these models in a modular fashion while retaining access to the mathematical elements for handcrafted modeling when desired. We demonstrate the flexibility of the software by constructing the Carvallo-Whipple bicycle model with different numerical parameters representing different bicycles, modifying it with a front fork suspension travel model, and extending it with moving rider arms driven by joint torques at the elbows. Using these models we solve a lane-change optimal control problem for six different model variations which solve in mere seconds on a modern laptop. Our tool enables flexible and rapid modeling of single-track vehicle-rider models that give precise results at high computational efficiency.
 
 \newpage
 \pagestyle{headings}
@@ -78,131 +71,419 @@ Throughout the 200 year history of the bicycle, numerous researchers have develo
 These models have contributed valuably to our understanding of self-stability~\citep{meijaard_2011_history}, active and passive rider control~\citep{moore_2012_human,schwab_2012_lateral,sharp_2008_stability}, and the identification of specific eigenmodes~\citep{sharp_1976_dynamics}.
 These insights have also informed the development of bicycles with improved stability, handling, and comfort~\citep{plochl_2012_wobble}.
 
-Mathematical bicycle models have been created using many both numeric and symbolic approaches, and a combination of the two.
+Mathematical bicycle models have been created using both numeric and symbolic approaches, and a combination of the two.
 Furthermore, these have been facilitated by many different languages and software packages.
-For example, \citet{meijaard_2007_linearized} used the dynamics modeling software \softwarepackage{SPACAR}~\citep{vansoest_1992_spacar} to numerically derive the equations of motion for the Whipple bicycle model.
-The same thing has been done symbolically by \citet{sharp_2008_stability}, who used Matlab's Symbolic Toolbox~\citep{matlab_2023_symbolic}, and by \citet{moore_2012_human} using both the symbolic dynamics package \softwarepackage{AUTOLEV}~\cite{levinson_1990_autolev} and Python's computer algebra package \sympy{}~\citep{meurer_2017_sympy}.
+For example, \citet{meijaard_2007_linearized} used the dynamics modeling software \softwarepackage{SPACAR}~\citep{vansoest_1992_spacar} to numerically derive the equations of motion (EoMs) for the Carvallo-Whipple bicycle model.
+The same thing has been done symbolically by \citet{sharp_2008_stability}, who used Matlab's Symbolic Toolbox~\citep{matlab_2023_symbolic}, and by \citet{moore_2012_human} using both the symbolic dynamics package \softwarepackage{AUTOLEV}~\citep{levinson_1990_autolev} and Python's computer algebra package \sympy{}~\citep{meurer_2017_sympy}.
 
-One commonality between these numeric and symbolic approaches is that they often hand-craft the equations of motion derivation.
-This approach has the advantage that the implementer controls the choice of coordinates that are used, often optimizing the simplicity of the resulting equations of motion at the end of the process.
-Indeed, hand crafted equations of motion have the highest reachable computational performance~\citep{rosenthal_1986_high}.
+One commonality between these numeric and symbolic approaches is that they often handcraft the EoMs derivation.
+This approach is advantageous in that the implementer controls the choice of coordinates that are used, often optimizing the simplicity of the resulting EoMs.
+Indeed, handcrafted EoMs have the highest reachable computational performance~\citep{rosenthal_1986_high}.
 
-Many research grade software packages, like \softwarepackage{SPACAR}, \softwarepackage{Simbody}~\citep{sherman_2011_simbody}, and \softwarepackage{ADAMS}~\citep{ryan_1990_adams}, can efficiently form the equations of motion for a multibody system.
-One downside of these tools is that the resulting equations of motion exist solely in the form of numeric computer code and cannot be accessibly interrogated.
-Note that it is not advisable to use traditional and modern physics engines for high-accuracy dynamics as they often make simplifying assumptions (like ignoring the Coriolis forces~\citep{todorov_2012_mujoco}) to speed up the numeric evaluation of equations of motion~\citep{rosenthal_1986_high}, which leads to discrepancies in simulation results~\citep{erez_2015_simulation}.
+Many research grade software packages, like \softwarepackage{SPACAR}, \softwarepackage{Simbody}~\citep{sherman_2011_simbody}, and \softwarepackage{ADAMS}~\citep{ryan_1990_adams}, can efficiently form the EoMs for a multibody system.
+One downside of these tools is that the resulting EoMs exist solely in the form of numeric computer code and cannot be accessibly interrogated.
+Modern physics engines, like \softwarepackage{MuJoCo}~\citep{todorov_2012_mujoco} and \softwarepackage{Nimble}~\citep{werling_2021_fast}, also offer numerical computation of high-accuracy dynamics.
+However, these have not found favor in being applied within the field of bicycle dynamics research, perhaps due to the inability to define every aspect and assumption of a model precisely and because they often focus on aspects not widely applicable to bicycle research, like contact and impact dynamics.
 
 Symbolics offer transparency, allowing for a clear understanding of the underlying equations and enabling greater flexibility in manipulating and interpreting the resulting expressions.
-There is scope for a symbolic approach to result in more performant code through processes like term rewriting to minimize the number of CPU cycles required to call functions for the numeric evaluation of the equations of motion~\citep{gowda_2022_high}.
-One downside is that there is a higher cost associated with model derivation than numeric approaches.
-However, for bicycle models this cost is often still only of the order of seconds and can be amortized if the resulting model is cached and reused in multiple simulation or optimization studies.
+There is scope for a symbolic approach to result in more performant code through processes like term rewriting to minimize the number of expressions in the EoMs~\citep{gowda_2022_high}.
+One downside is that model derivation is typically more expensive than with numeric approaches.
+However, for bicycle models this cost is often still only of the order of seconds and can be amortized if the resulting model is cached and reused.
 
-Forward simulations and optimizations often require gradient information to be solved efficiently, especially when a system's dynamics are governed by stiff nonlinear ordinary differential equations or differential algebraic equations.
-For bicycle model, this means differentiating the equations of motion with respect to the independent coordinates and velocities used to describe the system.
-Efficient algorithms for computing exact numeric derivatives based on automatic differentiation exist~\cite{griewank_2008_evaluating}.
-However, automatic differentiation of numeric code can introduce a significant compute and memory overhead at runtime~\citep{millard_2020_automatic}.
-Conversely, the algorithm for generating optimally efficient evaluatable derivatives exists in the realm of symbolic computing~\citep{guenter_2007_efficient}.
+% Forward simulations and optimizations often require gradient information to be solved efficiently, especially when a system's dynamics are governed by stiff nonlinear ordinary differential equations or differential algebraic equations.
+% For bicycle model, this means differentiating the EoMs with respect to the independent coordinates and velocities used to describe the system.
+% Efficient algorithms for computing exact numeric derivatives based on algorithmic differentiation (also called automatic differentiation) exist~\citep{griewank_2008_evaluating}.
+% However, algorithmic differentiation of numeric code can introduce a significant compute and memory overhead at runtime~\citep{millard_2020_automatic}.
+% Conversely, the algorithm for generating optimally efficient evaluable derivatives exists in the realm of symbolic computing~\citep{guenter_2007_efficient}.
 
 Despite the extensive research, creating accurate and performant mathematical bicycle models remains a common challenge.
 As pointed out by \citet{schwab_2013_review}, numerous published models exhibit mistakes in their derivation.
-Nowadays, many researchers use the linearized Whipple model \citep{meijaard_2007_linearized} as starting point and extend it to incorporate additional features such as tire models \citep{limebeer_2006_bicycles,meijaard_2006_linearized,plochl_2012_wobble,schwab_2013_review} or rider attachments \citep{moore_2012_human}.
-This approach is error prone \citep{schwab_2013_review}, time consuming, and hinders the development of more complex models. It also reduces research dissemination and reproducibility as models may not be compatible with one another due to using different formulations or being writing in different programming languages, or might depend on closed-source software.
+Nowadays, many researchers use the linearized Carvallo-Whipple model \citep{meijaard_2007_linearized} as starting point and extend it to incorporate additional features such as tire models \citep{limebeer_2006_bicycles,plochl_2012_wobble,schwab_2013_review} or rider attachments \citep{moore_2012_human}.
+This approach is error prone \citep{schwab_2013_review}, time consuming, and hinders the development of more complex models. It also reduces research dissemination and reproducibility as models may not be compatible with one another due to the usage of different conventions and programming languages, or dependence on closed-source software.
 
-To address these needs, in this paper we present \package{}, a new open-source modular and extensible framework for creating symbolic \whypackagename{}. \package{} is a Python package, the scripting language Python having been selected because of its prevalence in the scientific and engineering research community, extensive open-source ecosystem, and 
+\brim{} targets two main user groups: researchers wanting to use accessible and validated bicycle-rider models (\term{model users}), and researchers developing their own modifications of, or extensions to, bicycle-rider models (\term{model developers}).
+To address the needs of the former group, \brim{} provides a library of composable bicycle and bicycle-rider models that users can apply to their own research questions directly out of the box.
+Users can trust the accuracy of these as, where possible, they are prevalidated, in addition to the source code being open for review and critique.
+For the second user group, \brim{} provides a framework for researchers to develop their own modular submodels and seamlessly integrate these into their bicycle and bicycle-rider models.
+Through the usage of \brim{}, these extensions can more easily be shared between researchers due to the common tooling.
 
-\package{} targets two main user groups: researchers wanting to use accessible and validated bicycle-rider models, and researchers developing their own modifications of, or extensions to, bicycle-rider models.
-To address the needs of the former group, \package{} provides a library of pre-built bicycle and bicycle-rider models that users can apply to their own research questions directly out of the box.
-Users can trust the accuracy of these as they are pre-validated, in addition to the source code being open for review and critique.
-There is also a library of modular submodels (e.g. wheels, frame sections, riders), which themselves combine to form a complete bicycle or bicycle-rider model, that can be readily interchanged by users to adapt the model to meet the requirements of their research.
-For the second user group, \package{} provides a framework for researchers to develop their own modular submodels and seamlessly integrate these into their bicycle and bicycle-rider models.
-By doing this using \package{}, these extensions can more easily be shared between researchers due to the common tooling.
+To summarize, our contributions are twofold.
+First is the development and release of the open-source package \brim{} for bicycle-rider modeling, including its library of composable bicycle-rider models and frameworks for users to implement their own extensions, as well as utilities for parametrization, simulation, and visualization.
+Second is the demonstration of \brim{} by formulating and solving multiple novel trajectory tracking optimization problems of bicycle and bicycle-rider models, including a comparison of the minimized steer torques required for a lane change maneuver for three different bicycle geometries, plus a comparison between a rigid fork and front suspension bike, and a comparison between the steering torque and elbow torques, for the same maneuver.
 
-To summarize, our contributions are as follows:
+\section*{Software Overview}
+
+\brim{} is built on top of the \code{physics.mechanics} module of \sympy{}, a feature-rich and well-tested codebase for creating symbolic EoMs for complicated multibody systems.
+\brim{}, via \sympy{}, uses Kane's method~\citep{kane_1985_dynamics} to form the EoMs of the system.
+Unlike classical methods for multibody dynamics, like Newton-Euler, Lagrange, and Hamilton, Kane's method leads directly to simpler EoMs for a system~\citep{kane_1980_formulation,rosenthal_1986_high}.
+It was also designed to be systematic, making it easy to translate into a computational implementation.
+While other algorithms exist for efficiently computing a system's dynamics~\citep{featherstone_2014_rigid,jain_2010_robot}, these have been optimized for numerics.
+Consequently, Kane's method is the dominant algorithm when deriving symbolic EoMs~\citep{levinson_1990_autolev}.
+
+\brim{} provides three different levels of abstraction for constructing and interacting with bicycle-rider models.
+All three levels can be used interchangeably with one another, which is possible because they all either directly use, or abstract down to using, the symbolic building blocks defined with \sympy{}.
+At a high level, aimed predominantly at model users, \brim{} offers a library of prebuilt modeling components that can be easily connected in a modular fashion to create a full bicycle or bicycle-rider model with minimal boilerplate code.
+At this level, the user is able to, for example, swap out a knife-edge wheel model for a toroidal wheel model in a single statement.
+
+An intermediate-level interface allows the \sympy{} constructs for joints, bodies, and loads to be used directly to replace, extend, and augment models that do not exist at the component level. This level also allows model developers to readily transform these custom models into \brim{} constructs that can then be used at the component level with an equally light interface as model components present within the package, thus making them suitable for sharing with, and use by, model users.
+
+For advanced users, \brim{} also allows direct manipulation of the \sympy{} equations and the customization of the direction cosine matrices between reference frames. This enables modelers to make optimizations to the system's EoMs where their insight can simplify the model definition. It also allows the generated EoMs to be interrogated and transformed, which can be invaluable when debugging or optimizing custom models.
+
+\subsection*{\brim{} Core}
+
+\brim{} has three types of components, models, connections, and load groups, with which a multibody dynamics system is described. A \term{model} is an object that represents a specific system within defined system boundaries.
+A model can be standalone or composed of multiple submodels.
+Each model encapsulates the relations and behaviors of the system, allowing for a modular and hierarchical tree representation where parent models do not know the details of their submodel children.
+Each subsystem is treated independently within its respective system boundary, which is simpler to model.
+Once the subsystems have been defined separately, they can be merged to form the complete system, with parents defining the interactions between their children.
+This modular approach not only simplifies the organization of the model but also promotes reusability and flexibility in system design.
+
+A \term{connection} is a utility of a parent to define relationships between two or more child submodels. Connections provide three key features.
+Firstly, connections enable parent models to define the interactions between their child submodels in a modular fashion.
+Secondly, connections enable the reuse of these possibly complex interactions.
+An example of both is the interaction between a wheel and the ground, where multiple complex descriptions of tire models are possible.
+Using connections these tire models can be defined once and then be reused in all bicycle models in \brim{}.
+Lastly, connections allow new properties to be incorporated into a model.
+For example, when modeling a bicycle with a leaning rider, the axis should be defined about which the rider leans.
+However, if a bicycle is being modeled without a rider then this axis is not needed and so not considered.
+
+A \term{load group} is a collection of related loads (forces and torques), which can be applied to an associated model or connection.
+Loads are separated from models because it is unlikely that a model will universally require specific loads in all circumstances.
+For example, consider a load group whose task is to provide the inputs to steer a bicycle model.
+The simplest option here would be to apply a simple time-varying torque actuator acting about the steering axis.
+If a rider model was also being used, a more complex load group could consist of two time-varying torque actuators acting one each at the rider's right and left elbows.
+
+After a user has configured a model using submodels, connections, and loads, \brim{} uses the following five-step algorithm to define the multibody system and establish all relationships required to form the system's EoMs.
+First, parent models associate their child submodels to their connections, which ensures that all connections have access to the information they require.
+Next, the \term{define objects} step creates objects such as symbols and reference frames, without defining any relationships between them.
+After this, the \term{define kinematics} step establishes relationships between the objects' orientations/positions, velocities, and accelerations.
+Next, the \term{define loads} step specifies the forces and torques acting on the system.
+Lastly, the \term{define constraints} step computes the holonomic and nonholonomic constraints on the system.
+
+In each define step, a model first calls the define step for each of its submodels using a depth-first traversal, which is required because parent models may use properties of their submodels.
+Next, the model defines itself while triggering the define step of connections.
+These are initiated manually by the parent model because it is possible for there to be two-way dependence between parent models and their associated connections in a single define step.
+Finally, the model calls the define step for each of its associated load groups. 
+
+Upon completion of the above steps, all relationships within the model are defined.
+At this stage, the end-user can export the model to a \code{System} instance from the \code{physics.mechanics} module of \sympy{}, which can automatically form the EoMs.
+
+\subsection*{BRiM Models}
+
+While it is possible to implement any bicycle model using \brim{}, \brim{} distributes a complete implementation of the Carvallo-Whipple bicycle model~\citep{carvallo_1901_theorie,whipple_1899_stability} following the parameterization convention of \citet{moore_2012_human}.
+The Carvallo-Whipple bicycle is widely recognized as the lowest-order bicycle model to have been repeatedly validated by multiple authors~\citep{kooijman_2008_experimental,schwab_2013_review,sharp_2008_stability}.
+The parametrization convention of \citeauthor{moore_2012_human}, as shown in Figure~\ref{fig:moore-whipple-bicycle}, has been chosen due to its configuration independence, which is preferred when forming nonlinear EoMs of a bicycle,  \citep{peterson_2013_bicycle}.
+By default, the Carvallo-Whipple bicycle consists of a ground and four bodies: a rear wheel, a rear frame, a front frame, and a front wheel.
+Each body is assumed to be rigid and all bodies are attached using pin joints.
+The rear wheel's contact point is defined within the ground plane and the rear frame is oriented in yaw-roll-pitch rotation relative to the ground.
+The front wheel's contact point is constrained to the ground using a holonomic constraint, and nonholonomic constraints are applied to both wheels to enforce no-slip conditions.
+Further details of the Carvallo-Whipple bicycle model's definition are found in \citet{moore_2012_human}.
+
+\begin{figure}
+    \centering
+	\def\svgwidth{0.6\textwidth}
+    \input{figures/general_configuration_bicycle_moore_2012.pdf_tex}
+    \caption{Configuration of the Carvallo-Whipple bicycle model following the convention from \citet{moore_2012_human}, where $q_1$ and $q_2$ are the perpendicular distances of the rear contact point in the ground plane, $q_3$, $q_4$, and $q_5$ are the yaw, roll, and pitch angles of the rear frame relative to the ground, $q_7$ is the steering rotation angle, and $q_6$ and $q_8$ are the rear and front wheel rotation angles.}
+    \label{fig:moore-whipple-bicycle}
+\end{figure}
+
+To facilitate the implementation of extensions, like toroidal-shaped wheels and tire models~\citep{limebeer_2006_bicycles,schwab_2013_review}, to the Carvallo-Whipple bicycle in a modular fashion, \brim{} splits the bicycle model into separate models for each body.
+This division results in a total of five submodels: ground, rear wheel, front wheel, rear frame, and front frame.
+The modularity of the tire models is achieved by using connections to describe the interaction between the ground and a wheel.
+A schematic overview is shown in Figure~\ref{fig:brim-segmented-whipple-bicycle}.
+
+\begin{figure}
+    \centering
+    \fontsize{9}{10}\selectfont
+	\def\svgwidth{.85\textwidth}
+    \input{figures/schematic_whipple_bicycle.pdf_tex}
+    \caption{Schematic of the Carvallo-Whipple bicycle in \brim{} aggregating from its constituent parts. The blueprint of these parts is described in abstract classes and is copied through inheritance.}
+    \label{fig:brim-segmented-whipple-bicycle}
+\end{figure}
+
+Published rider models tend to either fall into the category of upper-body models~\citep{moore_2012_human} or pedaling models~\citep{park_2022_direct}.
+To support varying complexities of both types of model, \brim{} segments the rider into optional submodels and connections.
+The only mandatory submodel is the pelvis because it is shared by all rider models.
+The other five submodels forming the rider are the torso, left and right legs, and left and right arms.
+The relationships between these are described by five connections representing the various joints:
+the left and right hips, the left and right shoulders, and the sacrum connecting the torso to the pelvis.
+To extend a bicycle model with a rider, connections at the saddle, the handlebars, and the pedals are required.
+
+\subsection*{Benchmarks}
+A convenient proxy for the computational performance of the derived EoMs is the number of floating point operations required to evaluate them.
+The output of \brim{} has been compared to handcrafted EoMs of the Carvallo-Whipple bicycle by \citet{moore_2012_human,stienstra_2023_brim}, both of which were also derived using \sympy{}.
+The version by \citeauthor{moore_2012_human} utilizes writing the equations as one might on paper to reduce the complexity resulting in 2198 operations.
+The version by \citeauthor{stienstra_2023_brim} mainly utilized the intermediate-level interface in \sympy{} resulting in 2389 operations.
+\brim{}'s output is in between the two containing 2291 operations, highlighting that \brim{} is able to produce efficient EoMs on par with handcrafted derivations despite its modularity and user-friendly interface.
+
+\section*{Demonstrations Method}
+
+To demonstrate the wide applicability, capabilities, and potential of \brim{}, we solved a series of related trajectory tracking optimization problems for bicycle and bicycle-rider models.
+The goal here is to showcase the modularity and extensibility of \brim{} with examples, and evidence that it can be readily used in novel applications, reducing the barriers to generating new results. 
+
+\subsection*{Bicycle and Bicycle-Rider Models}
+
+In the demonstrations, the same trajectory is tracked but the bicycle (or bicycle-rider) model involved differed.
+All six of these models were built entirely using \brim{}.
+The specifics of the model used in each of the six optimization cases are outlined below.
 \begin{itemize}
-    \item Development and release of the open-source package \package{} for bicycle-rider modeling, including its library of pre-built bicycle models (like the Whipple model based on \citeauthor{moore_2012_human}'s formulation), composable bicycle and rider submodels, and frameworks for users to implement their own extensions, as well as utilities for forward simulation, optimization, plotting, and animation.
-    \item Demonstration of \package{} by formulating and solving multiple novel trajectory tracking optimization problems of bicycle and bicycle-rider models, including a comparison of the minimized steer torques required for a lane change maneuver for three different bicycle geometries, plus a comparison between a rigid fork and front suspension bike, and a comparison between the steer torque and elbow torques, for the same trajectory tracking optimization problem.
+    \item Optimization \#1: This is the default Carvallo-Whipple bicycle model without a rider. It uses the parameter values from a Batavus Browser Dutch style city bicycle~\citep{moore_2012_human}, \code{"Browser"}. The constituent submodels used to create this instance are shown in Figure~\ref{fig:brim-segmented-whipple-bicycle}. The system's inputs are a torque applied to the rear wheel about the wheel hub axis (the \term{propulsion/braking torque}) and a torque actuator applied between the handlebars and the rear frame such that they are actuated about the steering axis (the \term{steering torque}). This optimization is referred to as the base case.
+    \item Optimization \#2: This is the same as the base case but with the parameter values from a Bianchi Pista steel frame track bicycle~\citep{moore_2012_human}, \code{"Pista"}.
+    \item Optimization \#3: This is the same as the base case but with the parameter values from a Gary Fisher hard-tail mountain bicycle~\citep{moore_2012_human}, \code{"Fisher"}.
+    \item Optimization \#4: This modifies optimization \#3 by replacing the rigid front frame with one with fork suspension on soft settings.
+    \item Optimization \#5: This is a bicycle-rider model. It extends the base case with a rigidly attached upper-body rider model, where the shoulders are modeled to allow flexion and rotation, and the elbows are pin joints.
+    \item Optimization \#6: This modifies optimization \#5 by replacing the \term{steering torque} with a pair of torque actuators at the elbows of the rider model (the \term{elbow torques}).
 \end{itemize}
+Complete scripts for constructing these six models, plus formulating and running the trajectory tracking optimization problem, can be found in the GitHub repository for this paper: \githubrepo{}.
 
-\section{BRiM Method}
+\subsection*{Equation Generation}
 
-\todo[inline]{Paragraph: three levels of description when using BRiM}
-\begin{itemize}
-    \item high level: component level
-    \item intermediate level: joints and bodies level (within sympy)
-    \item low level: manipulation of equations
-    \item \thesisreference{introduction paragraph 3; opening CH3 paragraph 1-2}
-\end{itemize}
+\brim{} automatically generates the EoMs of the system.
+For the base Carvallo-Whipple bicycle model (optimizations \#\numrange[range-phrase=--]{1}{3}), which follows the convention of \citet{moore_2012_human}, \brim{} produces a system defined in terms of eight generalized coordinates and eight generalized speeds.
+For the optimizations, we choose a set of seven ($Q=7$) of the generalized coordinates ($\mathbf{q}_{ind}$) and three ($U=3$) generalized speeds ($\mathbf{u}_{ind}$) to be independent. These are
+\begin{align*}
+    \mathbf{q}_{ind} &= \left[q_1, q_2, q_3, q_4, q_6, q_7, q_8 \right] \, , \\
+    \mathbf{u}_{ind} &= \left[u_4, u_6, u_7 \right] \, .
+\end{align*}
 
-Immediately also mention Kane's method \thesisreference{why see 2.2 paragraph 2 and appendix A paragraph 1}
+With these, we can formulate the 16 state equations that will enforce the system dynamics in the optimization problem.
+The first eight are the kinematic differential equations that map the time derivative of each generalized coordinate to the corresponding generalized speed
+\begin{equation}
+    \dot{q}_i = u_i \qquad i \in \mathbb{N} \cap \left[1,8\right] \, .
+\end{equation}
 
-\subsection{BRiM Core}
+The next three are dynamic differential equations, each one corresponding to the time derivative of the three independent generalized speeds
+\begin{equation}
+    \mathbf{M} \dot{\mathbf{u}}_{ind} - \mathbf{k} = \mathbf{0} \, ,
+\end{equation}
+where $\mathbf{M}$ is the $3 \times 3$ mass matrix of the bicycle model and $\mathbf{k}$ is its length-3 forcing column vector.
 
-\begin{itemize}
-    \item Usage of Kane's method
-    \item Understand the aggregation of models
-    \item The translation towards the core components of BRiM: \textit{The models are the main components, where each model describes a system or subsystem following the tree structure explained in section 3.3.1. The connections can be seen as a utility of parent models to describe a modular interaction between submodels resembling many characteristics with the connectors from the flat graph structure. The load groups are predefined sets of actuators and loads, which are commonly associated with a specific model or connection.} \thesisreference{CH 3.4; CH 3.6 summary; abstract paragraph 3}
-    \item chapter 4
-\end{itemize}
+This is followed by a single differential algebraic equation that enforces the holonomic constraint to keep the front wheel in contact with the ground.
+Finally, four differential algebraic constraints, two each per wheel, enforce the nonholonomic constraints that provide the no-slip conditions for the front and rear wheels.
 
-\subsection{BRiM Models}
+In optimization \#4, one extra independent generalized coordinate ($q_s$) describing the suspension travel and one extra independent generalized speed ($u_s$) describing the suspension velocity are introduced.
+Consequently, $Q=8$ and $U=4$.
+This results in the addition of one extra kinematic differential equation involving $\dot{q}_s$ and one extra dynamic differential equation involving $\dot{u}_s$.
 
-\subsubsection{Bicycle Model}
-\todo[inline]{Paragraph: The chosen base model, i.e. the Carvallo-Whipple bicycle following Moore's parametrization convention.}
-\thesisreference{CH 4.3.1}
-\begin{itemize}
-    \item The Carvallo-Whipple bicycle model \citep{carvallo_1901_theorie,whipple_1899_stability} is widely recognized as the lowest order bicycle model with reasonable experimental validation \citep{kooijman_2008_experimental,moore_2012_human,schwab_2013_review,sharp_2008_stability}.
-    \item Because BRiM forms the nonlinear EOMs, it is better to choose a configuration-independent parametrization \citep{peterson_2013_bicycle}. The chosen parametrization is the one described by \citet{moore_2012_human}.
-\end{itemize}
+Optimizations \#\numrange[range-phrase=--]{5}{6}, use the same base generalized coordinates and generalized speeds as optimizations \#\numrange[range-phrase=--]{1}{3}.
+However, due to the addition of the rider, an additional six dependent generalized coordinates are introduced.
+For each of the two arms, two are for the flexion and rotation of the shoulder joint and one is for the flexion of the elbow joint.
+Additionally, each of these dependent generalized coordinates maps to a dependent generalized speed so an additional six of these are also required.
+$Q$ and $U$ are unchanged because no independent generalized coordinates or speeds are introduced.
+To keep the hands attached to the handlebar grips, six more holonomic constraints are used.
+In terms of additional state equations to enforce the dynamics, six additional kinematic differential equations are introduced, alongside six additional differential algebraic equations to enforce the holonomic constraints.
 
-\todo[inline]{Paragraph: Explain the Whipple bicycle model shortly and name various of the common extensions}
-\thesisreference{CH 4.3.1 paragraph 2}
+Let $\mathbf{r}$ be the vector of model inputs and $R$ be its length.
+For optimizations \#\numrange[range-phrase=--]{1}{5}, $R=2$ and $\mathbf{r} = \left[T_p, T_s\right]$, where $T_p$ and $T_s$ are the propulsion/braking and steering torques respectively.
+For optimization \#6, $\mathbf{r} = \left[T_p, T_l, T_r\right]$ and $R=3$, where $T_l$ and $T_r$ are the left and right elbow torques respectively.
 
-\todo[inline]{Paragraph: Explain the division of the Whipple bicycle model in BRiM}
-\thesisreference{CH 4.3.1 last paragraph}
+\subsection*{Tracking Problem}
 
-\todo[inline]{Image: Visualization of the bicycle model split up}
-\thesisreference{Figure 4.2, I should add in the cranks submodel (though I quite like not having to explain that part)}
+In the trajectory tracking optimization problems, the task is to follow a target path representing a lane change.
+The path is defined by the equation
+\begin{equation}
+    \bar{q}_2\left(q_1\right) = \begin{cases}
+        0 \, , & \hphantom{X_1 - X_S \leq } q_1 < X_s \\ 
+        \frac{1}{2} X_2\left(1 - \cos{\left(\frac{q_1 - X_s}{X_1 - 2X_s}\pi\right)}\right) \, , & \hphantom{X_1 - {}} X_s \leq q_1 \leq X_1 - X_s \\
+        X_2 \, , & X_1 - X_s < q_1 \\
+    \end{cases} \, ,
+\end{equation}
+where $q_1$ and $q_2$ are the states describing the position of the bicycle in the $x$ (longitudinal) and $y$ (lateral) directions of the Newtonian frame respectively, $\bar{x}_2$ is the target lateral position as a function of $x_1$, $X_1$ and $X_2$ are the longitudinal length and lateral displacement of the target path respectively, and $X_s$ is the length of straight at the beginning and end of the path.
 
-\subsubsection{Rider Model}
-\begin{itemize}
-    \item 
-\end{itemize}
+The objective function $J$ simultaneously minimizes both the tracking error and the inputs.
+It is defined as
+\begin{equation}
+    J = \int_{t_0}^{t_F} (1-w) \left(q_2 - \bar{q}_2\left(q_1\right) \right)^2 dt  + w \sum_{i=1}^{R} \int_{t_0}^{t_F} r_i^2 dt \, ,
+\end{equation}
+where $t_0$ and $t_F$ are the initial and final times, $r_i$ is the $i$th input variable, and $w$ is a weighting parameter between the squared tracking error and the sum of squared inputs.
+We selected $w=10^{-4}$, which aims to target a mean tracking error of \SI{0.025}{\meter} for an approximate torque of \SI{2.5}{\newton\meter}.
 
-\subsubsection{Bicycle-Rider Model}
+We add constraints to define the initial and final state of the system's motion.
+In optimizations \#\numrange[range-phrase=--]{1}{3} we enforce
+\begin{equation*}
+    \begin{aligned}
+        q_1\left(t_0\right) &= 0.0 \\
+        q_2\left(t_0\right) &= 0.0 \\
+        q_3\left(t_0\right) &= 0.0 \\
+        q_4\left(t_0\right) &= 0.0
+    \end{aligned}
+    \qquad \qquad
+    \begin{aligned}
+        q_1\left(t_F\right) - X_1 &= 0.0 \\
+        q_2\left(t_F\right) - X_2 &= 0.0 \\
+        q_3\left(t_F\right) &= 0.0 \\
+        q_4\left(t_F\right) &= 0.0
+    \end{aligned}
+    \qquad \qquad
+    \begin{aligned}
+        q_6\left(t_0\right) &= 0.0 \\
+        q_7\left(t_0\right) &= 0.0 \\
+        q_8\left(t_0\right) &= 0.0 \\
+        \\
+    \end{aligned}
+    \qquad \qquad
+    \begin{aligned}
+        \\
+        q_7\left(t_F\right) &= 0.0 \\
+        \\
+        \\
+    \end{aligned}
+\end{equation*}
+For the remaining generalized coordinate ($q_4$) and generalized speeds ($u_i, i \in \mathbb{N} \cap \left[1,8\right]$) we enforce periodicity constraints between the values at $t_0$ and $t_F$ if the variable acts along the longitudinal axis.
+Otherwise, we enforce that the value at $t_0$ is the negative of the value at $t_F$ as this results in the solution being symmetric about the longitudinal axis.
+Additionally, in optimization \#4 the generalized coordinate and generalized speed for the suspension are constrained at $t_0$ such that the suspension compression and weight through the handlebars are in equilibrium.
 
+% All decision variables were bounded such that the upper and lower bounds were approximately within an order of magnitude above and below the maximum and minimum values for each decision variable in the optimum trajectories.
+% Exact values can be found in the supplied source code.
 
-\section{Results Method}
+\subsection*{Initial Guess}
 
-\subsection{Demonstrations/Experiments}
+When solving an optimization problem using direct collocation, the initial guess provided can influence the convergence properties of the problem, or even whether the problem solves at all~\citep{betts_2010_practical}.
+For consistency between the six optimization cases, we used equivalent initial guesses, only accounting for the inclusion or exclusion of different states and inputs as decision variables.
 
-\begin{itemize}
-    \item Just the Whipple bicycle (base case) with steer actuator and pedal torque (Batavus Browser parameters)
-    \item Same as base case with Fisher parameters
-    \item (Same as base case with TBD)
-    \item Demonstrate modularity with front frame suspension with Fisher parameters
-    \item Upper-body bicycle-rider with steer actuator with Batavus Browser parameters
-    \item Upper-body bicycle-rider with elbow torques with Batavus Browser parameters
-\end{itemize}
+The initial guess in each optimization was created using a forward simulation that aimed to simultaneously satisfy $\tilde{q}_1\left(t_0\right)=0$, $\tilde{q}_2\left(t_0\right)=0$, $\tilde{q}_1\left(t_F\right)=X_1$, and $\tilde{q}_2\left(t_F\right)=X_2$.
+The tilde above a variable denotes that this is the initial guess corresponding to that variable.
+The forward simulation from $t_0$ until $t_F$ was conducted under null inputs ($\tilde{r}_i = 0, i \in \mathbb{N} \cap \left[1,R\right]$).
+Due to the null inputs, the initial state required modification such that the bicycle rides diagonally between the endpoints:
+\begin{equation*}
+    \tilde{q}_3\left(t_0\right)=\atantwo\left(\frac{X_2}{X_1}\right) \qquad \qquad \tilde{u}_4\left(t_0\right)=0 \qquad \qquad \tilde{u}_6\left(t_0\right)=-\frac{\sqrt{X_1^2 + X_2^2}}{r_R\left(t_F - t_0\right)} \qquad \qquad \tilde{u}_7\left(t_0\right)=0 \, .
+\end{equation*}
 
-\subsection{Simulation/Optimization}
+As the system dynamics are defined as differential algebraic equations, the \code{IDA} differential algebraic equation solver~\citep{gardner_2022_sundials,hindmarsh_2005_sundials} from the \softwarepackage{ODES} Scikit~\citep{malengier_2018_odes} was used to conduct the forward simulation.
+The resulting initial guesses are dynamically feasible, with the only active instance constraint violations being
+\begin{equation*}
+    q_3\left(t_0\right) = \atantwo\left(\frac{X_2}{X_1}\right) \neq 0 \qquad \qquad
+    q_3\left(t_F\right) = \atantwo\left(\frac{X_2}{X_1}\right) \neq 0 \, .
+\end{equation*}
 
-\begin{itemize}
-    \item Generate model
-    \item Conduct forward simulation with P-controller to generate an initial guess
-    \item Solve OCP using opty
-\end{itemize}
+\subsection*{Optimization}
 
-\section{Results}
+We solved each of the six trajectory tracking optimization problems using \opty{}~\citep{moore_2018_opty}, a Python package for solving optimization problems involving dynamic systems using direct collocation~\citep{betts_2010_practical}. \opty{} is designed with \sympy{} in mind and thus interfaces seamlessly with \brim{}. \opty{} transcribes the optimization problem into a nonlinear programming problem, which is then solved numerically using the interior-point solver \ipopt{}~\citep{biegler_2009_large}. Each optimization problem was transcribed with 100 nodes and the dynamics were collocated using the backward Euler method. \ipopt{}'s default settings were used with the exception of enabling gradient-based scaling.
 
-\section{Discussion}
+\section*{Results}
+
+\begin{figure}
+    \begin{minipage}{.49\textwidth}
+        \centering
+        \def\svgwidth{\linewidth}
+        \input{figures/states_1.pdf_tex}
+    \end{minipage}
+    \begin{minipage}{.49\textwidth}
+        \centering
+        \def\svgwidth{.9\linewidth}
+        \input{figures/time_lapse_1.pdf_tex}
+    \end{minipage}
+    \caption{State plot and time-lapse of optimization \#1 created using \symmeplot{}~\citep{stienstra_2023_symmeplot}.}
+    \label{fig:optimization1}
+\end{figure}
+\begin{figure}
+    \centering
+	\def\svgwidth{\textwidth}
+    \input{figures/states_all.pdf_tex}
+    \caption{Comparison of the errors between the optimal and target trajectories, the optimal steer angles, and optimal roll angles for optimizations \#\numrange[range-phrase=--]{1}{6}. Note that the trajectory plot has non-equal axes.}
+    \label{fig:states_all}
+\end{figure}
+
+All optimizations were successfully solved to the \ipopt{} converge tolerance from the stated initial guesses.
+Figure~\ref{fig:optimization1} shows the steer, roll, and yaw angle and angular velocity states for the optimal solution to optimization \#1.
+Additionally, Figure~\ref{fig:optimization1} includes a sequence image of the Browser bicycle traversing the optimal trajectory.
+This was produced using \symmeplot{}~\citep{stienstra_2023_symmeplot}, a visualization library build on top of \sympy{}, which has been integrated with \brim{}.
+A comparison of the optimal trajectories for all six optimizations is shown in Figure~\ref{fig:states_all}, along with comparisons of the optimal steer and roll angle states.
+
+\begin{figure}
+    \centering
+	\def\svgwidth{\textwidth}
+    \input{figures/torques_all.pdf_tex}
+    \caption{Comparison of the optimal inputs for optimizations \#\numrange[range-phrase=--]{1}{6}.}
+    \label{fig:torques_all}
+\end{figure}
+
+The optimal controls are shown in Figure~\ref{fig:torques_all}.
+Comparisons are shown for the optimal propulsion/braking torque for all optimizations and optimal steering torque for optimizations \#\numrange[range-phrase=--]{1}{5}.
+For optimization \#6, where there was no steering torque, the optimal left and right elbow torques are included.
+A final subplots compares the tracking error of the optimal trajectory in each problem.
+
+Figure~\ref{fig:states_all} shows that all bicycles follow roughly the same trajectory.
+Optimizations \#\numrange[range-phrase=--]{1}{4}, which were riderless, have consistent states and inputs, with the largest difference being seen in optimization \#1 where the bicycle is the Batavus Browser.
+Optimization \#\numrange[range-phrase=--]{5}{6}, which included the rider, exhibit trajectories with longer transitions and smoother states while also having an increased input cost.
+Comparing optimizations \#5 and \#6, it can be seen that the optimal torques in optimization \#6 are of larger magnitude while resulting in almost the same trajectory and states.
+
+\begin{table}
+\centering
+\begin{tabular}{cSSSSSS}
+\toprule
+Optimization & {Optimal cost}             & {Tracking cost}         & {Input cost} & {Mean tracking error (\si{\meter})} & {\# NLP iterations} & {Time in \ipopt{} (\si{\second})} \\
+\midrule
+\#1          & \num{3.723e-3} & \num{2.832e-3} & 8.909    & 0.038             & 45             & 3.1                               \\
+\#2          & \num{1.959e-3} & \num{1.388e-3} & 5.718    & 0.026             & 39             & 2.5                               \\
+\#3          & \num{1.925e-3} & \num{1.324e-3} & 6.114    & 0.026             & 56             & 3.4                              \\
+\#4          & \num{2.207e-3} & \num{1.661e-3} & 5.463    & 0.029             & 99             & 9.7                              \\
+\#5          & \num{7.726e-3} & \num{5.723e-3} & 20.040   & 0.053             & 136            & 30.0                              \\
+\#6          & \num{8.630e-3} & \num{5.978e-3} & 26.530   & 0.055             & 160            & 29.0    \\   \bottomrule
+\end{tabular}
+\caption{Solution and convergence metrics for optimization \#\numrange[range-phrase=--]{1}{6}. Computational metrics were produced using an \textit{Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz}.}
+\label{tab:results}
+\end{table}
+
+Table~\ref{tab:results} provides a range of metrics related to the optimization problem solves for each of the six optimization problems.
+These include the achieved optimal cost, and the tracking and input costs that contributed to these, along with the mean tracking error for each optimal trajectory.
+The number of iterations taken by \ipopt{} is provided to measure the convergence performance, and by association, the computational performance, in solving each problem.
+
+\section*{Discussion}
+
+In the optimal controls for all six problems, the steering torque near $t_0$ acts to roll the bicycle toward the centerline of the target path while steering the bicycle away from it.
+This is to be expected as the mass center must be inside the wheels during a turn for the centripetal forces to balance the bicycle.
+The optimal controls are much smaller in magnitude after this initial extreme torque.
+
+All optimal trajectories generally cross the target path in the middle.
+This can be explained by the target path's rotational symmetry and the periodicity constraints imposed at $t_0$ and $t_F$ in all of the optimization problems.
+The increased tracking error and input cost of optimization \#1 compared to the other riderless optimization \#\numrange[range-phrase=--]{2}{4} can be explained by the lower agility of the Batavus Browser bicycle.
+It is designed to be a stable city bicycle and is almost twice as heavy as the Gary Fisher and Bianchi Pista bicycles.
+
+The solutions to optimizations \#3 and \#4 are similar by multiple measures. Qualitatively, the optimal states (Figure~\ref{fig:states_all}) and inputs (Figure~\ref{fig:torques_all}) appear near identical. Quantitatively, the optimal cost is 14.6\% larger for optimization \#4 due to a larger tracking error, despite a lower input cost. As the target trajectory follows a path on flat ground, it should be expected that there will be very little to no travel in the suspension during the maneuver, and therefore the presence of suspension should have little effect on the results.
+
+Comparing the solutions of optimizations \#1 and \#5, the shape of the optimal trajectories differs with much larger deviations from the target path at the transitions between the straights and the chicane being exhibited in optimization \#5. This is to be expected as the addition of the rider results in a large increase in the mass and inertia of the system, and an increase in the height of the mass center. The optimal cost is more than twice as large in optimization \#5, which can be attributed in equal parts to both more-than-doubling of the tracking and input costs. Despite the initial input from the steering torque being smaller, the steering torque during optimization \#5 remains at a much higher level during the maneuver, which is required to control the additional mass and inertia of the rider.
+
+The trajectories in optimizations \#5 and \#6 have the same shape, which is expected as the inertia is the same.
+Only the method of how the steering torque is applied differs.
+In optimization \#6, the pair of elbow torques are relatively symmetrical to one another.
+It is more efficient in terms of the objective function for both elbow torques contribute equally to steering.
+Still, the combined magnitude of the elbow torques is relatively larger than the steering torque in optimization \#5  because the efficiency of each arm is dependent on the steering angle.
+
+All optimization problems were solved using \opty{}'s backwards Euler collocation.
+With this method, the state within a given mesh interval is only affected by the inputs at the interval final time.
+In other words, the inputs only influence the states in the preceding mesh section.
+Therefore, the inputs at $t_0$ do not influence the states at all.
+However, the inputs at $t_0$ do contribute to the objective function.
+In all optimizations, the inputs at $t_0$ are always optimized to 0.0 because this is the value that minimizes the objective function and doing so does not affect the dynamics in any way.
+This is a limitation of the backwards Euler method and the results could be improved if a discretization scheme that collocates the initial time was used.
 
 \section*{Conclusion}
 
-\todo[inline]{Summarize conclusions from Timo's thesis}
+This paper has presented \brim{}, an open-source package for bicycle-rider modeling.
+\brim{} enables model users to readily create bicycle and bicycle-rider models from its library of composable submodels.
+It also facilitates model developers to implement their own models and extensions, which can be used in tandem with all other aspects of the package. 
+Additionally, benchmarking of the EoMs generated by \brim{} shows that these are of comparable performance to handcrafted EoMs.
 
-\todo[inline]{Add acknowledgements etc., specifically mention CZI with reference to funding using specific wording}
+\brim{}'s functionality has been demonstrated by formulating and solving multiple novel trajectory tracking optimization problems of bicycle and bicycle-rider models.
+A comparison of the minimized steer torques required for a lane change maneuver for three different bicycle geometries has showcased how \brim{} enables simple reparametrization of models.
+The modularity of \brim{} has been illustrated by comparing a bicycle model with a rigid fork to one with suspension.
+By attaching a rider that can be actuated in a different way to a bicycle, \brim{}'s models have been shown to be easily extended and modified.
+
+A limitation of \brim{} is that it forces model developers to use an existing interface for augmented model components. These interfaces can limit flexibility, especially if a component requires additional properties to be interacted with.
+While connections largely solve this problem, an over-usage of them can result in a cluttering of the codebase.
+
+Further development of \brim{} continues.
+Work is currently underway to add further models to \brim{}, improve the package's ability to interface with simulation and optimization tools like \opty{}, and develop further teaching materials like a tutorial workshop.
+Examples of models currently under development include tire models and rider models actuated by musculotendons.
+
+An obvious next step is for other researchers to use \brim{} in their own work.
+This would provide valuable feedback, which could help guide the future development of the package.
+\brim{}'s permissive open-source license also means that its source code can be reviewed and critiqued by others, ensuring the accuracy and validity of its models, which will benefit all users and their work.
+Our hope is that \brim{} can become a foundational tool for bicycle dynamics research, improving the ease, speed, and accuracy of work done in this area, by helping researchers to develop and share their models in the future.
+
+\section*{Acknowledgments}
 This project has been made possible in part by CZI grant CZIF2021-006198 and grant DOI https://doi.org/10.37921/240361looxoj from the Chan Zuckerberg Initiative Foundation (funder DOI 10.13039/100014989).
-
-
 
 \bibliographystyle{apalike}
 \bibliography{references.bib}

@@ -1,0 +1,91 @@
+%% Creator: Inkscape 1.1 (c68e22c387, 2021-05-23), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'schematic_whipple_bicycle.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{654.9151323bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.3049604)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{schematic_whipple_bicycle.pdf}}%
+    \put(0.40418903,0.278814){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}RigidRearFrame\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{schematic_whipple_bicycle.pdf}}%
+    \put(0.64774224,0.208042){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}RigidFrontFrame\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{schematic_whipple_bicycle.pdf}}%
+    \put(0.64774221,0.2774813){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}FrontFrameBase\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{schematic_whipple_bicycle.pdf}}%
+    \put(0.20774261,0.27748133){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}RearFrameBase\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{schematic_whipple_bicycle.pdf}}%
+    \put(0.76305286,0.14187658){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}KnifeEdgeWheel\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{schematic_whipple_bicycle.pdf}}%
+    \put(0.23357646,0.21331499){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}KnifeEdgeWheel\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{schematic_whipple_bicycle.pdf}}%
+    \put(0.78144842,0.01587226){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}FlatGround\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{schematic_whipple_bicycle.pdf}}%
+    \put(0.0564673,0.21174856){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}WheelBase\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{schematic_whipple_bicycle.pdf}}%
+    \put(0.942811,0.1374008){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}WheelBase\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=10]{schematic_whipple_bicycle.pdf}}%
+    \put(0.93726632,0.01430579){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}GroundBase\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=11]{schematic_whipple_bicycle.pdf}}%
+    \put(0.77221436,0.07887442){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}NonHolonomicTire\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=12]{schematic_whipple_bicycle.pdf}}%
+    \put(0.13110283,0.07715074){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}NonHolonomicTire\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=13]{schematic_whipple_bicycle.pdf}}%
+    \put(0.94422872,0.07730796){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}TireBase\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=14]{schematic_whipple_bicycle.pdf}}%
+    \put(0.12985994,0.14518661){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}TireBase\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=15]{schematic_whipple_bicycle.pdf}}%
+    \put(0.82573438,0.29219932){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Inheritance\end{tabular}}}}%
+    \put(0.82664474,0.26638315){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Aggregation\end{tabular}}}}%
+    \put(0.82664474,0.2368847){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Abstract class\end{tabular}}}}%
+    \put(0.82521772,0.20922736){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Model or Connection\\\end{tabular}}}}%
+    \put(0.82591482,0.18173407){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Connection\end{tabular}}}}%
+  \end{picture}%
+\endgroup%
