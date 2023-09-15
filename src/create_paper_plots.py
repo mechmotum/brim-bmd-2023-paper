@@ -1,23 +1,23 @@
+import contextlib
 import os
 
 import cloudpickle as cp
 import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
 import numpy as np
 import numpy.typing as npt
 import scienceplots  # noqa: F401
 import sympy as sm
 from cycler import cycler
-import contextlib
+from matplotlib.gridspec import GridSpec
 
 from utils import create_time_lapse, get_solution_statistics
 
 plt.style.use(["science", "no-latex"])
 plt.rcParams["font.family"] = "Times New Roman"
-plt.rcParams["xtick.major.pad"] += 2.0
-plt.rcParams["xtick.minor.pad"] += 2.0
-plt.rcParams["ytick.major.pad"] += 2.0
-plt.rcParams["ytick.minor.pad"] += 2.0
+plt.rcParams["xtick.major.pad"] += 3.0
+plt.rcParams["xtick.minor.pad"] += 3.0
+plt.rcParams["ytick.major.pad"] += 3.0
+plt.rcParams["ytick.minor.pad"] += 3.0
 plt.rcParams['svg.fonttype'] = 'none'
 plt.rcParams['axes.prop_cycle'] = cycler(
     'color', ['#0C5DA5', '#00B945', '#FF2C00', '#FF9500', '#845B97', '#474747',
@@ -98,6 +98,11 @@ print(statistics)
 print("Plotting...")
 optimization = 1
 fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 6)
+ax.plot(q1_path, q2_path, np.zeros_like(q1_path), label="Target", color="r")
+ax.plot(get_x(data_lst[optimization - 1], "q_x"),
+        get_x(data_lst[optimization - 1], "q_y"), np.zeros_like(q1_path),
+        label="Trajectory", **OPTIMIZATION_STYLES[optimization - 1])
+ax.legend(loc="upper left", bbox_to_anchor=(0.16, 0.77))
 savefig(fig_time_lapse, f"time_lapse_{optimization}")
 
 fig = plt.figure(figsize=(10, 5))
@@ -126,21 +131,26 @@ for i, data in enumerate(data_lst[:-1], 1):
                    **OPTIMIZATION_STYLES[i - 1])
     axs[1, 0].plot(data.time_array, get_r(data, "T_p"),
                    **OPTIMIZATION_STYLES[i - 1])
+axs[1, 0].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_p"),
+               **OPTIMIZATION_STYLES[-1])
 axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_l"), color="C6",
                label="left")
 axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_r"), color="C7",
                label="right")
-axs[1, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_p"),
-               **OPTIMIZATION_STYLES[-1], label=f"\#6")
-axs[0, 0].set_ylabel("Steer torque (Nm)")
-axs[1, 0].set_ylabel("Pedal torque (Nm)")
+for i, data in enumerate(data_lst, 1):
+    tracking_error = np.abs(sm.lambdify((data.x,), data.target)(data.solution_state))
+    axs[1, 1].plot(data.time_array, tracking_error, **OPTIMIZATION_STYLES[i - 1])
+for i in range(2):
+    axs[-1, i].set_xlabel("Time (s)")
+axs[0, 0].set_ylabel("Steering torque (Nm)")
+axs[1, 0].set_ylabel("Pedaling torque (Nm)")
 axs[0, 1].set_ylabel("Elbow torque (Nm)")
-axs[1, 1].set_ylabel("Pedal torque (Nm)")
+axs[1, 1].set_ylabel("Tracking error (m)")
 axs[0, 1].legend()
 fig.legend(*legend_optimization, loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
 fig.align_labels()
 fig.tight_layout()
-savefig(fig, f"torques_all")
+savefig(fig, "torques_all")
 
 fig_state, axs = plt.subplots(2, 1, figsize=(5, 3.7), sharex=True)
 data = data_lst[optimization - 1]
