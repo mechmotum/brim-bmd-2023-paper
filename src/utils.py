@@ -318,7 +318,7 @@ def _plot_ground(data: DataStorage, plotter: Plotter):
     q2_arr = data.solution_state[data.system.q[:].index(data.bicycle.q[1]), :]
     p, p_vals = zip(*data.constants.items())
 
-    front_contact_coord = data.bicycle.front_tyre.contact_point.pos_from(
+    front_contact_coord = data.bicycle.front_tire.contact_point.pos_from(
         plotter.origin).to_matrix(plotter.inertial_frame)[:2]
     eval_fc = sm.lambdify((data.system.q[:] + data.system.u[:], p), front_contact_coord,
                           cse=True)

@@ -11,7 +11,7 @@ The environment can be activated using:
 conda activate brim-bmd-2023-paper
 ```
 While a lock file will be added in the future, the commit hash of [`BRiM`] used in this
-paper is `64e7d1832344cbcdac1e046725b7af411370da77`. Its associated `SymPy` commit hash
+paper is `a9e0d26abe5c6cd6ae97a38084896ab9c610b471`. Its associated `SymPy` commit hash
 is `4e314f4c3c8d3cddaf7bcd30d9f2528b683ed317`.
 
 ### Running the Optimizations
@@ -29,14 +29,14 @@ The optimizations are numbered as follows:
 - `2`: This is the same as the base case but with the `"Pista"` parametrization.
 - `3`: This is the same as the base case but with the `"Fisher"` parametrization.
 - `4`: This modifies optimization `3` by replacing the rigid front frame with one with
-  suspension.
+  fork suspension.
 - `5`: This is a bicycle-rider model. It extends the base case with a rigidly attached
   upper-body rider model, where the shoulders are modeled to allow flexion and rotation,
   and the elbows are pin joints.
 - `6`: This modifies optimization `5` by replacing the steering torque with a pair of
   torque actuators at the elbows of the rider model.
 
-To run all of the optimizations, use:
+To run all the optimizations, use:
 ```bash
 python ./src/run_optimization.py --all
 ```

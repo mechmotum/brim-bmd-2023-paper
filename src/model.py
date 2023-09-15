@@ -26,8 +26,8 @@ def set_bicycle_model(data: DataStorage):
     bicycle.rear_frame = bm.RigidRearFrame("rear_frame")
     bicycle.front_wheel = bm.KnifeEdgeWheel("front_wheel")
     bicycle.rear_wheel = bm.KnifeEdgeWheel("rear_wheel")
-    bicycle.front_tyre = bm.NonHolonomicTyre("front_tyre")
-    bicycle.rear_tyre = bm.NonHolonomicTyre("rear_tyre")
+    bicycle.front_tire = bm.NonHolonomicTire("front_tire")
+    bicycle.rear_tire = bm.NonHolonomicTire("rear_tire")
     bicycle.ground = bm.FlatGround("ground")
 
     bicycle_rider = bm.BicycleRider("bicycle_rider")
