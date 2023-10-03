@@ -17,7 +17,7 @@ is `4e314f4c3c8d3cddaf7bcd30d9f2528b683ed317`.
 ### Running the Optimizations
 A specific optimization can be run using:
 ```bash
-python ./src/run_optimization.py -n <optimization_number>
+python ./src/run_optimizations.py -n <optimization_number>
 ```
 where `<optimization_number>` is the number of the optimization to run.
 The optimizations are numbered as follows:
@@ -38,7 +38,7 @@ The optimizations are numbered as follows:
 
 To run all the optimizations, use:
 ```bash
-python ./src/run_optimization.py --all
+python ./src/run_optimizations.py --all
 ```
  ### Creating the Figures
 The figures can be created using:
