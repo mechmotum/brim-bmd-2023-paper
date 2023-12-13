@@ -110,16 +110,7 @@ def get_all_symbols_from_model(brim_obj: BrimBase) -> set[sm.Symbol]:
     return syms
 
 
-def get_solution_statistics(result_dir, data: DataStorage = None):
-    if data is None:
-        with open(os.path.join(result_dir, "data.pkl"), "rb") as f:
-            data = cp.load(f)
-    tracking_cost = data.target ** 2
-    input_cost = sum(i ** 2 for i in data.input_vars)
-    tracking_cost_val = create_objective_function(data, tracking_cost)[0](data.solution)
-    input_cost_val = create_objective_function(data, input_cost)[0](data.solution)
-    mean_tracking_error = np.sqrt(tracking_cost_val / data.metadata.duration)
-    estimated_torque = np.sqrt(input_cost_val / data.metadata.duration)
+def get_ipopt_statistics(result_dir):
     with open(os.path.join(result_dir, "ipopt.txt"), "r", encoding="utf-8") as f:
         ipopt_output = f.read()
     objective = float(re.search(
@@ -131,13 +122,31 @@ def get_solution_statistics(result_dir, data: DataStorage = None):
     ipopt_exit = re.search(re.compile(f"EXIT: (.*)"), ipopt_output).group(1)
     return {
         "Objective": objective,
+        "#NLP iterations": nlp_iterations,
+        "Time in Ipopt": ipopt_time,
+        "Ipopt exit status": ipopt_exit,
+    }
+
+def get_solution_statistics(result_dir, data: DataStorage = None):
+    if data is None:
+        with open(os.path.join(result_dir, "data.pkl"), "rb") as f:
+            data = cp.load(f)
+    tracking_cost = data.target ** 2
+    input_cost = sum(i ** 2 for i in data.input_vars)
+    tracking_cost_val = create_objective_function(data, tracking_cost)[0](data.solution)
+    input_cost_val = create_objective_function(data, input_cost)[0](data.solution)
+    mean_tracking_error = np.sqrt(tracking_cost_val / data.metadata.duration)
+    estimated_torque = np.sqrt(input_cost_val / data.metadata.duration)
+    ipopt_stats = get_ipopt_statistics(result_dir)
+    return {
+        "Objective": ipopt_stats["Objective"],
         "Tracking cost": tracking_cost_val,
         "Input cost": input_cost_val,
         "Mean tracking error": mean_tracking_error,
         "Estimated torque": estimated_torque,
-        "#NLP iterations": nlp_iterations,
-        "Time in Ipopt": ipopt_time,
-        "Ipopt exit status": ipopt_exit,
+        "#NLP iterations": ipopt_stats["#NLP iterations"],
+        "Time in Ipopt": ipopt_stats["Time in Ipopt"],
+        "Ipopt exit status": ipopt_stats["Ipopt exit status"],
     }
 
 
