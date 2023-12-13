@@ -85,7 +85,7 @@ def set_bicycle_model(data: DataStorage):
 
     # Apply additional forces and torques to the system.
     g = sm.Symbol("g")
-    system.apply_gravity(-g * bicycle.ground.get_normal(bicycle.ground.origin))
+    system.apply_uniform_gravity(-g * bicycle.ground.get_normal(bicycle.ground.origin))
     pedal_torque = me.dynamicsymbols("T_p")
     system.add_loads(
         me.Torque(bicycle.rear_wheel.body,
@@ -176,7 +176,7 @@ def set_bicycle_model(data: DataStorage):
 
     syms = get_all_symbols_from_model(bicycle_rider)
     missing_constants = syms.difference(constants.keys()).difference({
-        bicycle.symbols["gear_ratio"], 0, *input_vars})
+        bicycle.symbols.get("gear_ratio", 0), 0, *input_vars})
     if data.metadata.model_upper_body:
         missing_constants = missing_constants.difference(
             bicycle_rider.seat.symbols.values())

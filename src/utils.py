@@ -212,7 +212,7 @@ def create_plots(data: DataStorage) -> tuple[plt.Figure, plt.Axes]:
     get_u = lambda u_name: x_arr[len(data.system.q) +  # noqa: E731
                                  data.system.u[:].index(us[u_name]), :]
     fig, axs = plt.subplots(2, 2, figsize=(8, 4))
-    axs[0, 1].get_shared_x_axes().join(axs[0, 1], axs[1, 1])
+    axs[0, 1].sharex(axs[1, 1])
     axs[0, 0].plot(q1_path, q2_path, label="target")
     axs[0, 0].plot(get_q("x"), get_q("y"), label="trajectory")
     axs[0, 0].set_xlabel("Longitudinal displacement (m)")

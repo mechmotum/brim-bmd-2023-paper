@@ -7,8 +7,8 @@ import brim as bm
 import numpy as np
 import numpy.typing as npt
 import sympy as sm
+import sympy.physics.mechanics as me
 from opty.direct_collocation import Problem
-from sympy.physics.mechanics._system import System
 
 from simulator import Simulator
 
@@ -83,7 +83,7 @@ class DataStorage:
     bicycle_rider: bm.BicycleRider | None = None
     bicycle: bm.WhippleBicycle | None = None
     rider: bm.Rider | None = None
-    system: System | None = None
+    system: me.System | None = None
     eoms: sm.ImmutableMatrix | None = None
     input_vars: sm.ImmutableMatrix | None = None
     constants: dict[sm.Basic, float] | None = None

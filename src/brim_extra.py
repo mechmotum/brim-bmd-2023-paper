@@ -3,8 +3,8 @@ from typing import Any
 from brim.core import Attachment
 from brim.rider.base_connections import LeftShoulderBase, RightShoulderBase
 from sympy import Matrix
-from sympy.physics.mechanics import PinJoint, ReferenceFrame, dynamicsymbols, Point
-from sympy.physics.mechanics._system import System
+from sympy.physics.mechanics import (
+    PinJoint, ReferenceFrame, dynamicsymbols, Point, System)
 
 
 class FlexRotShoulderMixin:
