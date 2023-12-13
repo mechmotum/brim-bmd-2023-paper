@@ -83,7 +83,8 @@ for i in statistics["optimization"]:
         if key not in statistics:
             statistics[key] = []
         statistics[key].append(value)
-q1_path = np.linspace(0, data_lst[0].metadata.longitudinal_displacement, 100)
+q1_path = np.linspace(
+    0, data_lst[0].metadata.longitudinal_displacement, len(data_lst[0].time_array))
 q2_path = sm.lambdify(
     (data_lst[0].bicycle.q[0],),
     sm.solve(data_lst[0].target, data_lst[0].bicycle.q[1])[0], cse=True)(q1_path)
