@@ -11,34 +11,20 @@ if args.all:
     args.n = list(range(1, 7))
 for i in args.n:
     result_dir = os.path.join(output_dir, f"optimization{i}")
-    if not os.path.exists(result_dir):
-        os.mkdir(result_dir)
-    else:
+    if os.path.exists(result_dir):
         shutil.rmtree(result_dir)
-if 1 in args.n:
-    result_dir = os.path.join(output_dir, "optimization1")
-    os.system(f"python ./src/run.py --bicycle-only --steer-with PEDAL_STEER_TORQUE "
-              f"--bicycle-parametrization Browser --output {result_dir}")
-if 2 in args.n:
-    result_dir = os.path.join(output_dir, "optimization2")
-    os.system(f"python ./src/run.py --bicycle-only --steer-with PEDAL_STEER_TORQUE "
-              f"--bicycle-parametrization Pista --output {result_dir}")
-if 3 in args.n:
-    result_dir = os.path.join(output_dir, "optimization3")
-    os.system(f"python ./src/run.py --bicycle-only --steer-with PEDAL_STEER_TORQUE "
-              f"--bicycle-parametrization Fisher --output {result_dir}")
-if 4 in args.n:
-    result_dir = os.path.join(output_dir, "optimization4")
-    os.system(f"python ./src/run.py --bicycle-only --front-frame-suspension "
-              f"--steer-with PEDAL_STEER_TORQUE --bicycle-parametrization Fisher "
-              f"--output {result_dir}")
-if 5 in args.n:
-    result_dir = os.path.join(output_dir, "optimization5")
-    os.system(f"python ./src/run.py --model-upper-body --shoulder-type FLEX_ROT "
-              f"--steer-with PEDAL_STEER_TORQUE --bicycle-parametrization Browser "
-              f"--rider-parametrization Jason --output {result_dir}")
-if 6 in args.n:
-    result_dir = os.path.join(output_dir, "optimization6")
-    os.system(f"python ./src/run.py --model-upper-body --shoulder-type FLEX_ROT "
-              f"--steer-with HUMAN_TORQUE --bicycle-parametrization Browser "
-              f"--rider-parametrization Jason --output {result_dir}")
+    os.mkdir(result_dir)
+opt_options = [
+    "--bicycle-only --steer-with PEDAL_STEER_TORQUE --bicycle-parametrization Browser",
+    "--bicycle-only --steer-with PEDAL_STEER_TORQUE --bicycle-parametrization Pista",
+    "--bicycle-only --steer-with PEDAL_STEER_TORQUE --bicycle-parametrization Fisher",
+    "--bicycle-only --steer-with PEDAL_STEER_TORQUE --bicycle-parametrization Fisher"
+    " --front-frame-suspension",
+    "--model-upper-body --steer-with PEDAL_STEER_TORQUE --shoulder-type FLEX_ROT"
+    " --bicycle-parametrization Browser --rider-parametrization Jason",
+    "--model-upper-body --steer-with HUMAN_TORQUE --shoulder-type FLEX_ROT"
+    " --bicycle-parametrization Browser --rider-parametrization Jason",
+]
+for opt_n in args.n:
+    result_dir = os.path.join(output_dir, f"optimization{opt_n}")
+    os.system(f"python ./src/run.py {opt_options[opt_n - 1]} --output {result_dir}")
