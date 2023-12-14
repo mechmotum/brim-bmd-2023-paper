@@ -143,6 +143,7 @@ def set_bicycle_model(data: DataStorage):
     bicycle_params = bp.Bicycle(
         data.metadata.bicycle_parametrization,
         pathToData=data.metadata.parameter_data_dir)
+    # Rough esitmations of bicycle parameters for plotting purposes.
     if data.metadata.bicycle_parametrization == "Fisher":
         bicycle_params.parameters["Measured"]["hbb"] = 0.3
         bicycle_params.parameters["Measured"]["lcs"] = 0.44
@@ -152,6 +153,15 @@ def set_bicycle_model(data: DataStorage):
         bicycle_params.parameters["Measured"]["whb"] = 0.6
         bicycle_params.parameters["Measured"]["LhbR"] = 1.11
         bicycle_params.parameters["Measured"]["LhbF"] = 0.65
+    elif data.metadata.bicycle_parametrization == "Pista":
+        bicycle_params.parameters["Measured"]["hbb"] = 0.27
+        bicycle_params.parameters["Measured"]["lcs"] = 0.41
+        bicycle_params.parameters["Measured"]["lsp"] = 0.24
+        bicycle_params.parameters["Measured"]["lst"] = 0.52
+        bicycle_params.parameters["Measured"]["lamst"] = 1.32
+        bicycle_params.parameters["Measured"]["whb"] = 0.42
+        bicycle_params.parameters["Measured"]["LhbR"] = 1.18
+        bicycle_params.parameters["Measured"]["LhbF"] = 0.51
     if not data.metadata.bicycle_only:
         bicycle_params.add_rider(data.metadata.rider_parametrization, reCalc=True)
     constants = bicycle_rider.get_param_values(bicycle_params)
