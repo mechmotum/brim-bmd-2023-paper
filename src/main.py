@@ -26,11 +26,11 @@ STRAIGHT_LENGTHS = 2.5
 NUM_NODES = 100
 DURATION = 2.0
 mean_tracking_error = 0.025
-estimated_torque = 2.5
+estimated_torque = 0.5
 control_weight = DURATION * mean_tracking_error ** 2  # Aimed path cost
 path_weight = DURATION * estimated_torque ** 2  # Estimated input cost
 WEIGHT = path_weight / (control_weight + path_weight)
-WEIGHT = 1 - 1E-4  # Overwrite the above to match the paper.
+WEIGHT = 1 - 25E-4  # Overwrite the above to match the paper.
 
 METADATA = Metadata(
     bicycle_only=False,
