@@ -20,10 +20,7 @@ def set_constraints(data: DataStorage) -> None:
     initial_state_constraints = {
         bicycle.q[0]: 0.0,
         bicycle.q[1]: 0.0,
-        bicycle.q[2]: 0.0,
-        bicycle.q[3]: 0.0,
         bicycle.q[5]: 0.0,
-        bicycle.q[6]: 0.0,
         bicycle.q[7]: 0.0,
     }
     if data.metadata.front_frame_suspension:
@@ -33,12 +30,13 @@ def set_constraints(data: DataStorage) -> None:
     final_state_constraints = {
         bicycle.q[0]: data.metadata.longitudinal_displacement,
         bicycle.q[1]: data.metadata.lateral_displacement,
-        bicycle.q[2]: 0.0,
-        bicycle.q[3]: 0.0,
-        bicycle.q[6]: 0.0,
     }
 
     instance_constraints = (
+        # Periodic positions.
+        bicycle.q[2].replace(t, t0) + bicycle.q[2].replace(t, tf),
+        bicycle.q[3].replace(t, t0) + bicycle.q[3].replace(t, tf),
+        bicycle.q[6].replace(t, t0) + bicycle.q[6].replace(t, tf),
         # Periodic velocities.
         bicycle.u[0].replace(t, t0) - bicycle.u[0].replace(t, tf),
         bicycle.u[1].replace(t, t0) + bicycle.u[1].replace(t, tf),
