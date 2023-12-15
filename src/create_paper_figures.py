@@ -24,6 +24,7 @@ plt.rcParams['axes.prop_cycle'] = cycler(
               '#9e9e9e', '#008080'])
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
+PLOT_MIDPOINT = True
 PAGE_WIDTH = 7.275454  # LaTeX \textwidth in inches
 markevery = 6
 OPTIMIZATION_STYLES = [
@@ -68,6 +69,15 @@ def get_r(data, ri) -> npt.NDArray[np.float64]:
     return data.solution_input[data.r[:].index(ri), :]
 
 
+def plot(ax, *args, **kwargs) -> None:
+    args = list(args)
+    if PLOT_MIDPOINT:
+        n_arrays = 3 if ax.name == "3d" else 2
+        for i, arg in enumerate(args[:n_arrays]):
+            args[i] = (arg[:-1] + arg[1:]) / 2
+    ax.plot(*args, **kwargs)
+
+
 def savefig(fig: plt.Figure, name: str) -> None:
     fig.savefig(os.path.join(OUTPUT_DIR, name + ".svg"), dpi=300, bbox_inches="tight")
 
@@ -99,8 +109,8 @@ print(statistics)
 print("Plotting...")
 optimization = 1
 fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 6)
-ax.plot(q1_path, q2_path, np.zeros_like(q1_path), label="Target", color="r")
-ax.plot(get_x(data_lst[optimization - 1], "q_x"),
+plot(ax, q1_path, q2_path, np.zeros_like(q1_path), label="Target", color="r")
+plot(ax, get_x(data_lst[optimization - 1], "q_x"),
         get_x(data_lst[optimization - 1], "q_y"), np.zeros_like(q1_path),
         label="Trajectory", **OPTIMIZATION_STYLES[optimization - 1])
 ax.legend(loc="upper left", bbox_to_anchor=(0.16, 0.77))
@@ -110,15 +120,15 @@ fig = plt.figure(figsize=(10, 5))
 gs = GridSpec(2, 2, figure=fig)
 axs = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 1])]
 axs[1].sharex(axs[2])
-axs[0].plot(q1_path, q2_path, label="Target", color="C6", linestyle="-.")
+plot(axs[0], q1_path, q2_path, label="Target", color="C6", linestyle="-.")
 for i, data in enumerate(data_lst, 1):
-    axs[0].plot(get_x(data, "q_x"), get_x(data, "q_y"), **OPTIMIZATION_STYLES[i - 1])
+    plot(axs[0], get_x(data, "q_x"), get_x(data, "q_y"), **OPTIMIZATION_STYLES[i - 1])
 axs[0].set_xlabel("Longitudinal displacement (m)")
 axs[0].set_ylabel("Lateral displacement (m)")
 axs[0].legend()
 for j, xi_name in enumerate(["steer", "roll"], 1):
     for i, data in enumerate(data_lst, 1):
-        axs[j].plot(data.time_array, np.rad2deg(get_x(data, f"q_{xi_name}")),
+        plot(axs[j], data.time_array, np.rad2deg(get_x(data, f"q_{xi_name}")),
                     **OPTIMIZATION_STYLES[i - 1])
     axs[j].set_ylabel(f"{xi_name.capitalize()} angle (deg)")
 axs[-1].set_xlabel("Time (s)")
@@ -128,19 +138,19 @@ savefig(fig, "states_all")
 
 fig, axs = plt.subplots(2, 2, figsize=(10, 5), sharex=True)
 for i, data in enumerate(data_lst[:-1], 1):
-    axs[0, 0].plot(data.time_array, get_r(data, "T_s"),
+    plot(axs[0, 0], data.time_array, get_r(data, "T_s"),
                    **OPTIMIZATION_STYLES[i - 1])
-    axs[1, 0].plot(data.time_array, get_r(data, "T_p"),
+    plot(axs[1, 0], data.time_array, get_r(data, "T_p"),
                    **OPTIMIZATION_STYLES[i - 1])
-axs[1, 0].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_p"),
+plot(axs[1, 0], data_lst[-1].time_array, get_r(data_lst[-1], "T_p"),
                **OPTIMIZATION_STYLES[-1])
-axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_l"), color="C6",
+plot(axs[0, 1], data_lst[-1].time_array, get_r(data_lst[-1], "T_l"), color="C6",
                label="left")
-axs[0, 1].plot(data_lst[-1].time_array, get_r(data_lst[-1], "T_r"), color="C7",
+plot(axs[0, 1], data_lst[-1].time_array, get_r(data_lst[-1], "T_r"), color="C7",
                label="right")
 for i, data in enumerate(data_lst, 1):
     tracking_error = np.abs(sm.lambdify((data.x,), data.target)(data.solution_state))
-    axs[1, 1].plot(data.time_array, tracking_error * 1E3, **OPTIMIZATION_STYLES[i - 1])
+    plot(axs[1, 1], data.time_array, tracking_error * 1E3, **OPTIMIZATION_STYLES[i - 1])
 for i in range(2):
     axs[-1, i].set_xlabel("Time (s)")
 axs[0, 0].set_ylabel("Steering torque (Nm)")
@@ -156,8 +166,8 @@ savefig(fig, "torques_all")
 fig_state, axs = plt.subplots(2, 1, figsize=(5, 3.7), sharex=True)
 data = data_lst[optimization - 1]
 for xi_name in ("steer", "roll", "yaw"):
-    axs[0].plot(data.time_array, np.rad2deg(get_x(data, f"q_{xi_name}")), label=xi_name)
-    axs[1].plot(data.time_array, np.rad2deg(get_x(data, f"u_{xi_name}")), label=xi_name)
+    plot(axs[0], data.time_array, np.rad2deg(get_x(data, f"q_{xi_name}")), label=xi_name)
+    plot(axs[1], data.time_array, np.rad2deg(get_x(data, f"u_{xi_name}")), label=xi_name)
 axs[-1].set_xlabel("Time (s)")
 axs[0].set_ylabel("Angle (deg)")
 axs[1].set_ylabel("Angular velocity (deg/s)")
