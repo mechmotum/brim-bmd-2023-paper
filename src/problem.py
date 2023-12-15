@@ -132,7 +132,7 @@ def set_problem(data: DataStorage) -> None:
         known_parameter_map=data.constants,
         instance_constraints=data.constraints.instance_constraints,
         bounds=data.constraints.bounds,
-        integration_method='backward euler',
+        integration_method='midpoint',
     )
     if tuple(data.input_vars) != tuple(problem.collocator.unknown_input_trajectories):
         raise AssertionError(f"Input variables do not match: {tuple(data.input_vars)}!="
