@@ -24,7 +24,8 @@ plt.rcParams['axes.prop_cycle'] = cycler(
               '#9e9e9e', '#008080'])
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
-PLOT_MIDPOINT = True
+PLOT_MIDPOINT = False
+REMOVE_FIRST_NODE = False
 PAGE_WIDTH = 7.275454  # LaTeX \textwidth in inches
 markevery = 6
 OPTIMIZATION_STYLES = [
@@ -75,6 +76,9 @@ def plot(ax, *args, **kwargs) -> None:
         n_arrays = 3 if ax.name == "3d" else 2
         for i, arg in enumerate(args[:n_arrays]):
             args[i] = (arg[:-1] + arg[1:]) / 2
+    elif REMOVE_FIRST_NODE:
+        for i, arg in enumerate(args):
+            args[i] = arg[1:]
     ax.plot(*args, **kwargs)
 
 
