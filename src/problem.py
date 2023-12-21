@@ -20,7 +20,10 @@ def set_constraints(data: DataStorage) -> None:
     initial_state_constraints = {
         bicycle.q[0]: 0.0,
         bicycle.q[1]: 0.0,
+        bicycle.q[2]: 0.0,
+        bicycle.q[3]: 0.0,
         bicycle.q[5]: 0.0,
+        bicycle.q[6]: 0.0,
         bicycle.q[7]: 0.0,
     }
     if data.metadata.front_frame_suspension:
@@ -30,25 +33,19 @@ def set_constraints(data: DataStorage) -> None:
     final_state_constraints = {
         bicycle.q[0]: data.metadata.longitudinal_displacement,
         bicycle.q[1]: data.metadata.lateral_displacement,
+        bicycle.q[2]: 0.0,
+        bicycle.q[3]: 0.0,
+        bicycle.q[6]: 0.0,
     }
 
     instance_constraints = (
-        # Periodic positions.
-        bicycle.q[2].replace(t, t0) + bicycle.q[2].replace(t, tf),
-        bicycle.q[3].replace(t, t0) + bicycle.q[3].replace(t, tf),
-        bicycle.q[6].replace(t, t0) + bicycle.q[6].replace(t, tf),
         # Periodic velocities.
-        bicycle.u[0].replace(t, t0) - bicycle.u[0].replace(t, tf),
-        bicycle.u[1].replace(t, t0) + bicycle.u[1].replace(t, tf),
-        bicycle.u[2].replace(t, t0) + bicycle.u[2].replace(t, tf),
-        bicycle.u[3].replace(t, t0) + bicycle.u[3].replace(t, tf),
-        bicycle.u[4].replace(t, t0) - bicycle.u[4].replace(t, tf),
         bicycle.u[5].replace(t, t0) - bicycle.u[5].replace(t, tf),
-        bicycle.u[6].replace(t, t0) + bicycle.u[6].replace(t, tf),
         bicycle.u[7].replace(t, t0) - bicycle.u[7].replace(t, tf),
     )
+    t1 = data.metadata.duration / data.metadata.num_nodes
     instance_constraints += tuple(
-        xi.replace(t, t0) - xi_val for xi, xi_val in initial_state_constraints.items()
+        xi.replace(t, t1) - xi_val for xi, xi_val in initial_state_constraints.items()
     ) + tuple(
         xi.replace(t, tf) - xi_val for xi, xi_val in final_state_constraints.items()
     )
@@ -132,7 +129,7 @@ def set_problem(data: DataStorage) -> None:
         known_parameter_map=data.constants,
         instance_constraints=data.constraints.instance_constraints,
         bounds=data.constraints.bounds,
-        integration_method='midpoint',
+        integration_method='backward euler',
     )
     if tuple(data.input_vars) != tuple(problem.collocator.unknown_input_trajectories):
         raise AssertionError(f"Input variables do not match: {tuple(data.input_vars)}!="
