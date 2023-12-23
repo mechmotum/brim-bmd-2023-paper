@@ -1,4 +1,4 @@
-%% Creator: Inkscape 1.1 (c68e22c387, 2021-05-23), www.inkscape.org
+%% Creator: Inkscape 1.3.2 (091e20e, 2023-11-25, custom), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'torques_all.pdf' (pdf, eps, ps)
 %%
@@ -38,7 +38,7 @@
   \newcommand*\fsize{\dimexpr\f@size pt\relax}%
   \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{703.47381592bp}%
+    \setlength{\unitlength}{703.51721191bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,114 +50,110 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.52201746)%
+  \begin{picture}(1,0.52198526)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{torques_all.pdf}}%
-    \put(0.02729535,0.30298263){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−10\end{tabular}}}}%
+    \put(0.04150796,0.30618806){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−1\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{torques_all.pdf}}%
-    \put(0.03440293,0.3517174){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−5\end{tabular}}}}%
+    \put(0.04961011,0.35401767){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{torques_all.pdf}}%
-    \put(0.04250558,0.40005237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
+    \put(0.04961011,0.40184728){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{torques_all.pdf}}%
-    \put(0.04250558,0.44878714){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5\end{tabular}}}}%
+    \put(0.04961011,0.44967689){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{torques_all.pdf}}%
-    \put(0.01498811,0.37760555){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Steering torque (Nm)\end{tabular}}}}}%
+    \put(0.01498719,0.37758226){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Steering torque (Nm)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{torques_all.pdf}}%
-    \put(0.52781149,0.28464167){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−5.0\end{tabular}}}}%
+    \put(0.5398019,0.28669812){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−2\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=7]{torques_all.pdf}}%
-    \put(0.52781149,0.32120693){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−2.5\end{tabular}}}}%
+    \put(0.5398019,0.33960096){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−1\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=8]{torques_all.pdf}}%
-    \put(0.53591414,0.35777219){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.0\end{tabular}}}}%
+    \put(0.54790405,0.3925038){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=9]{torques_all.pdf}}%
-    \put(0.53591414,0.39433745){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.5\end{tabular}}}}%
+    \put(0.54790405,0.44540663){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=10]{torques_all.pdf}}%
-    \put(0.53591414,0.43090271){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5.0\end{tabular}}}}%
+    \put(0.52496351,0.37758225){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Elbow torque (Nm)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=11]{torques_all.pdf}}%
-    \put(0.53591414,0.46766787){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}7.5\end{tabular}}}}%
+    \put(0.95524493,0.46029523){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}left\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=12]{torques_all.pdf}}%
-    \put(0.5190847,0.37760556){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Elbow torque (Nm)\end{tabular}}}}}%
+    \put(0.95524493,0.44019755){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}right\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=13]{torques_all.pdf}}%
-    \put(0.61551908,0.46032362){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}left\end{tabular}}}}%
+    \put(0.07309323,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.00\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=14]{torques_all.pdf}}%
-    \put(0.61551908,0.44022471){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}right\end{tabular}}}}%
+    \put(0.12202873,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.25\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=15]{torques_all.pdf}}%
-    \put(0.06604928,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.00\end{tabular}}}}%
+    \put(0.17096422,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.50\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=16]{torques_all.pdf}}%
-    \put(0.11513559,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.25\end{tabular}}}}%
+    \put(0.21989972,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.75\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=17]{torques_all.pdf}}%
-    \put(0.1642219,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.50\end{tabular}}}}%
+    \put(0.26883521,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.00\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=18]{torques_all.pdf}}%
-    \put(0.21330822,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.75\end{tabular}}}}%
+    \put(0.3177707,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.25\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=19]{torques_all.pdf}}%
-    \put(0.26239453,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.00\end{tabular}}}}%
+    \put(0.3667062,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.50\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=20]{torques_all.pdf}}%
-    \put(0.31148085,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.25\end{tabular}}}}%
+    \put(0.4156417,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.75\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=21]{torques_all.pdf}}%
-    \put(0.36056716,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.50\end{tabular}}}}%
+    \put(0.46457719,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.00\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=22]{torques_all.pdf}}%
-    \put(0.40965347,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.75\end{tabular}}}}%
+    \put(0.28127272,0.00815765){\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Time (s)\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=23]{torques_all.pdf}}%
-    \put(0.45873979,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.00\end{tabular}}}}%
+    \put(0.02374009,0.07369645){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−0.02\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=24]{torques_all.pdf}}%
-    \put(0.2748328,0.00815815){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Time (s)\end{tabular}}}}%
+    \put(0.02374009,0.11465228){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−0.01\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=25]{torques_all.pdf}}%
-    \put(0.02374156,0.05448157){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−1.5\end{tabular}}}}%
+    \put(0.03184224,0.15560811){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.00\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=26]{torques_all.pdf}}%
-    \put(0.02374156,0.09487664){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−1.0\end{tabular}}}}%
+    \put(0.03184224,0.19656392){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.01\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=27]{torques_all.pdf}}%
-    \put(0.02374156,0.13527172){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−0.5\end{tabular}}}}%
+    \put(0.03184224,0.23751975){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.02\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=28]{torques_all.pdf}}%
-    \put(0.0318442,0.1756668){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.0\end{tabular}}}}%
+    \put(0.01498718,0.15131914){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Propulsion/braking torque (Nm)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=29]{torques_all.pdf}}%
-    \put(0.0318442,0.21606187){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.5\end{tabular}}}}%
+    \put(0.57138717,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.00\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=30]{torques_all.pdf}}%
-    \put(0.0149881,0.15132847){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Propulsion/braking torque (Nm)\end{tabular}}}}}%
+    \put(0.62032268,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.25\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=31]{torques_all.pdf}}%
-    \put(0.57011921,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.00\end{tabular}}}}%
+    \put(0.66925817,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.50\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=32]{torques_all.pdf}}%
-    \put(0.61920553,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.25\end{tabular}}}}%
+    \put(0.71819366,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.75\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=33]{torques_all.pdf}}%
-    \put(0.66829184,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.50\end{tabular}}}}%
+    \put(0.76712916,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.00\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=34]{torques_all.pdf}}%
-    \put(0.71737815,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.75\end{tabular}}}}%
+    \put(0.81606465,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.25\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=35]{torques_all.pdf}}%
-    \put(0.76646447,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.00\end{tabular}}}}%
+    \put(0.86500014,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.50\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=36]{torques_all.pdf}}%
-    \put(0.81555078,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.25\end{tabular}}}}%
+    \put(0.91393564,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.75\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=37]{torques_all.pdf}}%
-    \put(0.86463709,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.50\end{tabular}}}}%
+    \put(0.96287114,0.0270871){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.00\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=38]{torques_all.pdf}}%
-    \put(0.91372341,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.75\end{tabular}}}}%
+    \put(0.77956662,0.00815765){\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Time (s)\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=39]{torques_all.pdf}}%
-    \put(0.96280972,0.02708877){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.00\end{tabular}}}}%
+    \put(0.54790405,0.05084831){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=40]{torques_all.pdf}}%
-    \put(0.77890274,0.00815815){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Time (s)\end{tabular}}}}%
+    \put(0.5407969,0.08645223){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}25\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=41]{torques_all.pdf}}%
-    \put(0.54657551,0.05085145){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
+    \put(0.5407969,0.12205613){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}50\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=42]{torques_all.pdf}}%
-    \put(0.53946793,0.08920139){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}20\end{tabular}}}}%
+    \put(0.5407969,0.15785993){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}75\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=43]{torques_all.pdf}}%
-    \put(0.53946793,0.12755133){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}40\end{tabular}}}}%
+    \put(0.53368976,0.19326396){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}100\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=44]{torques_all.pdf}}%
-    \put(0.53946793,0.16590127){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}60\end{tabular}}}}%
+    \put(0.53368976,0.22886786){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}125\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=45]{torques_all.pdf}}%
-    \put(0.53946793,0.20425121){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}80\end{tabular}}}}%
+    \put(0.52493685,0.15131914){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Tracking error (mm)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=46]{torques_all.pdf}}%
-    \put(0.53236034,0.24260115){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}100\end{tabular}}}}%
+    \put(0.2933586,0.50123239){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#1\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=47]{torques_all.pdf}}%
-    \put(0.51905804,0.15132845){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Tracking error (mm)\end{tabular}}}}}%
+    \put(0.37975041,0.50123239){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#2\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=48]{torques_all.pdf}}%
-    \put(0.29331501,0.50126331){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\#1\end{tabular}}}}%
+    \put(0.46614224,0.50123239){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#3\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=49]{torques_all.pdf}}%
-    \put(0.37971215,0.50126331){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\#2\end{tabular}}}}%
+    \put(0.55253402,0.50123239){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#4\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=50]{torques_all.pdf}}%
-    \put(0.4661093,0.50126331){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\#3\end{tabular}}}}%
+    \put(0.63892585,0.50123239){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=51]{torques_all.pdf}}%
-    \put(0.55250642,0.50126331){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\#4\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=52]{torques_all.pdf}}%
-    \put(0.63890357,0.50126331){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\#5\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=53]{torques_all.pdf}}%
-    \put(0.72530069,0.50126331){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\#6\end{tabular}}}}%
+    \put(0.72531763,0.50123239){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#6\end{tabular}}}}%
   \end{picture}%
 \endgroup%

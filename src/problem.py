@@ -40,17 +40,12 @@ def set_constraints(data: DataStorage) -> None:
 
     instance_constraints = (
         # Periodic velocities.
-        bicycle.u[0].replace(t, t0) - bicycle.u[0].replace(t, tf),
-        bicycle.u[1].replace(t, t0) + bicycle.u[1].replace(t, tf),
-        bicycle.u[2].replace(t, t0) + bicycle.u[2].replace(t, tf),
-        bicycle.u[3].replace(t, t0) + bicycle.u[3].replace(t, tf),
-        bicycle.u[4].replace(t, t0) - bicycle.u[4].replace(t, tf),
         bicycle.u[5].replace(t, t0) - bicycle.u[5].replace(t, tf),
-        bicycle.u[6].replace(t, t0) + bicycle.u[6].replace(t, tf),
         bicycle.u[7].replace(t, t0) - bicycle.u[7].replace(t, tf),
     )
+    t1 = data.metadata.duration / data.metadata.num_nodes
     instance_constraints += tuple(
-        xi.replace(t, t0) - xi_val for xi, xi_val in initial_state_constraints.items()
+        xi.replace(t, t1) - xi_val for xi, xi_val in initial_state_constraints.items()
     ) + tuple(
         xi.replace(t, tf) - xi_val for xi, xi_val in final_state_constraints.items()
     )

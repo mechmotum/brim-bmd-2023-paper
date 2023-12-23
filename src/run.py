@@ -11,7 +11,7 @@ import numpy as np
 from container import DataStorage, Metadata, ShoulderJointType, SteerWith
 from main import (
     LONGITUDINAL_DISPLACEMENT, LATERAL_DISPLACEMENT, STRAIGHT_LENGTHS,
-    NUM_NODES, DURATION, WEIGHT, DATA_DIR, DEFAULT_RESULT_DIR
+    NUM_NODES, DURATION, WEIGHT, DATA_DIR, DEFAULT_RESULT_DIR, OUTPUT_DIR
 )
 from model import set_bicycle_model, set_simulator
 from problem import set_constraints, set_initial_guess, set_problem
@@ -52,9 +52,12 @@ parser.add_argument("--parameter-data-dir", type=str, default=DATA_DIR,
                     help="The directory containing the parameter data.")
 parser.add_argument('-o', '--output', type=str, default=DEFAULT_RESULT_DIR,
                     help="The directory to save the results in.")
+parser.add_argument('--reuse-model', action="store_true",
+                    help="Whether the last model should be reused if it is the same.")
 
 timer = Timer()
 result_dir = parser.parse_args().output
+last_model_path = os.path.join(OUTPUT_DIR, "last_model.pkl")
 METADATA = Metadata(**{
     k: v for k, v in vars(parser.parse_args()).items()
     if k in Metadata.__dataclass_fields__})
@@ -65,12 +68,24 @@ if not os.path.exists(result_dir):
     os.mkdir(result_dir)
 with open(os.path.join(result_dir, "README.md"), "w") as f:
     f.write(f"# Result\n## Metadata\n{METADATA}\n")
-data = DataStorage(METADATA)
+if parser.parse_args().reuse_model and os.path.exists(last_model_path):
+    with timer("Reloading last model"):
+        with open(last_model_path, "rb") as f:
+            last_data = cp.load(f)
+        if last_data.metadata == METADATA:
+            data = last_data
+        else:
+            print("Last model does not match the current metadata, recomputing...")
+            data = DataStorage(METADATA)
+else:
+    data = DataStorage(METADATA)
 
-with timer("Computing the equations of motion"):
-    set_bicycle_model(data)
-with timer("Initializing the simulator"):
-    set_simulator(data)
+if data.system is None:
+    with timer("Computing the equations of motion"):
+        set_bicycle_model(data)
+if data.simulator is None:
+    with timer("Initializing the simulator"):
+        set_simulator(data)
 with timer("Defining the constraints and objective"):
     set_constraints(data)
 with timer("Making an initial guess"):
@@ -92,6 +107,8 @@ data.problem.plot_constraint_violations(data.solution)
 with open(os.path.join(result_dir, "solution_info.txt"), "w", encoding="utf-8") as f:
     json.dump(info, f, cls=NumpyEncoder)
 with open(os.path.join(result_dir, "data.pkl"), "wb") as f:
+    cp.dump(data, f)
+with open(last_model_path, "wb") as f:
     cp.dump(data, f)
 create_plots(data)
 create_time_lapse(data, n_frames=7)
