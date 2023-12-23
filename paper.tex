@@ -288,7 +288,7 @@ The path is defined by the equation
         X_2 \, , & X_1 - X_s < q_1 \\
     \end{cases} \, ,
 \end{equation}
-where $q_1$ and $q_2$ are the states describing the position of the bicycle in the $x$ (longitudinal) and $y$ (lateral) directions of the Newtonian frame respectively, $\bar{x}_2$ is the target lateral position as a function of $x_1$, $X_1$ and $X_2$ are the longitudinal length and lateral displacement of the target path respectively, and $X_s$ is the length of straight at the beginning and end of the path.
+where $q_1$ and $q_2$ are the states describing the position of the bicycle in the $x$ (longitudinal) and $y$ (lateral) directions of the Newtonian frame respectively, $\bar{q}_2$ is the target lateral position as a function of $q_1$, $X_1$ and $X_2$ are the longitudinal length and lateral displacement of the target path respectively, and $X_s$ is the length of straight at the beginning and end of the path.
 
 The objective function $J$ simultaneously minimizes both the tracking error and the inputs.
 It is defined as
@@ -298,8 +298,8 @@ It is defined as
 where $t_0$ and $t_F$ are the initial and final times, $r_i$ is the $i$th input variable, and $w$ is a weighting parameter between the squared tracking error and the sum of squared inputs.
 We selected $w=10^{-4}$, which aims to target a mean tracking error of \SI{0.025}{\meter} for an approximate torque of \SI{2.5}{\newton\meter}.
 
-We add constraints to define the initial and final state of the system's motion.
-In optimizations \#\numrange[range-phrase=--]{1}{3} we enforce
+We add constraints defining the initial and final state of the system's motion to be in the nominal configuration.
+In optimizations \#\numrange[range-phrase=--]{1}{6} we enforce
 \begin{equation*}
     \begin{aligned}
         q_1\left(t_0\right) &= 0.0 \\
@@ -329,8 +329,8 @@ In optimizations \#\numrange[range-phrase=--]{1}{3} we enforce
         \\
     \end{aligned}
 \end{equation*}
-For the remaining generalized coordinate ($q_4$) and generalized speeds ($u_i, i \in \mathbb{N} \cap \left[1,8\right]$) we enforce periodicity constraints between the values at $t_0$ and $t_F$ if the variable acts along the longitudinal axis.
-Otherwise, we enforce that the value at $t_0$ is the negative of the value at $t_F$ as this results in the solution being symmetric about the longitudinal axis.
+
+The velocity at the end of the path is enforced to be the same as at the start using periodic constraints on the angular velocity of both wheels, $u_6$ and $u_8$.
 Additionally, in optimization \#4 the generalized coordinate and generalized speed for the suspension are constrained at $t_0$ such that the suspension compression and weight through the handlebars are in equilibrium.
 
 % All decision variables were bounded such that the upper and lower bounds were approximately within an order of magnitude above and below the maximum and minimum values for each decision variable in the optimum trajectories.
@@ -358,7 +358,7 @@ The resulting initial guesses are dynamically feasible, with the only active ins
 
 \subsection*{Optimization}
 
-We solved each of the six trajectory tracking optimization problems using \opty{}~\citep{moore_2018_opty}, a Python package for solving optimization problems involving dynamic systems using direct collocation~\citep{betts_2010_practical}. \opty{} is designed with \sympy{} in mind and thus interfaces seamlessly with \brim{}. \opty{} transcribes the optimization problem into a nonlinear programming problem, which is then solved numerically using the interior-point solver \ipopt{}~\citep{biegler_2009_large}. Each optimization problem was transcribed with 100 nodes and the dynamics were collocated using the backward Euler method. \ipopt{}'s default settings were used with the exception of enabling gradient-based scaling.
+We solved each of the six trajectory tracking optimization problems using \opty{}~\citep{moore_2018_opty}, a Python package for solving optimization problems involving dynamic systems using direct collocation~\citep{betts_2010_practical}. \opty{} is designed with \sympy{} in mind and thus interfaces seamlessly with \brim{}. \opty{} transcribes the optimization problem into a nonlinear programming problem, which is then solved numerically using the interior-point solver \ipopt{}~\citep{biegler_2009_large}. Each optimization problem was transcribed with 100 nodes, resulting in a sample rate of \SI{50}{\hertz}, and the dynamics were collocated using the backward Euler method. \ipopt{}'s default settings were used with the exception of enabling gradient-based scaling.
 
 \section*{Results}
 
@@ -394,7 +394,7 @@ A comparison of the optimal trajectories for all six optimizations is shown in F
     \centering
 	\def\svgwidth{\textwidth}
     \input{figures/torques_all.pdf_tex}
-    \caption{Comparison of the optimal inputs for optimizations \#\numrange[range-phrase=--]{1}{6}.}
+    \caption{Comparison of the optimal inputs for optimizations \#\numrange[range-phrase=--]{1}{6}. Note that \#6 is missing in the steering torque graph because elbow torques are used.}
     \label{fig:torques_all}
 \end{figure}
 
