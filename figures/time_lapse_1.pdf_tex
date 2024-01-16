@@ -50,13 +50,13 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.69766657)%
+  \begin{picture}(1,0.69695503)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{time_lapse_1.pdf}}%
-    \put(0.10609297,0.66305363){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}Target\end{tabular}}}}%
+    \put(0.10609297,0.66305359){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}Target\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{time_lapse_1.pdf}}%
-    \put(0.10609297,0.62540098){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}Trajectory\end{tabular}}}}%
+    \put(0.10609297,0.62540094){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}Trajectory\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{time_lapse_1.pdf}}%
   \end{picture}%
 \endgroup%
