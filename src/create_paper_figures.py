@@ -106,7 +106,8 @@ q2_path = sm.lambdify(
 with contextlib.suppress(ImportError):
     import pandas as pd
 
-    pd.set_option('display.max_columns', None)
+    pd.set_option("display.max_columns", None)
+    pd.set_option("display.float_format", lambda x: "%.3E" % x)
     statistics = pd.DataFrame(data=statistics, index=statistics["optimization"])
 print(statistics)
 
