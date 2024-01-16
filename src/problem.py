@@ -14,7 +14,8 @@ Problem.plot_constraint_violations = plot_constraint_violations
 
 def set_constraints(data: DataStorage) -> None:
     t = me.dynamicsymbols._t  # Time symbol.
-    t0, tf = 0.0, data.metadata.duration  # Initial and final time.
+    # Initial and final time.
+    t1, tf = data.metadata.duration / data.metadata.num_nodes, data.metadata.duration
     bicycle, rider = data.bicycle, data.rider
 
     initial_state_constraints = {
@@ -38,13 +39,7 @@ def set_constraints(data: DataStorage) -> None:
         bicycle.q[6]: 0.0,
     }
 
-    instance_constraints = (
-        # Periodic velocities.
-        bicycle.u[5].replace(t, t0) - bicycle.u[5].replace(t, tf),
-        bicycle.u[7].replace(t, t0) - bicycle.u[7].replace(t, tf),
-    )
-    t1 = data.metadata.duration / data.metadata.num_nodes
-    instance_constraints += tuple(
+    instance_constraints = tuple(
         xi.replace(t, t1) - xi_val for xi, xi_val in initial_state_constraints.items()
     ) + tuple(
         xi.replace(t, tf) - xi_val for xi, xi_val in final_state_constraints.items()
