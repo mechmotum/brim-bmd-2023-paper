@@ -96,7 +96,7 @@ data.problem.add_option("output_file", os.path.join(result_dir, "ipopt.txt"))
 with timer("Solving the problem"):
     data.solution, info = data.problem.solve(data.initial_guess)
 timer.to_file(os.path.join(result_dir, "timings.txt"))
-print("Mean torque:",
+print("Mean total torque:",
       np.sqrt(data.metadata.interval_value * (data.solution_input ** 2).sum() /
               data.metadata.duration))
 
