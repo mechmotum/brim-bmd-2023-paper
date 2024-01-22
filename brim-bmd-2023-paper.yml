@@ -12,4 +12,4 @@ dependencies:
       - git+https://github.com/moorepants/BicycleParameters.git
       - git+https://github.com/TJStienstra/brim.git
       - git+https://github.com/TJStienstra/symmeplot.git
-      - git+https://github.com/csu-hmc/opty.git@refs/pull/102/head
+      - git+https://github.com/csu-hmc/opty.git
