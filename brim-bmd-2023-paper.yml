@@ -6,10 +6,10 @@ dependencies:
   - pip
   - cloudpickle
   - cyipopt
+  - opty
   - SciencePlots
   - scikits.odes
   - pip:
       - git+https://github.com/moorepants/BicycleParameters.git
       - git+https://github.com/TJStienstra/brim.git
       - git+https://github.com/TJStienstra/symmeplot.git
-      - git+https://github.com/csu-hmc/opty.git
