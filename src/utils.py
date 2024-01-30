@@ -17,7 +17,7 @@ from brim.core.base_classes import BrimBase
 from brim.utilities.plotting import Plotter
 from matplotlib.animation import FuncAnimation
 from scipy.interpolate import CubicSpline
-from symmeplot import PlotBody, PlotVector
+from symmeplot.matplotlib import PlotBody, PlotVector
 
 from container import DataStorage
 
@@ -259,7 +259,7 @@ def create_animation(data: DataStorage, output: str
     p, p_vals = zip(*data.constants.items())
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(10, 10))
-    plotter = Plotter.from_model(ax, data.bicycle_rider)
+    plotter = Plotter.from_model(data.bicycle_rider, ax=ax)
     plotter.lambdify_system((data.x[:], data.input_vars[:], p))
     plotter.evaluate_system(x_eval(0), r_eval(0), p_vals)
     plotter.plot()
@@ -270,16 +270,11 @@ def create_animation(data: DataStorage, output: str
     ax.set_aspect("equal")
     ax.axis("off")
 
-    def animate(fi):
-        """Update the plot for frame i."""
-        time = fi / (n_frames - 1) * data.time_array[-1]
-        plotter.evaluate_system(x_eval(time), r_eval(time), p_vals)
-        return *plotter.update(),
-
     fps = 30
-    n_frames = int(fps * data.time_array[-1])
-    ani = FuncAnimation(fig, animate, frames=n_frames, blit=False)
-    ani.save(output, dpi=150, fps=fps)
+    ani = plotter.animate(
+        lambda ti: (x_eval(ti), r_eval(ti), p_vals),
+        frames=np.arange(0, data.time_array[-1], 1 / fps),
+        blit=False)
     return fig, ax, ani
 
 
@@ -290,7 +285,7 @@ def create_time_lapse(data: DataStorage, n_frames: int = 7
     p, p_vals = zip(*data.constants.items())
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(10, 10))
-    plotter = Plotter.from_model(ax, data.bicycle_rider)
+    plotter = Plotter.from_model(data.bicycle_rider, ax=ax)
     plotter.lambdify_system((data.x[:], data.input_vars[:], p))
     queue = [plotter]
     while queue:
@@ -328,7 +323,7 @@ def _plot_ground(data: DataStorage, plotter: Plotter):
     p, p_vals = zip(*data.constants.items())
 
     front_contact_coord = data.bicycle.front_tire.contact_point.pos_from(
-        plotter.origin).to_matrix(plotter.inertial_frame)[:2]
+        plotter.zero_point).to_matrix(plotter.inertial_frame)[:2]
     eval_fc = sm.lambdify((data.system.q[:] + data.system.u[:], p), front_contact_coord,
                           cse=True)
     fc_arr = np.array(eval_fc(data.solution_state, p_vals))
