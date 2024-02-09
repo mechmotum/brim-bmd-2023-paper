@@ -20,11 +20,11 @@ while os.path.exists(os.path.join(OUTPUT_DIR, f"result{i}")):
     i += 1
 DEFAULT_RESULT_DIR = os.path.join(OUTPUT_DIR, f"result{i}")
 
-LONGITUDINAL_DISPLACEMENT = 10.0
+LONGITUDINAL_DISPLACEMENT = 18
 LATERAL_DISPLACEMENT = 1.0
-STRAIGHT_LENGTHS = 3
-NUM_NODES = 100
-DURATION = 2.0
+STRAIGHT_LENGTHS = 7
+NUM_NODES = 180
+DURATION = 3.6
 mean_tracking_error = 0.025
 estimated_torque = 0.5
 control_weight = DURATION * mean_tracking_error ** 2  # Aimed path cost
