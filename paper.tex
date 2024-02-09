@@ -80,10 +80,10 @@ One commonality between these numeric and symbolic approaches is that they often
 This approach is advantageous in that the implementer controls the choice of coordinates that are used, often optimizing the simplicity of the resulting EoMs.
 Indeed, handcrafted EoMs have the highest reachable computational performance~\citep{rosenthal_1986_high}.
 
-Many research grade software packages, like \softwarepackage{SPACAR}, \softwarepackage{Simbody}~\citep{sherman_2011_simbody}, and \softwarepackage{ADAMS}~\citep{ryan_1990_adams}, can efficiently form the EoMs for a multibody system.
-One downside of these tools is that the resulting EoMs exist solely in the form of numeric computer code and cannot be accessibly interrogated.
+Many research grade software packages, like \softwarepackage{SPACAR}, \softwarepackage{Simbody}~\citep{sherman_2011_simbody}, and \softwarepackage{ADAMS}~\citep{ryan_1990_adams}, efficiently form the EoMs for a multibody system, but these resulting EoMs exist solely in the form of numeric computer code and lack accessibility to be interrogated.
 Modern physics engines, like \softwarepackage{MuJoCo}~\citep{todorov_2012_mujoco} and \softwarepackage{Nimble}~\citep{werling_2021_fast}, also offer numerical computation of high-accuracy dynamics.
-However, these have not found favor in being applied within the field of bicycle dynamics research, perhaps due to the inability to define every aspect and assumption of a model precisely and because they often focus on aspects not widely applicable to bicycle research, like contact and impact dynamics.
+However, these have not gained traction in bicycle dynamics research, perhaps due to the focus on general applicability with varying assumptions in contact dynamics.
+\softwarepackage{FastBike}~\citep{fastbike} simulates single-track vehicles, but remains proprietary, and \softwarepackage{JBike6}~\citep{jbike6} only calculates the eigenvalues of one model.
 
 Symbolics offer transparency, allowing for a clear understanding of the underlying equations and enabling greater flexibility in manipulating and interpreting the resulting expressions.
 There is scope for a symbolic approach to result in more performant code through processes like term rewriting to minimize the number of expressions in the EoMs~\citep{gowda_2022_high}.
@@ -359,7 +359,7 @@ The resulting initial guesses are dynamically feasible, with the only active ins
 
 \subsection*{Optimization}
 
-We solved each of the six trajectory tracking optimization problems using \opty{}~\citep{moore_2018_opty}, a Python package for solving optimization problems involving dynamic systems using direct collocation~\citep{betts_2010_practical}. \opty{} is designed with \sympy{} in mind and thus interfaces seamlessly with \brim{}. \opty{} transcribes the optimization problem into a nonlinear programming problem, which is then solved numerically using the interior-point solver \ipopt{}~\citep{biegler_2009_large}. Each optimization problem was transcribed with 100 nodes, resulting in a sample rate of \SI{50}{\hertz}, and the dynamics were collocated using the backward Euler method. \ipopt{}'s default settings were used with the exception of enabling gradient-based scaling.
+We solved each of the six trajectory tracking optimization problems using \opty{}~\citep{moore_2018_opty}, a Python package for solving optimization problems involving dynamic systems using direct collocation~\citep{betts_2010_practical}. \opty{} is designed with \sympy{} in mind and thus interfaces seamlessly with \brim{}. \opty{} transcribes the optimization problem into a nonlinear programming problem, which is then solved numerically using the interior-point solver \ipopt{}~\citep{biegler_2009_large}. Each optimization problem was transcribed with 100 nodes, resulting in a node every \SI{0.2}{\second}, and the dynamics were collocated using the backward Euler method. \ipopt{}'s default settings were used with the exception of enabling gradient-based scaling.
 
 \section*{Results}
 
