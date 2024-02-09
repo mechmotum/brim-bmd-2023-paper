@@ -36,11 +36,19 @@ OPTIMIZATION_STYLES = [
     {"color": "C4", "linestyle": "--"},  # "marker": ">", "markevery": (1, markevery)},
     {"color": "C5", "linestyle": ":"},  # "marker": "s", "markevery": (3, markevery)},
 ]
-legend_optimization = (
-    [plt.Line2D([0], [0], **OPTIMIZATION_STYLES[i - 1]) for i in range(1, 7)],
-    [fr"\#{i}" for i in range(1, 7)],
-)
-
+legend_optimization = {
+    "handles": 
+        [plt.Line2D([0], [0], **OPTIMIZATION_STYLES[i - 1]) for i in range(1, 7)],
+    "labels":
+        ['\#1 \code{"Browser"}', '\#2 \code{"Pista"}',
+         '\#3 \code{"Fisher"}', '\#4 \code{"Fisher"}\nwith suspension',
+         '\#5 \code{"Browser"}\nwith human', '\#6 \code{"Browser"}\nwith elbow torques'],
+    "loc": "upper center",
+    "mode": "expand",
+    "ncol": 6,
+    "bbox_to_anchor": (0.03, 1, 0.96, 0.06),
+}
+plt.legend
 
 def get_x(data, xi) -> npt.NDArray[np.float64]:
     if isinstance(xi, str):
@@ -113,7 +121,7 @@ print(statistics)
 
 print("Plotting...")
 optimization = 1
-fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 6)
+fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 9)
 plot(ax, q1_path, q2_path, np.zeros_like(q1_path), label="Target", color="r")
 plot(ax, get_x(data_lst[optimization - 1], "q_x"),
         get_x(data_lst[optimization - 1], "q_y"), np.zeros_like(q1_path),
@@ -137,7 +145,7 @@ for j, xi_name in enumerate(["steer", "roll"], 1):
                     **OPTIMIZATION_STYLES[i - 1])
     axs[j].set_ylabel(f"{xi_name.capitalize()} angle (deg)")
 axs[-1].set_xlabel("Time (s)")
-fig.legend(*legend_optimization, loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
+fig.legend(**legend_optimization)
 fig.tight_layout()
 savefig(fig, "states_all")
 
@@ -163,7 +171,7 @@ axs[1, 0].set_ylabel("Propulsion/braking torque (Nm)")
 axs[0, 1].set_ylabel("Elbow torque (Nm)")
 axs[1, 1].set_ylabel("Tracking error (mm)")
 axs[0, 1].legend()
-fig.legend(*legend_optimization, loc="upper center", ncol=6, bbox_to_anchor=(0.5, 1.05))
+fig.legend(**legend_optimization)
 fig.align_labels()
 fig.tight_layout()
 savefig(fig, "torques_all")
