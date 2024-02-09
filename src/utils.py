@@ -311,7 +311,7 @@ def create_time_lapse(data: DataStorage, n_frames: int = 7
     _plot_ground(data, plotter)
     ax.invert_zaxis()
     ax.invert_yaxis()
-    ax.view_init(30, 30)
+    ax.view_init(24, 29)
     ax.set_aspect("equal")
     ax.axis("off")
     return fig, ax
