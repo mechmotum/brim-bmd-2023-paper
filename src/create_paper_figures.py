@@ -122,7 +122,6 @@ print(statistics)
 print("Plotting...")
 optimization = 1
 fig_time_lapse, ax = create_time_lapse(data_lst[optimization - 1], 9)
-plot(ax, q1_path, q2_path, np.zeros_like(q1_path), label="Target", color="r")
 plot(ax, get_x(data_lst[optimization - 1], "q_x"),
         get_x(data_lst[optimization - 1], "q_y"), np.zeros_like(q1_path),
         label="Trajectory", **OPTIMIZATION_STYLES[optimization - 1])
