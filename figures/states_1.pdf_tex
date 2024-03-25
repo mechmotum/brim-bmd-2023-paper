@@ -38,7 +38,7 @@
   \newcommand*\fsize{\dimexpr\f@size pt\relax}%
   \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{343.46084595bp}%
+    \setlength{\unitlength}{336.51043701bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,53 +50,51 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.7273773)%
+  \begin{picture}(1,0.7217465)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{states_1.pdf}}%
-    \put(0.03814459,0.4637615){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−10\end{tabular}}}}%
+    \put(0.03893244,0.45430865){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−10\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{states_1.pdf}}%
-    \put(0.06929807,0.5429087){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
+    \put(0.07072938,0.53379992){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{states_1.pdf}}%
-    \put(0.05474037,0.62205591){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10\end{tabular}}}}%
+    \put(0.055871,0.61329119){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{states_1.pdf}}%
-    \put(0.05474037,0.70120312){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}20\end{tabular}}}}%
+    \put(0.055871,0.69278246){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}20\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{states_1.pdf}}%
-    \put(0.02021587,0.5787723){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Angle (deg)\end{tabular}}}}}%
+    \put(0.02063341,0.57007215){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Angle (deg)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{states_1.pdf}}%
-    \put(0.89786743,0.68006477){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}steer\end{tabular}}}}%
+    \put(0.91641231,0.67345676){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}steer\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=7]{states_1.pdf}}%
-    \put(0.89786743,0.63889833){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}roll\end{tabular}}}}%
+    \put(0.91641231,0.63144005){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}roll\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=8]{states_1.pdf}}%
-    \put(0.89786743,0.59773188){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}yaw\end{tabular}}}}%
+    \put(0.91641231,0.58942334){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}yaw\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=9]{states_1.pdf}}%
-    \put(0.11713457,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.00\end{tabular}}}}%
+    \put(0.1269831,0.04592979){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=10]{states_1.pdf}}%
-    \put(0.216709,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.25\end{tabular}}}}%
+    \put(0.23990652,0.04592979){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=11]{states_1.pdf}}%
-    \put(0.31628342,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.50\end{tabular}}}}%
+    \put(0.35282995,0.04592979){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=12]{states_1.pdf}}%
-    \put(0.41585785,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.75\end{tabular}}}}%
+    \put(0.46575334,0.04592979){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=13]{states_1.pdf}}%
-    \put(0.51543229,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.00\end{tabular}}}}%
+    \put(0.57867676,0.04592979){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=14]{states_1.pdf}}%
-    \put(0.6150067,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.25\end{tabular}}}}%
+    \put(0.69160018,0.04592979){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=15]{states_1.pdf}}%
-    \put(0.71458113,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.50\end{tabular}}}}%
+    \put(0.80452361,0.04592979){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}3.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=16]{states_1.pdf}}%
-    \put(0.81415557,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.75\end{tabular}}}}%
+    \put(0.91744703,0.04592979){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}3.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=17]{states_1.pdf}}%
-    \put(0.91373,0.06523669){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.00\end{tabular}}}}%
+    \put(0.55208037,0.00635542){\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Time (s)\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=18]{states_1.pdf}}%
-    \put(0.54090825,0.02646316){\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Time (s)\end{tabular}}}}%
+    \put(0.03893244,0.13512533){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−50\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=19]{states_1.pdf}}%
-    \put(0.03814459,0.15119277){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−50\end{tabular}}}}%
+    \put(0.07072938,0.2424122){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=20]{states_1.pdf}}%
-    \put(0.06929807,0.26000049){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
+    \put(0.055871,0.34969906){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}50\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=21]{states_1.pdf}}%
-    \put(0.05474037,0.3688082){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}50\end{tabular}}}}%
+    \put(0.02063343,0.2361152){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Angular velocity (deg/s)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=22]{states_1.pdf}}%
-    \put(0.02021588,0.25157343){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Angular velocity (deg/s)\end{tabular}}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=23]{states_1.pdf}}%
   \end{picture}%
 \endgroup%
