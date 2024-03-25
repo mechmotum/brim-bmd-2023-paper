@@ -38,7 +38,7 @@
   \newcommand*\fsize{\dimexpr\f@size pt\relax}%
   \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{703.29168701bp}%
+    \setlength{\unitlength}{696.34130859bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,116 +50,119 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.52217938)%
+  \begin{picture}(1,0.51647711)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{states_all.pdf}}%
-    \put(0.06590208,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
+    \put(0.05938474,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{states_all.pdf}}%
-    \put(0.1447096,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2\end{tabular}}}}%
+    \put(0.11490702,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{states_all.pdf}}%
-    \put(0.22351713,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}4\end{tabular}}}}%
+    \put(0.17042931,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{states_all.pdf}}%
-    \put(0.30232466,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}6\end{tabular}}}}%
+    \put(0.2259516,0.02242577){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}7.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{states_all.pdf}}%
-    \put(0.38113217,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}8\end{tabular}}}}%
+    \put(0.27788369,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{states_all.pdf}}%
-    \put(0.45638499,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10\end{tabular}}}}%
+    \put(0.33340597,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}12.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=7]{states_all.pdf}}%
-    \put(0.26450542,0.01907386){\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Longitudinal displacement (m)\end{tabular}}}}%
+    \put(0.38892826,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}15.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=8]{states_all.pdf}}%
-    \put(0.01860171,0.08353971){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.0\end{tabular}}}}%
+    \put(0.44445054,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}17.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=9]{states_all.pdf}}%
-    \put(0.01860171,0.15955854){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.2\end{tabular}}}}%
+    \put(0.26714552,0.00309933){\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Longitudinal displacement (m)\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=10]{states_all.pdf}}%
-    \put(0.01860171,0.23557736){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.4\end{tabular}}}}%
+    \put(0.01878737,0.06902175){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=11]{states_all.pdf}}%
-    \put(0.01860171,0.31159618){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.6\end{tabular}}}}%
+    \put(0.01878737,0.14434024){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.2\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=12]{states_all.pdf}}%
-    \put(0.01860171,0.38761501){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.8\end{tabular}}}}%
+    \put(0.01878737,0.21965874){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.4\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=13]{states_all.pdf}}%
-    \put(0.01860171,0.46363383){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.0\end{tabular}}}}%
+    \put(0.01878737,0.29497723){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.6\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=14]{states_all.pdf}}%
-    \put(0.00987266,0.27544909){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Lateral displacement (m)\end{tabular}}}}}%
+    \put(0.01878737,0.37029573){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.8\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=15]{states_all.pdf}}%
-    \put(0.09822728,0.47135642){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}Target\end{tabular}}}}%
+    \put(0.01878737,0.44561422){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=16]{states_all.pdf}}%
-    \put(0.55944349,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.00\end{tabular}}}}%
+    \put(0.0099712,0.26203348){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Lateral displacement (m)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=17]{states_all.pdf}}%
-    \put(0.60919074,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.25\end{tabular}}}}%
+    \put(0.09920771,0.45989622){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}Target\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=18]{states_all.pdf}}%
-    \put(0.65893798,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.50\end{tabular}}}}%
+    \put(0.56861764,0.2627237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=19]{states_all.pdf}}%
-    \put(0.70868524,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.75\end{tabular}}}}%
+    \put(0.62444407,0.2627237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=20]{states_all.pdf}}%
-    \put(0.75843248,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.00\end{tabular}}}}%
+    \put(0.6802705,0.2627237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=21]{states_all.pdf}}%
-    \put(0.80817973,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.25\end{tabular}}}}%
+    \put(0.73609693,0.2627237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=22]{states_all.pdf}}%
-    \put(0.85792699,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.50\end{tabular}}}}%
+    \put(0.79192338,0.2627237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=23]{states_all.pdf}}%
-    \put(0.90767422,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.75\end{tabular}}}}%
+    \put(0.84774981,0.2627237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=24]{states_all.pdf}}%
-    \put(0.95742148,0.27613249){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.00\end{tabular}}}}%
+    \put(0.90357624,0.2627237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}3.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=25]{states_all.pdf}}%
-    \put(0.52042024,0.3203312){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−10\end{tabular}}}}%
+    \put(0.95940267,0.2627237){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}3.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=26]{states_all.pdf}}%
-    \put(0.52752966,0.35548738){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−5\end{tabular}}}}%
+    \put(0.52561469,0.30783017){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−10\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=27]{states_all.pdf}}%
-    \put(0.53563441,0.39024363){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
+    \put(0.53279508,0.34265231){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=28]{states_all.pdf}}%
-    \put(0.53563441,0.4253998){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5\end{tabular}}}}%
+    \put(0.54098072,0.37707056){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=29]{states_all.pdf}}%
-    \put(0.52852498,0.46015606){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10\end{tabular}}}}%
+    \put(0.54098072,0.41189271){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=30]{states_all.pdf}}%
-    \put(0.51166454,0.39451064){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Steer angle (deg)\end{tabular}}}}}%
+    \put(0.53380033,0.44631096){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=31]{states_all.pdf}}%
-    \put(0.55944349,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.00\end{tabular}}}}%
+    \put(0.5167716,0.38228342){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Steer angle (deg)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=32]{states_all.pdf}}%
-    \put(0.60919074,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.25\end{tabular}}}}%
+    \put(0.56861764,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=33]{states_all.pdf}}%
-    \put(0.65893798,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.50\end{tabular}}}}%
+    \put(0.62444407,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=34]{states_all.pdf}}%
-    \put(0.70868524,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.75\end{tabular}}}}%
+    \put(0.6802705,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=35]{states_all.pdf}}%
-    \put(0.75843248,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.00\end{tabular}}}}%
+    \put(0.73609693,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=36]{states_all.pdf}}%
-    \put(0.80817973,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.25\end{tabular}}}}%
+    \put(0.79192338,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=37]{states_all.pdf}}%
-    \put(0.85792699,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.50\end{tabular}}}}%
+    \put(0.84774981,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=38]{states_all.pdf}}%
-    \put(0.90767422,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}1.75\end{tabular}}}}%
+    \put(0.90357624,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}3.0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=39]{states_all.pdf}}%
-    \put(0.95742148,0.03800938){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}2.00\end{tabular}}}}%
+    \put(0.95940267,0.02222382){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}3.5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=40]{states_all.pdf}}%
-    \put(0.77087396,0.01907386){\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Time (s)\end{tabular}}}}%
+    \put(0.77856826,0.00309933){\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Time (s)\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=41]{states_all.pdf}}%
-    \put(0.52042024,0.06531009){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−15\end{tabular}}}}%
+    \put(0.52561469,0.04981853){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−15\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=42]{states_all.pdf}}%
-    \put(0.52042024,0.09497084){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−10\end{tabular}}}}%
+    \put(0.52561469,0.0793768){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−10\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=43]{states_all.pdf}}%
-    \put(0.52752966,0.12483154){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−5\end{tabular}}}}%
+    \put(0.53279508,0.109137){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}−5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=44]{states_all.pdf}}%
-    \put(0.53563441,0.15429236){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
+    \put(0.54098072,0.13849331){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=45]{states_all.pdf}}%
-    \put(0.53563441,0.18415306){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5\end{tabular}}}}%
+    \put(0.54098072,0.16825351){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=46]{states_all.pdf}}%
-    \put(0.52852498,0.21361387){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10\end{tabular}}}}%
+    \put(0.53380033,0.19760981){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=47]{states_all.pdf}}%
-    \put(0.52852498,0.24327462){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}15\end{tabular}}}}%
+    \put(0.53380033,0.22716807){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}15\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=48]{states_all.pdf}}%
-    \put(0.51166455,0.15638754){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Roll angle (deg)\end{tabular}}}}}%
+    \put(0.51677162,0.14178354){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}Roll angle (deg)\end{tabular}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=49]{states_all.pdf}}%
-    \put(0.28801267,0.51230672){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#1\end{tabular}}}}%
+    \put(0.06532901,0.49743753){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small \#1 \code{"Browser"}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=50]{states_all.pdf}}%
-    \put(0.37443218,0.51230672){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#2\end{tabular}}}}%
+    \put(0.23444642,0.49743753){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small \#2 \code{"Pista"}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=51]{states_all.pdf}}%
-    \put(0.46085171,0.51230672){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#3\end{tabular}}}}%
+    \put(0.38283494,0.49743753){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small \#3 \code{"Fisher"}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=52]{states_all.pdf}}%
-    \put(0.5472712,0.51230672){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#4\end{tabular}}}}%
+    \put(0.53919595,0.50650591){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small \#4 \code{"Fisher"}\end{tabular}}}}%
+    \put(0.53919595,0.49144101){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small with suspension\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=53]{states_all.pdf}}%
-    \put(0.63369073,0.51230672){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#5\end{tabular}}}}%
+    \put(0.69555696,0.50650591){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small \#5 \code{"Browser"}\end{tabular}}}}%
+    \put(0.69555696,0.49144101){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small with human\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=54]{states_all.pdf}}%
-    \put(0.72011026,0.51230672){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\#6\end{tabular}}}}%
+    \put(0.86467437,0.50650591){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small \#6 \code{"Browser"}\end{tabular}}}}%
+    \put(0.86467437,0.49144101){\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\small with elbow torques\end{tabular}}}}%
   \end{picture}%
 \endgroup%
